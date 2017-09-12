@@ -34,6 +34,7 @@ All text above, and the splash screen below must be included in any redistributi
 #include "Adafruit_GFX.h"
 #include "Adafruit_SSD1675.h"
 
+#ifndef USE_EXTERNAL_SRAM
 // the memory buffer for the LCD
 static uint16_t buffer[SSD1675_BUFSIZE] = {
 
@@ -214,6 +215,11 @@ static uint16_t buffer[SSD1675_BUFSIZE] = {
 0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,0x00FF,
 0x00FF,0x00FF,0x00FF,
 };
+#else
+
+#define RAMBUFSIZE 256
+
+#endif
 
 const uint8_t init_data[]={
 	0xA5,	0x89,	0x10,	0x00,	0x00,	0x00,	0x00,	0xA5,	0x19,	0x80,	0x00,	0x00,	0x00,	0x00,	0xA5,	0xA9,
@@ -229,6 +235,8 @@ const uint8_t init_data[]={
 void Adafruit_SSD1675::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
+	
+  uint16_t *pBuf;
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
@@ -246,18 +254,35 @@ void Adafruit_SSD1675::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   }
 
+	uint16_t addr = (x * SSD1675_LCDHEIGHT / 8) + y/8;
+
+#ifdef USE_EXTERNAL_SRAM
+	addr = addr * 2; //2 bytes in sram
+	uint16_t c = sram.read16(addr);
+	pBuf = &c;
+#else
+	pBuf = buffer + addr;
+#endif
   // x is which column
     switch (color)
     {
-      case BLACK:   buffer[(x * SSD1675_LCDHEIGHT / 8) + y/8] |= (1 << (7 - y&7)); break;
-      case WHITE:   buffer[(x * SSD1675_LCDHEIGHT / 8) + y/8] &= ~(1 << (7 - y&7)); break;
-      case INVERSE: buffer[(x * SSD1675_LCDHEIGHT / 8) + y/8] ^= (1 << (7 - y&7)); break;
-	  case RED:   buffer[(x * SSD1675_LCDHEIGHT / 8) + y/8] |= (1 << (15 - (y%8))); break;
+      case BLACK:   *pBuf |= (1 << (7 - y&7)); break;
+      case WHITE:   *pBuf &= ~(1 << (7 - y&7)); break;
+      case INVERSE: *pBuf ^= (1 << (7 - y&7)); break;
+	  case RED:   *pBuf |= (1 << (15 - (y%8))); break;
     }
-
+#ifdef USE_EXTERNAL_SRAM
+	sram.write16(addr, *pBuf);
+#endif
+	
 }
 
+#ifdef USE_EXTERNAL_SRAM
+Adafruit_SSD1675::Adafruit_SSD1675(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(SSD1675_LCDWIDTH, SSD1675_LCDHEIGHT),
+sram(SID, MISO, SCLK, SRCS) {
+#else
 Adafruit_SSD1675::Adafruit_SSD1675(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(SSD1675_LCDWIDTH, SSD1675_LCDHEIGHT) {
+#endif
   cs = CS;
   rst = RST;
   dc = DC;
@@ -268,7 +293,12 @@ Adafruit_SSD1675::Adafruit_SSD1675(int8_t SID, int8_t SCLK, int8_t DC, int8_t RS
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
+#ifdef USE_EXTERNAL_SRAM
+Adafruit_SSD1675::Adafruit_SSD1675(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(SSD1675_LCDWIDTH, SSD1675_LCDHEIGHT),
+sram(SRCS) {
+#else
 Adafruit_SSD1675::Adafruit_SSD1675(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(SSD1675_LCDWIDTH, SSD1675_LCDHEIGHT) {
+#endif
   dc = DC;
   rst = RST;
   cs = CS;
@@ -281,7 +311,12 @@ void Adafruit_SSD1675::begin(bool reset) {
   uint8_t buf[5];
   blackInverted = true;
   redInverted = false;
-
+  
+#ifdef USE_EXTERNAL_SRAM
+	sram.begin();
+	sram.write8(0, K640_SEQUENTIAL_MODE, K640_WRSR);
+#endif
+  
   // set pin directions
     pinMode(dc, OUTPUT);
     pinMode(cs, OUTPUT);
@@ -291,6 +326,9 @@ void Adafruit_SSD1675::begin(bool reset) {
     dcport      = portOutputRegister(digitalPinToPort(dc));
     dcpinmask   = digitalPinToBitMask(dc);
 #endif
+
+	csHigh();
+
     if (!hwSPI){
       // set pins for software-SPI
       pinMode(sid, OUTPUT);
@@ -398,43 +436,26 @@ void Adafruit_SSD1675::SSD1675_command(uint8_t c, const uint8_t *buf, uint16_t l
 
 void Adafruit_SSD1675::SSD1675_command(uint8_t c, bool end) {
     // SPI
-#ifdef HAVE_PORTREG
-    *csport |= cspinmask;
-    *dcport &= ~dcpinmask;
-    *csport &= ~cspinmask;
-#else
-    digitalWrite(cs, HIGH);
-    digitalWrite(dc, LOW);
-    digitalWrite(cs, LOW);
-#endif
+	csHigh();
+	dcLow();
+	csLow();
+	
     fastSPIwrite(c);
 
 	if(end){
-#ifdef HAVE_PORTREG
-		*csport |= cspinmask;
-#else
-		digitalWrite(cs, HIGH);
-#endif
+		csHigh();
 	}
 }
 
 void Adafruit_SSD1675::SSD1675_data(const uint8_t *buf, uint16_t len)
 {
 	// SPI
-#ifdef HAVE_PORTREG
-	*dcport |= dcpinmask;
-#else
-	digitalWrite(dc, HIGH);
-#endif
+	dcHigh();
 
 	for (uint16_t i=0; i<len; i++) {
 		fastSPIwrite(buf[i]);
 	}
-#ifdef HAVE_PORTREG
-	*csport |= cspinmask;
-#else
-	digitalWrite(cs, HIGH);
-#endif
+	csHigh();
 }
 
 void Adafruit_SSD1675::update()
@@ -449,8 +470,44 @@ void Adafruit_SSD1675::update()
 
 void Adafruit_SSD1675::display() 
 {
-	uint8_t cmdbuf[2];
+
+uint8_t cmdbuf[2];
 	
+#ifdef USE_EXTERNAL_SRAM
+	uint8_t databuf[RAMBUFSIZE];
+	
+	cmdbuf[0] = 0x00;
+	SSD1675_command(SSD1675_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
+	
+	cmdbuf[0] = 0x00;
+	cmdbuf[1] = 0x00;
+	SSD1675_command(SSD1675_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
+	
+	for(uint16_t i=0; i<SSD1675_BUFSIZE*2; i+=RAMBUFSIZE){
+		sram.read(i, databuf, RAMBUFSIZE);
+	
+		//write image
+		SSD1675_command(SSD1675_WRITE_RAM_1, false);
+		dcHigh();
+		
+		uint16_t toWrite = min(SSD1675_BUFSIZE*2 - i, RAMBUFSIZE);
+		for(uint16_t j=0; j<toWrite; j+=2){
+			fastSPIwrite(databuf[j]);
+		}
+
+		csHigh();
+	
+		SSD1675_command(SSD1675_WRITE_RAM_2, false);
+		dcHigh();
+	
+		for(uint16_t j=0; j<toWrite; j+=2){
+			fastSPIwrite(databuf[j + 1]);
+		}
+
+		csHigh();
+	}
+	
+#else
 	cmdbuf[0] = 0x00;
 	SSD1675_command(SSD1675_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
 	
@@ -460,35 +517,22 @@ void Adafruit_SSD1675::display()
 	
 	//write image
 	SSD1675_command(SSD1675_WRITE_RAM_1, false);
-#ifdef HAVE_PORTREG
-	*dcport |= dcpinmask;
-#else
-	digitalWrite(dc, HIGH);
-#endif
-	for(int i=0; i<SSD1675_BUFSIZE; i++){
+	dcHigh();
+
+	for(uint16_t i=0; i<SSD1675_BUFSIZE; i++){
 		fastSPIwrite(buffer[i] & 0xFF);
 	}
-#ifdef HAVE_PORTREG
-	*csport |= cspinmask;
-#else
-	digitalWrite(cs, HIGH);
-#endif
+	csHigh();
 	
 	SSD1675_command(SSD1675_WRITE_RAM_2, false);
-#ifdef HAVE_PORTREG
-	*dcport |= dcpinmask;
-#else
-	digitalWrite(dc, HIGH);
-#endif
-	for(int i=0; i<SSD1675_BUFSIZE; i++){
-		fastSPIwrite((buffer[i] >> 8) & 0xFF);
-	}
-#ifdef HAVE_PORTREG
-	*csport |= cspinmask;
-#else
-	digitalWrite(cs, HIGH);
-#endif
+	dcHigh();
 	
+	for(uint16_t i=0; i<SSD1675_BUFSIZE; i++){
+		fastSPIwrite( (buffer[i] >> 8) & 0xFF);
+	}
+	csHigh();
+#endif
+
 	update();
 }
 
@@ -501,7 +545,11 @@ void Adafruit_SSD1675::sleep()
 
 // clear everything
 void Adafruit_SSD1675::clearDisplay() {
+#ifdef USE_EXTERNAL_SRAM
+  sram.erase(0x00, SSD1675_BUFSIZE * 2);
+#else
   memset(buffer, 0x00, SSD1675_BUFSIZE * 2);
+#endif
 }
 
 
@@ -524,6 +572,42 @@ inline void Adafruit_SSD1675::fastSPIwrite(uint8_t d) {
 #endif
     }
   }
+}
+
+void Adafruit_SSD1675::csHigh()
+{
+#ifdef HAVE_PORTREG
+	*csport |= cspinmask;
+#else
+	digitalWrite(cs, HIGH);
+#endif
+}
+
+void Adafruit_SSD1675::csLow()
+{
+#ifdef HAVE_PORTREG
+	*csport &= ~cspinmask;
+#else
+	digitalWrite(cs, LOW);
+#endif
+}
+
+void Adafruit_SSD1675::dcHigh()
+{
+#ifdef HAVE_PORTREG
+	*dcport |= dcpinmask;
+#else
+	digitalWrite(dc, HIGH);
+#endif
+}
+
+void Adafruit_SSD1675::dcLow()
+{
+#ifdef HAVE_PORTREG
+	*dcport &= ~dcpinmask;
+#else
+	digitalWrite(dc, LOW);
+#endif
 }
 
 void Adafruit_SSD1675::invertDisplay(bool black, bool red)
@@ -597,21 +681,36 @@ void Adafruit_SSD1675::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
   }
 
   // set up the pointer for  movement through the buffer
+  uint16_t addr = (x * SSD1675_LCDHEIGHT / 8) + __y/8;
+  
+#ifdef USE_EXTERNAL_SRAM
+  addr = addr * 2; //2 bytes each in sram
+  uint16_t * pBuf;
+  uint16_t c = sram.read16(addr);
+  pBuf = &c;
+#else
   register uint16_t *pBuf = buffer;
   // adjust the buffer pointer for the current row
-  pBuf += (x * SSD1675_LCDHEIGHT / 8);
-  // and offset y columns in
-  pBuf += __y/8;
+  pBuf += addr;
+#endif
   
   uint8_t blocks = __h/8;
   while(blocks){
-	  switch (color)
-	  {
-		case BLACK:         *pBuf++ = 0xFF; break;
-		case WHITE:			*pBuf++ = 0x00; break;
-		case INVERSE:       *pBuf++ ^= 0xFF; break;
-		case  RED:			*pBuf++ = 0xFF00; break;
-	  }
+	  	switch (color)
+	  	{
+		  	case BLACK:         *pBuf = 0xFF; break;
+		  	case WHITE:			*pBuf = 0x00; break;
+		  	case INVERSE:       *pBuf ^= 0xFF; break;
+		  	case  RED:			*pBuf = 0xFF00; break;
+	  	}
+#ifdef USE_EXTERNAL_SRAM
+	  //write the new value
+	  sram.write16(addr, *pBuf);
+	  
+	  //increment the addres
+	  addr =+ 2;
+	  *pBuf = sram.read16(addr);
+#endif
 	  blocks--;
   }
   
@@ -680,12 +779,28 @@ void Adafruit_SSD1675::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
   // if our width is now negative, punt
   if(w <= 0) { return; }
 	  
-  // set up the pointer for  movement through the buffer
-  register uint16_t *pBuf = buffer;
-  // adjust the buffer pointer for the current row
-  pBuf += (x * SSD1675_LCDHEIGHT / 8);
-  // and offset y columns in
-  pBuf += y/8;
+  uint16_t addr = (x * SSD1675_LCDHEIGHT / 8) + y/8;
+
+#ifdef USE_EXTERNAL_SRAM
+	addr = addr * 2; //2 bytes in sram
+	uint16_t * pBuf;
+	uint16_t c = sram.read16(addr * 2);
+	pBuf = &c;
+#else
+    register uint16_t *pBuf = buffer;
+	pBuf = buffer + addr;
+#endif
+	// x is which column
+	switch (color)
+	{
+		case BLACK:   *pBuf |= (1 << (7 - y&7)); break;
+		case WHITE:   *pBuf &= ~(1 << (7 - y&7)); break;
+		case INVERSE: *pBuf ^= (1 << (7 - y&7)); break;
+		case RED:   *pBuf |= (1 << (15 - (y%8))); break;
+	}
+#ifdef USE_EXTERNAL_SRAM
+	sram.write16(addr, *pBuf);
+#endif
   
   uint8_t i = (y%8);
   for(int j=0; j< w; j++){
@@ -696,6 +811,16 @@ void Adafruit_SSD1675::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
 		case INVERSE: *pBuf  ^= (1 << (7 - i)); break;
 		case RED:   *pBuf  |= (1 << (15 - i)); break;
 	}
+#ifdef USE_EXTERNAL_SRAM
+	//write the new value
+	sram.write16(addr, *pBuf);
+
+	//increment the addres
+	addr += (SSD1675_LCDHEIGHT / 8) * 2;
+	
+	*pBuf = sram.read16(addr);
+#else
 	*pBuf += SSD1675_LCDHEIGHT / 8;
+#endif
   }
 }

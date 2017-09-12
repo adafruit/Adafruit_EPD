@@ -45,6 +45,8 @@ All text above, and the splash screen must be included in any redistribution
   typedef uint32_t PortMask;
 #endif
 
+#include "Adafruit_23k640.h"
+
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 
@@ -52,6 +54,8 @@ All text above, and the splash screen must be included in any redistribution
 #define WHITE 1
 #define INVERSE 2
 #define RED 3
+
+#define USE_EXTERNAL_SRAM
 
 /*=========================================================================
 
@@ -93,8 +97,14 @@ All text above, and the splash screen must be included in any redistribution
 
 class Adafruit_SSD1675 : public Adafruit_GFX {
  public:
+
+#ifdef USE_EXTERNAL_SRAM
+  Adafruit_SSD1675(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
+  Adafruit_SSD1675(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
+#else
   Adafruit_SSD1675(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
   Adafruit_SSD1675(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+#endif
 
   void begin(bool reset=true);
   void SSD1675_command(uint8_t c, const uint8_t *buf, uint16_t len);
@@ -116,6 +126,12 @@ class Adafruit_SSD1675 : public Adafruit_GFX {
 
  private:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs, busy;
+  bool blackInverted, redInverted;
+  
+#ifdef USE_EXTERNAL_SRAM
+  Adafruit_23k640 sram;
+#endif
+  
   void fastSPIwrite(uint8_t c);
 
   boolean hwSPI;
@@ -123,11 +139,13 @@ class Adafruit_SSD1675 : public Adafruit_GFX {
   PortReg *mosiport, *clkport, *csport, *dcport;
   PortMask mosipinmask, clkpinmask, cspinmask, dcpinmask;
 #endif
+  inline void csLow();
+  inline void csHigh();
+  inline void dcHigh();
+  inline void dcLow();
 
   inline void drawFastVLineInternal(int16_t x, int16_t y, int16_t h, uint16_t color) __attribute__((always_inline));
   inline void drawFastHLineInternal(int16_t x, int16_t y, int16_t w, uint16_t color) __attribute__((always_inline));
-  
-  bool blackInverted, redInverted;
 };
 
 #endif /* _Adafruit_SSD1675_H_ */
