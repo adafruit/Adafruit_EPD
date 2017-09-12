@@ -50,10 +50,10 @@ All text above, and the splash screen must be included in any redistribution
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 
-#define BLACK 0
-#define WHITE 1
-#define INVERSE 2
-#define RED 3
+#define SSD1675_BLACK 0
+#define SSD1675_WHITE 1
+#define SSD1675_INVERSE 2
+#define SSD1675_RED 3
 
 #define USE_EXTERNAL_SRAM
 

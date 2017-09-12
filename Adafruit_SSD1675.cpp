@@ -4,7 +4,7 @@ This is a library for our eInk displays based on SSD1675 drivers
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/TODO
 
-These displays use SPI to communicate, 6 pins are required to
+These displays use SPI to communicate, 6 pins are requiSSD1675_RED to
 interface
 
 Adafruit invests time and resources providing this open source code,
@@ -13,7 +13,7 @@ products from Adafruit!
 
 Written by Dean Miller  for Adafruit Industries.
 BSD license, check license.txt for more information
-All text above, and the splash screen below must be included in any redistribution
+All text above, and the splash screen below must be included in any SSD1675_REDistribution
 *********************************************************************/
 
 #ifdef __AVR__
@@ -266,10 +266,10 @@ void Adafruit_SSD1675::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // x is which column
     switch (color)
     {
-      case BLACK:   *pBuf |= (1 << (7 - y&7)); break;
-      case WHITE:   *pBuf &= ~(1 << (7 - y&7)); break;
-      case INVERSE: *pBuf ^= (1 << (7 - y&7)); break;
-	  case RED:   *pBuf |= (1 << (15 - (y%8))); break;
+      case SSD1675_BLACK:   *pBuf |= (1 << (7 - y%8)); break;
+      case SSD1675_WHITE:   *pBuf &= ~(1 << (7 - y%8)); break;
+      case SSD1675_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
+	  case SSD1675_RED:   *pBuf |= (1 << (15 - (y%8))); break;
     }
 #ifdef USE_EXTERNAL_SRAM
 	sram.write16(addr, *pBuf);
@@ -492,7 +492,7 @@ uint8_t cmdbuf[2];
 		
 		uint16_t toWrite = min(SSD1675_BUFSIZE*2 - i, RAMBUFSIZE);
 		for(uint16_t j=0; j<toWrite; j+=2){
-			fastSPIwrite(databuf[j]);
+			fastSPIwrite(databuf[j + 1]);
 		}
 
 		csHigh();
@@ -501,7 +501,7 @@ uint8_t cmdbuf[2];
 		dcHigh();
 	
 		for(uint16_t j=0; j<toWrite; j+=2){
-			fastSPIwrite(databuf[j + 1]);
+			fastSPIwrite(databuf[j]);
 		}
 
 		csHigh();
@@ -613,11 +613,11 @@ void Adafruit_SSD1675::dcLow()
 void Adafruit_SSD1675::invertDisplay(bool black, bool red)
 {
 	uint8_t c = (blackInverted << 3) | (redInverted << 7);
-	if(black){
+	if(SSD1675_BLACK){
 		blackInverted = blackInverted;
 		c ^= (blackInverted << 3);
 	}
-	if(red){
+	if(SSD1675_RED){
 		redInverted = !redInverted;
 		c ^= (redInverted << 7);
 	}
@@ -698,10 +698,10 @@ void Adafruit_SSD1675::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
   while(blocks){
 	  	switch (color)
 	  	{
-		  	case BLACK:         *pBuf = 0xFF; break;
-		  	case WHITE:			*pBuf = 0x00; break;
-		  	case INVERSE:       *pBuf ^= 0xFF; break;
-		  	case  RED:			*pBuf = 0xFF00; break;
+		  	case SSD1675_BLACK:         *pBuf = 0xFF; break;
+		  	case SSD1675_WHITE:			*pBuf = 0x00; break;
+		  	case SSD1675_INVERSE:       *pBuf ^= 0xFF; break;
+		  	case  SSD1675_RED:			*pBuf = 0xFF00; break;
 	  	}
 #ifdef USE_EXTERNAL_SRAM
 	  //write the new value
@@ -718,10 +718,10 @@ void Adafruit_SSD1675::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
   for(uint16_t i=0; i< __h%8; i++){
 	  switch (color)
 		{
-		  case BLACK:   *pBuf |= (1 << (7 - i&7)); break;
-		  case WHITE:   *pBuf  &= ~(1 << (7 - i&7)); break;
-		  case INVERSE: *pBuf  ^= (1 << (7 - i&7)); break;
-		  case RED:   *pBuf  |= (1 << (15 - (i%8))); break;
+		  case SSD1675_BLACK:   *pBuf |= (1 << (7 - i&7)); break;
+		  case SSD1675_WHITE:   *pBuf  &= ~(1 << (7 - i&7)); break;
+		  case SSD1675_INVERSE: *pBuf  ^= (1 << (7 - i&7)); break;
+		  case SSD1675_RED:   *pBuf  |= (1 << (15 - (i%8))); break;
 		}
   }
 }
@@ -793,10 +793,10 @@ void Adafruit_SSD1675::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
 	// x is which column
 	switch (color)
 	{
-		case BLACK:   *pBuf |= (1 << (7 - y&7)); break;
-		case WHITE:   *pBuf &= ~(1 << (7 - y&7)); break;
-		case INVERSE: *pBuf ^= (1 << (7 - y&7)); break;
-		case RED:   *pBuf |= (1 << (15 - (y%8))); break;
+		case SSD1675_BLACK:   *pBuf |= (1 << (7 - y&7)); break;
+		case SSD1675_WHITE:   *pBuf &= ~(1 << (7 - y&7)); break;
+		case SSD1675_INVERSE: *pBuf ^= (1 << (7 - y&7)); break;
+		case SSD1675_RED:   *pBuf |= (1 << (15 - (y%8))); break;
 	}
 #ifdef USE_EXTERNAL_SRAM
 	sram.write16(addr, *pBuf);
@@ -806,10 +806,10 @@ void Adafruit_SSD1675::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
   for(uint16_t j=0; j< w; j++){
 	switch (color)
 	{
-		case BLACK:   *pBuf |= (1 << (7 - i)); break;
-		case WHITE:   *pBuf  &= ~(1 << (7 - i)); break;
-		case INVERSE: *pBuf  ^= (1 << (7 - i)); break;
-		case RED:   *pBuf  |= (1 << (15 - i)); break;
+		case SSD1675_BLACK:   *pBuf |= (1 << (7 - i)); break;
+		case SSD1675_WHITE:   *pBuf  &= ~(1 << (7 - i)); break;
+		case SSD1675_INVERSE: *pBuf  ^= (1 << (7 - i)); break;
+		case SSD1675_RED:   *pBuf  |= (1 << (15 - i)); break;
 	}
 #ifdef USE_EXTERNAL_SRAM
 	//write the new value

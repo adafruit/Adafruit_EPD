@@ -22,7 +22,6 @@ Adafruit_23k640::Adafruit_23k640(int8_t cs)
 void Adafruit_23k640::begin()
 {
 	 pinMode(_cs, OUTPUT);
-	 Serial.println(_cs);
 #ifdef HAVE_PORTREG
     csport      = portOutputRegister(digitalPinToPort(_cs));
     cspinmask   = digitalPinToBitMask(_cs);
