@@ -4,9 +4,25 @@
 
 #include <SPI.h>
 
+Adafruit_23k640::Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs)
+{
+	_mosi = mosi;
+	_miso = miso;
+	_sck = sck;
+	_cs = cs;
+	hwSPI = false;
+}
+
+Adafruit_23k640::Adafruit_23k640(int8_t cs)
+{
+	_cs = cs;
+	hwSPI = true;
+}
+
 void Adafruit_23k640::begin()
 {
 	 pinMode(_cs, OUTPUT);
+	 Serial.println(_cs);
 #ifdef HAVE_PORTREG
     csport      = portOutputRegister(digitalPinToPort(_cs));
     cspinmask   = digitalPinToBitMask(_cs);
@@ -41,7 +57,10 @@ void Adafruit_23k640::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t r
 csLow();
 
 //write command and address
-uint8_t cmdbuf[] = {reg, (uint8_t)(addr >> 8), (uint8_t)addr };
+uint8_t cmdbuf[3];
+cmdbuf[0] = reg;
+cmdbuf[1] = (addr >> 8);
+cmdbuf[2] = addr & 0xFF;
 	
 for(int i=0; i<3; i++){
 
@@ -101,7 +120,10 @@ void Adafruit_23k640::read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t re
 csLow();
 
 //write command and address
-uint8_t cmdbuf[] = {reg, (uint8_t)(addr >> 8), (uint8_t)addr };
+uint8_t cmdbuf[3];
+cmdbuf[0] = reg;
+cmdbuf[1] = (addr >> 8);
+cmdbuf[2] = addr & 0xFF;
 for(int i=0; i<3; i++){
 
   uint8_t d = cmdbuf[i];
@@ -182,7 +204,10 @@ void Adafruit_23k640::erase(uint16_t addr, uint16_t length)
 {
 	csLow();
 	//write command and address
-	uint8_t cmdbuf[] = {K640_WRITE, (uint8_t)(addr >> 8), (uint8_t)addr };
+	uint8_t cmdbuf[3];
+	cmdbuf[0] = K640_WRITE;
+	cmdbuf[1] = (addr >> 8);
+	cmdbuf[2] = addr & 0xFF;
 	
 	for(int i=0; i<3; i++){
 

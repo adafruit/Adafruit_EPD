@@ -9,8 +9,8 @@
 
 class Adafruit_23k640 {
  public:
-	Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs) : _mosi(mosi), _miso(miso), _sck(sck), _cs(cs), hwSPI(false) {}
-	Adafruit_23k640(int8_t cs) : _cs(cs), hwSPI(true) {}
+	Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs);
+	Adafruit_23k640(int8_t cs);
 	~Adafruit_23k640() {}
 		
 	void begin();

@@ -715,7 +715,7 @@ void Adafruit_SSD1675::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
   }
   
   //do the last block w/ the leftover
-  for(int i=0; i< __h%8; i++){
+  for(uint16_t i=0; i< __h%8; i++){
 	  switch (color)
 		{
 		  case BLACK:   *pBuf |= (1 << (7 - i&7)); break;
@@ -803,7 +803,7 @@ void Adafruit_SSD1675::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
 #endif
   
   uint8_t i = (y%8);
-  for(int j=0; j< w; j++){
+  for(uint16_t j=0; j< w; j++){
 	switch (color)
 	{
 		case BLACK:   *pBuf |= (1 << (7 - i)); break;
