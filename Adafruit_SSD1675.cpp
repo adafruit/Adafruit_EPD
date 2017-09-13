@@ -217,10 +217,11 @@ static uint16_t buffer[SSD1675_BUFSIZE] = {
 };
 #else
 
-#define RAMBUFSIZE 256
+#define RAMBUFSIZE 64
 
 #endif
 
+#if defined(SSD1675_104_212)
 const uint8_t init_data[]={
 	0xA5,	0x89,	0x10,	0x00,	0x00,	0x00,	0x00,	0xA5,	0x19,	0x80,	0x00,	0x00,	0x00,	0x00,	0xA5,	0xA9,
 	0x9B,	0x00,	0x00,	0x00,	0x00,	0xA5,	0xA9,	0x9B,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
@@ -228,6 +229,18 @@ const uint8_t init_data[]={
 	0x43,	0x07,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
 	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
 };
+
+#elif defined(SSD1675_128_296)
+
+const uint8_t init_data[]={
+	0x22,	0x11,	0x10,	0x00,	0x10,	0x00,	0x00,	0x11,	0x88,	0x80,	0x80,	0x80,	0x00,	0x00,	0x6A,	0x9B,
+	0x9B,	0x9B,	0x9B,	0x00,	0x00,	0x6A,	0x9B,	0x9B,	0x9B,	0x9B,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
+	0x00,	0x00,	0x00,	0x04,	0x18,	0x04,	0x16,	0x01,	0x0A,	0x0A,	0x0A,	0x0A,	0x02,	0x00,	0x00,	0x00,
+	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,	0x04,	0x04,	0x08,	0x3C,	0x07,	0x00,	0x00,	0x00,	0x00,
+	0x00,	0x00,	0x00,	0x00,	0x00,	0x00,																																									
+};
+
+#endif
 
 #define SSD1675_swap(a, b) { int16_t t = a; a = b; b = t; }
 
@@ -378,21 +391,36 @@ void Adafruit_SSD1675::begin(bool reset) {
 	SSD1675_command(SSD1675_SET_DIGITAL_BLOCK_CONTROL, buf, 1);
 	
 	//set display size and driver output control
+#if defined(SSD1675_104_212)
 	buf[0] = 0xD3;
 	buf[1] = 0x00;
 	buf[2] = 0x00;
+#elif defined(SSD1675_128_296)
+	buf[0] = 0x27;
+	buf[1] = 0x01;
+	buf[2] = 0x00;
+#endif
 	SSD1675_command(SSD1675_DRIVER_OUTPUT_CONTROL, buf, 3);
-	
+
+#if defined(SSD1675_104_212)
 	buf[0] = 0x18;
+#elif defined(SSD1675_128_296)
+	buf[0] = 0x35;
+#endif
 	SSD1675_command(SSD1675_SET_DUMMY_LINE_PERIOD, buf, 1);
 	
+#if defined(SSD1675_104_212)
 	buf[0] = 0x05;
+#elif defined(SSD1675_128_296)
+	buf[0] = 0x04;
+#endif
 	SSD1675_command(SSD1675_SET_GATE_LINE_WIDTH, buf, 1);
 	
 	//ram data entry mode
 	buf[0] = 0x03;
 	SSD1675_command(SSD1675_DATA_ENTRY_MODE_SETTING, buf, 1);
-	
+
+#if defined(SSD1675_104_212)
 	//ram x address
 	buf[0] = 0x00;
 	buf[1] = 0x0c;
@@ -405,6 +433,21 @@ void Adafruit_SSD1675::begin(bool reset) {
 	buf[3] = 0x00;
 	buf[4] = 0x00;
 	SSD1675_command(SSD1675_SET_RAM_Y_START_END, buf, 5);
+
+#elif defined(SSD1675_128_296)
+	//ram x address
+	buf[0] = 0x00;
+	buf[1] = 0x0F;
+	SSD1675_command(SSD1675_SET_RAM_X_START_END, buf, 2);
+	
+	//ram y address
+	buf[0] = 0x00;
+	buf[1] = 0x00;
+	buf[2] = 0x27;
+	buf[3] = 0x01;
+	buf[4] = 0x00;
+	SSD1675_command(SSD1675_SET_RAM_Y_START_END, buf, 5);
+#endif
 	
 	buf[0] = 0x17; //20V
 	SSD1675_command(SSD1675_GATE_VOLTAGE_CONTROL, buf, 1);
@@ -472,16 +515,16 @@ void Adafruit_SSD1675::display()
 {
 
 uint8_t cmdbuf[2];
+
+cmdbuf[0] = 0x00;
+SSD1675_command(SSD1675_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
+
+cmdbuf[0] = 0x00;
+cmdbuf[1] = 0x00;
+SSD1675_command(SSD1675_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
 	
 #ifdef USE_EXTERNAL_SRAM
 	uint8_t databuf[RAMBUFSIZE];
-	
-	cmdbuf[0] = 0x00;
-	SSD1675_command(SSD1675_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
-	
-	cmdbuf[0] = 0x00;
-	cmdbuf[1] = 0x00;
-	SSD1675_command(SSD1675_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
 	
 	for(uint16_t i=0; i<SSD1675_BUFSIZE*2; i+=RAMBUFSIZE){
 		sram.read(i, databuf, RAMBUFSIZE);
@@ -508,13 +551,6 @@ uint8_t cmdbuf[2];
 	}
 	
 #else
-	cmdbuf[0] = 0x00;
-	SSD1675_command(SSD1675_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
-	
-	cmdbuf[0] = 0x00;
-	cmdbuf[1] = 0x00;
-	SSD1675_command(SSD1675_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
-	
 	//write image
 	SSD1675_command(SSD1675_WRITE_RAM_1, false);
 	dcHigh();

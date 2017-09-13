@@ -60,14 +60,20 @@ All text above, and the splash screen must be included in any redistribution
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define SSD1675_104_212
+   #define SSD1675_128_296
 /*=========================================================================*/
 
-#if defined SSD1675_104_212
+#if defined(SSD1675_104_212)
   #define SSD1675_LCDWIDTH                  212
   #define SSD1675_LCDHEIGHT                 104
   #define SSD1675_BUFSIZE					2756
+  
+#elif defined(SSD1675_128_296)
+  #define SSD1675_LCDWIDTH                  296
+  #define SSD1675_LCDHEIGHT                 128
+  #define SSD1675_BUFSIZE         4736
 #endif
+
 
 #define SSD1675_DRIVER_OUTPUT_CONTROL 0x01
 #define SSD1675_GATE_VOLTAGE_CONTROL 0x03
