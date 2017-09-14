@@ -60,6 +60,7 @@ class Adafruit_GDEx : public Adafruit_EINK {
 	void update();
 	void sleep();
 	
+	void clearBuffer();
 	void clearDisplay();
 };
 

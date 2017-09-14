@@ -120,6 +120,8 @@ void Adafruit_GDEx::display()
 	EINK_command(GDEX_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
 			
 	Adafruit_EINK::display();
+	
+	EINK_command(0xFF);
 			
 	update();
 }
@@ -129,20 +131,6 @@ void Adafruit_GDEx::sleep()
 	//enter deep sleep. MUST HW RESET TO EXIT DEEP SLEEP
 	uint8_t c = 0x01;
 	EINK_command(GDEX_DEEP_SLEEP_MODE, &c, 1);
-}
-
-void Adafruit_GDEx::invertDisplay(bool black, bool red)
-{
-	uint8_t c = (blackInverted << 3) | (redInverted << 7);
-	if(EINK_BLACK){
-		blackInverted = blackInverted;
-		c ^= (blackInverted << 3);
-	}
-	if(EINK_RED){
-		redInverted = !redInverted;
-		c ^= (redInverted << 7);
-	}
-	EINK_command(GDEX_DISPLAY_UPDATE_CONTROL_1, &c, 1);
 }
 	
 void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -177,12 +165,14 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	pBuf = buffer + addr;
 #endif
   // x is which column
+  uint8_t bits = (6 - y%4 * 2);
+  *pBuf &= ~(0x3 << bits);
     switch (color)
     {
-      case EINK_WHITE:   *pBuf |= (0x2 << (6 - y%4 * 2)); break;
-      case EINK_BLACK:   *pBuf &= ~(0x2 << (6 - y%4 * 2)); break;
-      case EINK_INVERSE: *pBuf ^= (0x2 << (6 - y%4 * 2)); break;
-	  /*case EINK_RED:   *pBuf |= (0x3 << (15 - (y%4))); break;*/
+      case EINK_BLACK:   break;
+	  case EINK_DARK:	*pBuf |= (0x1 << bits); break;
+	  case EINK_LIGHT:	*pBuf |= (0x2 << bits); break;
+      case EINK_WHITE:   *pBuf |= (0x3 << bits); break;
     }
 #ifdef USE_EXTERNAL_SRAM
 	sram.write16(addr, *pBuf);
@@ -190,10 +180,18 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	
 }
 
-void Adafruit_GDEx::clearDisplay() {
+void Adafruit_GDEx::clearBuffer()
+{
 #ifdef USE_EXTERNAL_SRAM
   sram.erase(0xFF, EINK_BUFSIZE * 2);
 #else
   memset(buffer, 0xFF, EINK_BUFSIZE * 2);
 #endif
+}
+
+void Adafruit_GDEx::clearDisplay() {
+	clearBuffer();
+	display();
+	delay(100);
+	display();
 }

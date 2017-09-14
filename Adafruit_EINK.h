@@ -24,10 +24,13 @@ All text above, and the splash screen must be included in any redistribution
  #include "WProgram.h"
 #endif
 
+
+#define USE_EXTERNAL_SRAM
+
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define GDEX_72_172
+   #define EPDX_104_212
 /*=========================================================================*/
 
 #if defined(__SAM3X8E__)
@@ -54,14 +57,16 @@ All text above, and the splash screen must be included in any redistribution
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 
-#define EINK_BLACK 0
-#define EINK_WHITE 1
-#define EINK_INVERSE 2
-#define EINK_RED 3
+enum{
+	EINK_BLACK,
+	EINK_WHITE,
+	EINK_INVERSE,
+	EINK_RED,
+	EINK_DARK,
+	EINK_LIGHT,	
+};
 
 #define EINK_swap(a, b) { int16_t t = a; a = b; b = t; }
-
-//#define USE_EXTERNAL_SRAM
 
 class Adafruit_EINK : public Adafruit_GFX {
  public:

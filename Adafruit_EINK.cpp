@@ -197,13 +197,13 @@ void Adafruit_EINK::display()
 		dcHigh();
 		
 		uint16_t toWrite = min(EINK_BUFSIZE*2 - i, RAMBUFSIZE);
-		for(uint16_t j=0; j<toWrite; j+=2){
-			fastSPIwrite(databuf[j + 1]);
+		for(uint16_t j=1; j<toWrite; j+=2){
+			fastSPIwrite(databuf[j]);
 		}
 
 		csHigh();
 		
-#ifdef EINK_RAM_RED //write red if this is a tricolor display
+	#ifdef EINK_RAM_RED //write red if this is a tricolor display
 		EINK_command(EINK_RAM_RED, false);
 		dcHigh();
 		
@@ -212,8 +212,8 @@ void Adafruit_EINK::display()
 		}
 
 		csHigh();
+	#endif
 	}
-#endif //RAM_RED
 	
 #else
 	//write image
@@ -225,7 +225,7 @@ void Adafruit_EINK::display()
 	}
 	csHigh();
 	
-#ifdef EINK_RAM_RED //write red if this is a tricolor display
+	#ifdef EINK_RAM_RED //write red if this is a tricolor display
 	EINK_command(EINK_RAM_RED, false);
 	dcHigh();
 	
@@ -233,7 +233,7 @@ void Adafruit_EINK::display()
 		fastSPIwrite( (buffer[i] >> 8) & 0xFF);
 	}
 	csHigh();
-#endif //RAM_RED
+	#endif //RAM_RED
 
 #endif
 }

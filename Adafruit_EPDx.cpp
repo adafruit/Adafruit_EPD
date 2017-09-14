@@ -62,36 +62,36 @@ void Adafruit_EPDx::begin(bool reset)
 	  EINK_command(EPDX_SET_DIGITAL_BLOCK_CONTROL, buf, 1);
 	  
 	  //set display size and driver output control
-	  #if defined(EPDX_104_212)
+#if defined(EPDX_104_212)
 	  buf[0] = 0xD3;
 	  buf[1] = 0x00;
 	  buf[2] = 0x00;
-	  #elif defined(EPDX_128_296)
+#elif defined(EPDX_128_296)
 	  buf[0] = 0x27;
 	  buf[1] = 0x01;
 	  buf[2] = 0x00;
-	  #endif
+#endif
 	  EINK_command(EPDX_DRIVER_OUTPUT_CONTROL, buf, 3);
 
-	  #if defined(EPDX_104_212)
+#if defined(EPDX_104_212)
 	  buf[0] = 0x18;
-	  #elif defined(EPDX_128_296)
+#elif defined(EPDX_128_296)
 	  buf[0] = 0x35;
-	  #endif
+#endif
 	  EINK_command(EPDX_SET_DUMMY_LINE_PERIOD, buf, 1);
 	  
-	  #if defined(EPDX_104_212)
+#if defined(EPDX_104_212)
 	  buf[0] = 0x05;
-	  #elif defined(EPDX_128_296)
+#elif defined(EPDX_128_296)
 	  buf[0] = 0x04;
-	  #endif
+#endif
 	  EINK_command(EPDX_SET_GATE_LINE_WIDTH, buf, 1);
 	  
 	  //ram data entry mode
 	  buf[0] = 0x03;
 	  EINK_command(EPDX_DATA_ENTRY_MODE_SETTING, buf, 1);
 
-	  #if defined(EPDX_104_212)
+#if defined(EPDX_104_212)
 	  //ram x address
 	  buf[0] = 0x00;
 	  buf[1] = 0x0c;
@@ -105,7 +105,7 @@ void Adafruit_EPDx::begin(bool reset)
 	  buf[4] = 0x00;
 	  EINK_command(EPDX_SET_RAM_Y_START_END, buf, 5);
 
-	  #elif defined(EPDX_128_296)
+#elif defined(EPDX_128_296)
 	  //ram x address
 	  buf[0] = 0x00;
 	  buf[1] = 0x0F;
@@ -118,7 +118,7 @@ void Adafruit_EPDx::begin(bool reset)
 	  buf[3] = 0x01;
 	  buf[4] = 0x00;
 	  EINK_command(EPDX_SET_RAM_Y_START_END, buf, 5);
-	  #endif
+#endif
 	  
 	  buf[0] = 0x17; //20V
 	  EINK_command(EPDX_GATE_VOLTAGE_CONTROL, buf, 1);
@@ -235,10 +235,15 @@ void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	
 }
 
-void Adafruit_EPDx::clearDisplay() {
+void Adafruit_EPDx::clearBuffer() {
 #ifdef USE_EXTERNAL_SRAM
   sram.erase(0x00, EINK_BUFSIZE * 2);
 #else
   memset(buffer, 0x00, EINK_BUFSIZE * 2);
 #endif
+}
+
+void Adafruit_EPDx::clearDisplay() {
+	clearBuffer();
+	display();
 }

@@ -65,6 +65,7 @@ public:
 	void update();
 	void sleep();
 	
+	void clearBuffer();
 	void clearDisplay();
 };
 
