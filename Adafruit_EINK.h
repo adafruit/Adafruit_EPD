@@ -86,9 +86,8 @@ class Adafruit_EINK : public Adafruit_GFX {
   void invertDisplay(bool black = true, bool red = true);
   void update();
   void sleep();
-
-  virtual void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-  virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  
+  virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 
  protected:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs, busy;
@@ -113,9 +112,6 @@ class Adafruit_EINK : public Adafruit_GFX {
   inline void csHigh();
   inline void dcHigh();
   inline void dcLow();
-
-  inline void drawFastVLineInternal(int16_t x, int16_t y, int16_t h, uint16_t color) __attribute__((always_inline));
-  inline void drawFastHLineInternal(int16_t x, int16_t y, int16_t w, uint16_t color) __attribute__((always_inline));
 };
 
 #include "Adafruit_EPDx.h"

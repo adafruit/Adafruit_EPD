@@ -212,7 +212,7 @@ void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   }
 
-	uint16_t addr = (x * EINK_LCDHEIGHT / 8) + y/8;
+	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT / 8) + y/8;
 
 #ifdef USE_EXTERNAL_SRAM
 	addr = addr * 2; //2 bytes in sram
