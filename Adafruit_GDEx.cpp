@@ -27,7 +27,7 @@ const uint8_t init_data[]={};
 Adafruit_GDEx::Adafruit_GDEx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
 
-extern uint16_t buffer[EINK_BUFSIZE];
+extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
 
 Adafruit_GDEx::Adafruit_GDEx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY) {
 #endif
@@ -154,15 +154,18 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
     y = HEIGHT - y - 1;
     break;
   }
+  
+  //make our buffer happy
+  x = (x == 0 ? 1 : x);
 
-	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT / 4) + y/4;
+	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y)/4;
 
 #ifdef USE_EXTERNAL_SRAM
 	addr = addr * 2; //2 bytes in sram
 	uint16_t c = sram.read16(addr);
 	pBuf = &c;
 #else
-	pBuf = buffer + addr;
+	pBuf = EINK_BUFFER + addr;
 #endif
   // x is which column
   uint8_t bits = (6 - y%4 * 2);
@@ -185,7 +188,7 @@ void Adafruit_GDEx::clearBuffer()
 #ifdef USE_EXTERNAL_SRAM
   sram.erase(0xFF, EINK_BUFSIZE * 2);
 #else
-  memset(buffer, 0xFF, EINK_BUFSIZE * 2);
+  memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE * 2);
 #endif
 }
 

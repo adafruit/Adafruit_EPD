@@ -36,7 +36,7 @@ All text above, and the splash screen below must be included in any EINK_REDistr
 
 #ifndef USE_EXTERNAL_SRAM
 // the memory buffer for the LCD
-uint16_t buffer[EINK_BUFSIZE];
+uint16_t EINK_BUFFER[EINK_BUFSIZE];
 #else
 
 #define RAMBUFSIZE 64
@@ -221,18 +221,24 @@ void Adafruit_EINK::display()
 	dcHigh();
 
 	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
-		fastSPIwrite(buffer[i] & 0xFF);
+		fastSPIwrite(EINK_BUFFER[i] & 0xFF);
 	}
 	csHigh();
 	
 	#ifdef EINK_RAM_RED //write red if this is a tricolor display
-	EINK_command(EINK_RAM_RED, false);
-	dcHigh();
-	
-	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
-		fastSPIwrite( (buffer[i] >> 8) & 0xFF);
-	}
-	csHigh();
+		EINK_command(EINK_RAM_RED, false);
+		dcHigh();
+		
+		//if there is a grayscale ram and a red ram they might be different sizes
+	#ifdef EINK_REDBUFFSIZE
+		uint16_t bufsize = EINK_BUFSIZE;
+	#else
+		uint16_t bufsize = EINK_REDBUFSIZE;
+	#endif
+		for(uint16_t i=0; i<bufsize; i++){
+			fastSPIwrite( (EINK_BUFFER[i] >> 8) & 0xFF);
+		}
+		csHigh();
 	#endif //RAM_RED
 
 #endif

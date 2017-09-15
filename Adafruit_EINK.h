@@ -25,12 +25,12 @@ All text above, and the splash screen must be included in any redistribution
 #endif
 
 
-#define USE_EXTERNAL_SRAM
+//#define USE_EXTERNAL_SRAM
 
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define EPDX_104_212
+   #define IL0376F_200_200
 /*=========================================================================*/
 
 #if defined(__SAM3X8E__)
@@ -116,7 +116,8 @@ class Adafruit_EINK : public Adafruit_GFX {
 
 #include "Adafruit_EPDx.h"
 #include "Adafruit_GDEx.h"
+#include "Adafruit_IL0376F.h"
 
-extern uint16_t buffer[EINK_BUFSIZE];
+extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
 
 #endif /* _Adafruit_EINK_H_ */
