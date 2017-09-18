@@ -30,7 +30,7 @@ All text above, and the splash screen must be included in any redistribution
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define IL0376F_200_200
+   #define IL91874_104_212
 /*=========================================================================*/
 
 #if defined(__SAM3X8E__)
@@ -117,6 +117,7 @@ class Adafruit_EINK : public Adafruit_GFX {
 #include "Adafruit_EPDx.h"
 #include "Adafruit_GDEx.h"
 #include "Adafruit_IL0376F.h"
+#include "Adafruit_IL91874.h"
 
 extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
 

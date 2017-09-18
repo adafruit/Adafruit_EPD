@@ -8,10 +8,11 @@
 #define EINK_LCDWIDTH                  200
 #define EINK_LCDHEIGHT                 200
 #define EINK_BUFSIZE				   10000
-#define EINK_RAM_BW					   0x10
-#define EINK_RAM_RED				   0x13
 #define EINK_REDBUFSIZE				   5000
 #endif
+
+#define EINK_RAM_BW					   0x10
+#define EINK_RAM_RED				   0x13
 
 #define IL0376F_PANEL_SETTING 0x00
 #define IL0376F_POWER_SETTING 0x01

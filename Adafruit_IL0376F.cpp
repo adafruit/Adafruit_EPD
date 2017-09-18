@@ -48,13 +48,13 @@ void Adafruit_IL0376F::begin(bool reset)
 {
 	uint8_t buf[5];
 	Adafruit_EINK::begin(reset);
-			
+		
 	buf[0] = 0x07;
 	buf[1] = 0x00;
 	buf[2] = 0x0D;
 	buf[3] = 0x00;
 	EINK_command(IL0376F_POWER_SETTING, buf, 4);
-			
+		
 	buf[0] = 0x07;
 	buf[1] = 0x07;
 	buf[2] = 0x07;
@@ -72,7 +72,7 @@ void Adafruit_IL0376F::begin(bool reset)
 	
 	buf[0] = 0x39;
 	EINK_command(IL0376F_PLL, buf, 1);
-	
+
 	buf[0] = 0xC8;
 	buf[1] = 0x00;
 	buf[2] = 0xC8;
@@ -149,7 +149,7 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	//make our buffer happy
 	x = (x == 0 ? 1 : x);
 	uint16_t addr;
-	
+
 	if(color == EINK_RED){
 		addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y)/8;
 	}
@@ -179,6 +179,7 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 			case EINK_WHITE:   *pBuf |= (0x3 << bits); break;
 		}
 	}
+	
 	#ifdef USE_EXTERNAL_SRAM
 	sram.write16(addr, *pBuf);
 	#endif
