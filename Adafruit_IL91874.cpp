@@ -36,28 +36,6 @@ void Adafruit_IL91874::begin(bool reset)
 	buf[1] = 0x07;
 	buf[2] = 0x07;
 	EINK_command(IL91874_BOOSTER_SOFT_START, buf, 3);
-	
-	EINK_command(IL91874_POWER_ON);
-	while(digitalRead(busy)); //wait for busy low
-	delay(200);
-	
-	buf[0] = 0xCF;
-	EINK_command(IL91874_PANEL_SETTING, buf, 1);
-	
-	buf[0] = 0x37;
-	EINK_command(IL91874_CDI, buf, 1);
-	
-	buf[0] = 0x29;
-	EINK_command(IL91874_PLL, buf, 1);
-			
-	buf[0] = 0x68;
-	buf[1] = 0x00;
-	buf[2] = 0xD4;
-	EINK_command(IL91874_RESOLUTION, buf, 3);
-			
-	buf[0] = 0x0A;
-	EINK_command(IL91874_VCM_DC_SETTING, buf, 1);
-	delay(20);
 }
 
 void Adafruit_IL91874::update()
@@ -84,11 +62,106 @@ void Adafruit_IL91874::update()
 	EINK_command(IL91874_POWER_SETTING);
 	
 	EINK_command(IL91874_POWER_OFF);
+	
+	delay(10000);
+}
+
+void Adafruit_IL91874::powerUp()
+{
+	uint8_t buf[3];
+	 
+	EINK_command(IL91874_POWER_ON);
+	while(digitalRead(busy)); //wait for busy low
+	delay(200);
+	
+	buf[0] = 0xCF;
+	EINK_command(IL91874_PANEL_SETTING, buf, 1);
+	
+	buf[0] = 0x37;
+	EINK_command(IL91874_CDI, buf, 1);
+	
+	buf[0] = 0x29;
+	EINK_command(IL91874_PLL, buf, 1);
+			
+	buf[0] = 0x68;
+	buf[1] = 0x00;
+	buf[2] = 0xD4;
+	EINK_command(IL91874_RESOLUTION, buf, 3);
+			
+	buf[0] = 0x0A;
+	EINK_command(IL91874_VCM_DC_SETTING, buf, 1);
+	delay(20);
 }
 
 void Adafruit_IL91874::display()
 {
-	Adafruit_EINK::display();
+	powerUp();
+	
+#ifdef USE_EXTERNAL_SRAM
+	uint8_t c;
+	
+	sram.csLow();
+	//send read command
+	fastSPIwrite(K640_READ);
+	
+	//send address
+	fastSPIwrite(0x00);
+	fastSPIwrite(0x00);
+	
+	//first data byte from SRAM will be transfered in at the same time as the eink command is transferred out
+	c = EINK_command(EINK_RAM_BW, false);
+	
+	dcHigh();
+	
+	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
+		c = fastSPIwrite(c);
+	}
+	csHigh();
+	sram.csHigh();
+	
+	delay(2);
+	
+	sram.csLow();
+	//send write command
+	fastSPIwrite(K640_READ);
+	
+	uint8_t b[2];
+	b[0] = (EINK_BUFSIZE >> 8);
+	b[1] = (EINK_BUFSIZE);
+	//send address
+	fastSPIwrite(b[0]);
+	fastSPIwrite(b[1]);
+	
+	//first data byte from SRAM will be transfered in at the same time as the eink command is transferred out
+	c = EINK_command(EINK_RAM_RED, false);
+	
+	dcHigh();
+	
+	for(uint16_t i=0; i<EINK_REDBUFSIZE; i++){
+		c = fastSPIwrite(c);
+	}
+	csHigh();
+	sram.csHigh();
+	
+#else
+	//write image
+	EINK_command(EINK_RAM_BW, false);
+	dcHigh();
+
+	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
+		fastSPIwrite(EINK_BUFFER[i]);
+	}
+	csHigh();
+	
+	EINK_command(EINK_RAM_RED, false);
+	dcHigh();
+		
+	for(uint16_t i=0; i<EINK_REDBUFSIZE; i++){
+		fastSPIwrite(EINK_REDBUFFER[i]);
+	}
+	csHigh();
+
+#endif
 	update();
 }
 		
@@ -120,11 +193,11 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 #ifdef USE_EXTERNAL_SRAM
 	if(color == EINK_RED){
-			//red is written after bw
-			addr = addr + EINK_BUFSIZE;
-		}
-		uint8_t c = sram.read8(addr);
-		pBuf = &c;
+		//red is written after bw
+		addr = addr + EINK_BUFSIZE;
+	}
+	uint8_t c = sram.read8(addr);
+	pBuf = &c;
 #else
 	if(color == EINK_RED){
 		pBuf = EINK_REDBUFFER + addr;

@@ -50,6 +50,7 @@ class Adafruit_IL91874 : public Adafruit_EINK {
 	#endif
 
 	void begin(bool reset=true);
+	void powerUp();
 	
 	void drawPixel(int16_t x, int16_t y, uint16_t color);
 	

@@ -26,8 +26,8 @@ class Adafruit_23k640 {
 	void write8(uint16_t addr, uint8_t val, uint8_t reg = K640_WRITE);
 	void write16(uint16_t addr, uint16_t val);
 	
-	inline void csHigh();
-	inline void csLow();
+	void csHigh();
+	void csLow();
 	
  private:
 	  boolean hwSPI;

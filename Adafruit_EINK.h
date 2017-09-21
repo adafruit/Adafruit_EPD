@@ -25,12 +25,12 @@ All text above, and the splash screen must be included in any redistribution
 #endif
 
 
-//#define USE_EXTERNAL_SRAM
+#define USE_EXTERNAL_SRAM
 
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define IL0376F_200_200
+   #define IL91874_104_212
 /*=========================================================================*/
 
 #if defined(__SAM3X8E__)
