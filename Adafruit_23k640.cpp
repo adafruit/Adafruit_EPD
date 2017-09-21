@@ -49,6 +49,30 @@ void Adafruit_23k640::begin()
       SPI.setClockDivider (4);
 #endif
 	}
+	
+csLow();
+
+for(int i=0; i<3; i++){
+	  if(hwSPI) {
+		(void)SPI.transfer(0xFF);
+	  } else {
+		for(uint8_t bit = 0x80; bit; bit >>= 1) {
+	#ifdef HAVE_PORTREG
+		  *clkport &= ~clkpinmask;
+		  if(0xFF & bit) *mosiport |=  mosipinmask;
+		  else        *mosiport &= ~mosipinmask;
+		  *clkport |=  clkpinmask;
+	#else
+		  digitalWrite(_sck, LOW);
+		  if(0xFF & bit) digitalWrite(_mosi, HIGH);
+		  else        digitalWrite(_mosi, LOW);
+		  digitalWrite(_sck, HIGH);
+	#endif
+		}
+	  }
+  }
+csHigh();
+
 }
 
 void Adafruit_23k640::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
@@ -168,7 +192,6 @@ for(int i=0; i<num; i++){
   }
   
 }
-
 csHigh();
 }
 	
@@ -199,7 +222,7 @@ void Adafruit_23k640::write16(uint16_t addr, uint16_t val)
 	this->write(addr, b, 2);
 }
 
-void Adafruit_23k640::erase(uint16_t addr, uint16_t length)
+void Adafruit_23k640::erase(uint16_t addr, uint16_t length, uint8_t val)
 {
 	csLow();
 	//write command and address
@@ -234,7 +257,7 @@ void Adafruit_23k640::erase(uint16_t addr, uint16_t length)
 	//write buffer of data
 	for(uint16_t i=0; i<length; i++){
 
-		uint8_t d = 0x00;
+		uint8_t d = val;
 		
 		if(hwSPI) {
 			(void)SPI.transfer(d);

@@ -36,7 +36,10 @@ All text above, and the splash screen below must be included in any EINK_REDistr
 
 #ifndef USE_EXTERNAL_SRAM
 // the memory buffer for the LCD
-uint16_t EINK_BUFFER[EINK_BUFSIZE] = {};
+uint8_t EINK_BUFFER[EINK_BUFSIZE] = {};
+	#ifdef EINK_REDBUFSIZE
+uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE] = {};
+	#endif
 
 #else
 
@@ -140,17 +143,19 @@ void Adafruit_EINK::EINK_command(uint8_t c, const uint8_t *buf, uint16_t len)
 	EINK_data(buf, len);
 }
 
-void Adafruit_EINK::EINK_command(uint8_t c, bool end) {
+uint8_t Adafruit_EINK::EINK_command(uint8_t c, bool end) {
     // SPI
 	csHigh();
 	dcLow();
 	csLow();
 	
-    fastSPIwrite(c);
+	uint8_t data = fastSPIwrite(c);
 
 	if(end){
 		csHigh();
 	}
+	
+	return data;
 }
 
 void Adafruit_EINK::EINK_data(const uint8_t *buf, uint16_t len)
@@ -164,11 +169,12 @@ void Adafruit_EINK::EINK_data(const uint8_t *buf, uint16_t len)
 	csHigh();
 }
 
-inline void Adafruit_EINK::fastSPIwrite(uint8_t d) {
+inline uint8_t Adafruit_EINK::fastSPIwrite(uint8_t d) {
 
   if(hwSPI) {
-    (void)SPI.transfer(d);
+    return SPI.transfer(d);
   } else {
+	  //TODO: return read data for software SPI
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
       *clkport &= ~clkpinmask;
@@ -187,62 +193,7 @@ inline void Adafruit_EINK::fastSPIwrite(uint8_t d) {
 
 void Adafruit_EINK::display()
 {
-#ifdef USE_EXTERNAL_SRAM
-	uint8_t databuf[RAMBUFSIZE];
-	
-	for(uint16_t i=0; i<EINK_BUFSIZE*2; i+=RAMBUFSIZE){
-		sram.read(i, databuf, RAMBUFSIZE);
-		
-		//write image
-		EINK_command(EINK_RAM_BW, false);
-		dcHigh();
-		
-		uint16_t toWrite = min(EINK_BUFSIZE*2 - i, RAMBUFSIZE);
-		for(uint16_t j=1; j<toWrite; j+=2){
-			fastSPIwrite(databuf[j]);
-		}
 
-		csHigh();
-		
-	#ifdef EINK_RAM_RED //write red if this is a tricolor display
-		EINK_command(EINK_RAM_RED, false);
-		dcHigh();
-		
-		for(uint16_t j=0; j<toWrite; j+=2){
-			fastSPIwrite(databuf[j]);
-		}
-
-		csHigh();
-	#endif
-	}
-	
-#else
-	//write image
-	EINK_command(EINK_RAM_BW, false);
-	dcHigh();
-
-	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
-		fastSPIwrite(EINK_BUFFER[i] & 0xFF);
-	}
-	csHigh();
-	
-	#ifdef EINK_RAM_RED //write red if this is a tricolor display
-		EINK_command(EINK_RAM_RED, false);
-		dcHigh();
-		
-		//if there is a grayscale ram and a red ram they might be different sizes
-	#ifndef EINK_REDBUFFSIZE
-		uint16_t bufsize = EINK_BUFSIZE;
-	#else
-		uint16_t bufsize = EINK_REDBUFSIZE;
-	#endif
-		for(uint16_t i=0; i<bufsize; i++){
-			fastSPIwrite( (EINK_BUFFER[i] >> 8) & 0xFF);
-		}
-		csHigh();
-	#endif //RAM_RED
-
-#endif
 }
 
 void Adafruit_EINK::csHigh()

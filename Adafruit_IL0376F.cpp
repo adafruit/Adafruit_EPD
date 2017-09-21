@@ -30,7 +30,8 @@ const uint8_t lut_red1[] ={};
 Adafruit_IL0376F::Adafruit_IL0376F(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
 
-extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE];
 
 Adafruit_IL0376F::Adafruit_IL0376F(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY) {
 #endif
@@ -59,7 +60,37 @@ void Adafruit_IL0376F::begin(bool reset)
 	buf[1] = 0x07;
 	buf[2] = 0x07;
 	EINK_command(IL0376F_BOOSTER_SOFT_START, buf, 3);
+}
+
+void Adafruit_IL0376F::update()
+{
+	EINK_command(IL0376F_DISPLAY_REFRESH);
+			
+	while(digitalRead(busy)); //wait for busy low
 	
+	delay(10000);
+	
+	//power off
+	uint8_t buf[4];
+	
+	buf[0] = 0x17;
+	EINK_command(IL0376F_CDI, buf, 1);
+	
+	buf[0] = 0x00;
+	EINK_command(IL0376F_VCM_DC_SETTING, buf, 0);
+	
+	buf[0] = 0x02;
+	buf[1] = 0x00;
+	buf[2] = 0x00;
+	buf[3] = 0x00;
+	EINK_command(IL0376F_POWER_SETTING);
+	
+	EINK_command(IL0376F_POWER_OFF);
+}
+
+void Adafruit_IL0376F::powerUp()
+{
+	uint8_t buf[5];
 	EINK_command(IL0376F_POWER_ON);
 	while(digitalRead(busy)); //wait for busy low
 	delay(200);
@@ -92,35 +123,75 @@ void Adafruit_IL0376F::begin(bool reset)
 	EINK_command(IL0376F_RED1_LUT, lut_red1, 15);
 }
 
-void Adafruit_IL0376F::update()
-{
-	EINK_command(IL0376F_DISPLAY_REFRESH);
-			
-	while(digitalRead(busy)); //wait for busy low
-	
-	delay(10000);
-	
-	//power off
-	uint8_t buf[4];
-	
-	buf[0] = 0x17;
-	EINK_command(IL0376F_CDI, buf, 1);
-	
-	buf[0] = 0x00;
-	EINK_command(IL0376F_VCM_DC_SETTING, buf, 0);
-	
-	buf[0] = 0x02;
-	buf[1] = 0x00;
-	buf[2] = 0x00;
-	buf[3] = 0x00;
-	EINK_command(IL0376F_POWER_SETTING);
-	
-	EINK_command(IL0376F_POWER_OFF);
-}
-
 void Adafruit_IL0376F::display()
 {
-	Adafruit_EINK::display();
+	powerUp();
+	
+#ifdef USE_EXTERNAL_SRAM
+	uint8_t c;
+	
+	sram.csLow();
+	//send read command
+	fastSPIwrite(K640_READ);
+	
+	//send address
+	fastSPIwrite(0x00);
+	fastSPIwrite(0x00);
+	
+	//first data byte from SRAM will be transfered in at the same time as the eink command is transferred out
+	c = EINK_command(EINK_RAM_BW, false);
+	
+	dcHigh();
+	
+	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
+		c = fastSPIwrite(c);
+	}
+	csHigh();
+	sram.csHigh();
+	
+	delay(2);
+	
+	sram.csLow();
+	//send write command
+	fastSPIwrite(K640_READ);
+	
+	uint8_t b[2];
+	b[0] = (EINK_BUFSIZE >> 8);
+	b[1] = (EINK_BUFSIZE);
+	//send address
+	fastSPIwrite(b[0]);
+	fastSPIwrite(b[1]);
+	
+	//first data byte from SRAM will be transfered in at the same time as the eink command is transferred out
+	c = EINK_command(EINK_RAM_RED, false);
+	
+	dcHigh();
+	
+	for(uint16_t i=0; i<EINK_REDBUFSIZE; i++){
+		c = fastSPIwrite(c);
+	}
+	csHigh();
+	sram.csHigh();
+	
+#else
+	//write image
+	EINK_command(EINK_RAM_BW, false);
+	dcHigh();
+
+	for(uint16_t i=0; i<EINK_BUFSIZE; i++){
+		fastSPIwrite(EINK_BUFFER[i]);
+	}
+	csHigh();
+	
+	EINK_command(EINK_RAM_RED, false);
+	dcHigh();
+		
+	for(uint16_t i=0; i<EINK_REDBUFSIZE; i++){
+		fastSPIwrite(EINK_REDBUFFER[i]);
+	}
+	csHigh();
+
+#endif
 	update();
 }
 		
@@ -128,7 +199,7 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
 	return;
 			
-	uint16_t *pBuf;
+	uint8_t *pBuf;
 
 	// check rotation, move pixel around if necessary
 	switch (getRotation()) {
@@ -157,16 +228,24 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 		addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y)/4;
 	}
 
-	#ifdef USE_EXTERNAL_SRAM
-		addr = addr * 2; //2 bytes in sram
-		uint16_t c = sram.read16(addr);
+#ifdef USE_EXTERNAL_SRAM
+		if(color == EINK_RED){
+			//red is written after bw
+			addr = addr + EINK_BUFSIZE;
+		}
+		uint8_t c = sram.read8(addr);
 		pBuf = &c;
-	#else
-		pBuf = EINK_BUFFER + addr;
-	#endif
+#else
+		if(color == EINK_RED){
+			pBuf = EINK_REDBUFFER + addr;
+		}
+		else{
+			pBuf = EINK_BUFFER + addr;
+		}
+#endif
 	
 	if(color == EINK_RED){
-		*pBuf &= ~(1 << (15 - (y%8)));
+		*pBuf &= ~(1 << (7 - (y%8)));
 	}
 	else{
 		uint8_t bits = (6 - y%4 * 2);
@@ -180,18 +259,19 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 		}
 	}
 	
-	#ifdef USE_EXTERNAL_SRAM
-	sram.write16(addr, *pBuf);
-	#endif
+#ifdef USE_EXTERNAL_SRAM
+	sram.write8(addr, *pBuf);
+#endif
 			
 }
 
 void Adafruit_IL0376F::clearBuffer()
 {
 	#ifdef USE_EXTERNAL_SRAM
-	sram.erase(0xFF, EINK_BUFSIZE * 2);
+	sram.erase(0x00, EINK_BUFSIZE + EINK_REDBUFSIZE, 0xFF);
 	#else
-	memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE * 2);
+	memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE);
+	memset(EINK_REDBUFFER, 0xFF, EINK_REDBUFSIZE);
 	#endif
 }
 

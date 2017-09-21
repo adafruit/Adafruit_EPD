@@ -6,7 +6,8 @@
 Adafruit_IL91874::Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
 
-extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE];
 
 Adafruit_IL91874::Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY) {
 #endif
@@ -95,7 +96,7 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
 	return;
 	
-	uint16_t *pBuf;
+	uint8_t *pBuf;
 
 	// check rotation, move pixel around if necessary
 	switch (getRotation()) {
@@ -117,34 +118,43 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y)/8;
 
-	#ifdef USE_EXTERNAL_SRAM
-	addr = addr * 2; //2 bytes in sram
-	uint16_t c = sram.read16(addr);
-	pBuf = &c;
-	#else
-	pBuf = EINK_BUFFER + addr;
-	#endif
+#ifdef USE_EXTERNAL_SRAM
+	if(color == EINK_RED){
+			//red is written after bw
+			addr = addr + EINK_BUFSIZE;
+		}
+		uint8_t c = sram.read8(addr);
+		pBuf = &c;
+#else
+	if(color == EINK_RED){
+		pBuf = EINK_REDBUFFER + addr;
+	}
+	else{
+		pBuf = EINK_BUFFER + addr;
+	}
+#endif
 	// x is which column
 	switch (color)
 	{
 		case EINK_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
+		case EINK_RED:
 		case EINK_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
 		case EINK_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
-		case EINK_RED: *pBuf &= ~(1 << (15 - (y%8))); break;
 	}
-	#ifdef USE_EXTERNAL_SRAM
-	sram.write16(addr, *pBuf);
-	#endif
+#ifdef USE_EXTERNAL_SRAM
+	sram.write8(addr, *pBuf);
+#endif
 	
 }
 
 void Adafruit_IL91874::clearBuffer()
 {
-	#ifdef USE_EXTERNAL_SRAM
-	sram.erase(0xFF, EINK_BUFSIZE * 2);
-	#else
-	memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE * 2);
-	#endif
+#ifdef USE_EXTERNAL_SRAM
+	sram.erase(0x00, EINK_BUFSIZE + EINK_REDBUFSIZE, 0xFF);
+#else
+	memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE);
+	memset(EINK_REDBUFFER, 0xFF, EINK_REDBUFSIZE);
+#endif
 }
 
 void Adafruit_IL91874::clearDisplay() {

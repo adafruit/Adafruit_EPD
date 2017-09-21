@@ -27,7 +27,7 @@ const uint8_t init_data[]={};
 Adafruit_GDEx::Adafruit_GDEx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
 
-extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
 
 Adafruit_GDEx::Adafruit_GDEx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY) {
 #endif
@@ -137,7 +137,7 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 	
-  uint16_t *pBuf;
+  uint8_t *pBuf;
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
@@ -161,8 +161,7 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y)/4;
 
 #ifdef USE_EXTERNAL_SRAM
-	addr = addr * 2; //2 bytes in sram
-	uint16_t c = sram.read16(addr);
+	uint8_t c = sram.read8(addr);
 	pBuf = &c;
 #else
 	pBuf = EINK_BUFFER + addr;
@@ -178,7 +177,7 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
       case EINK_WHITE:   *pBuf |= (0x3 << bits); break;
     }
 #ifdef USE_EXTERNAL_SRAM
-	sram.write16(addr, *pBuf);
+	sram.write8(addr, *pBuf);
 #endif
 	
 }
@@ -186,9 +185,9 @@ void Adafruit_GDEx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_GDEx::clearBuffer()
 {
 #ifdef USE_EXTERNAL_SRAM
-  sram.erase(0xFF, EINK_BUFSIZE * 2);
+  sram.erase(0xFF, EINK_BUFSIZE);
 #else
-  memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE * 2);
+  memset(EINK_BUFFER, 0xFF, EINK_BUFSIZE);
 #endif
 }
 

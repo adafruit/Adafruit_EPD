@@ -18,13 +18,16 @@ class Adafruit_23k640 {
 	uint8_t readStatus();
 	void write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = K640_WRITE);
 	void read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = K640_READ);
-	void erase(uint16_t addr, uint16_t length);
+	void erase(uint16_t addr, uint16_t length, uint8_t val = 0x00);
 	
 	uint8_t read8(uint16_t addr, uint8_t reg = K640_READ);
 	uint16_t read16(uint16_t addr);
 	
 	void write8(uint16_t addr, uint8_t val, uint8_t reg = K640_WRITE);
 	void write16(uint16_t addr, uint16_t val);
+	
+	inline void csHigh();
+	inline void csLow();
 	
  private:
 	  boolean hwSPI;
@@ -33,7 +36,4 @@ class Adafruit_23k640 {
 	  PortMask mosipinmask, clkpinmask, cspinmask, misopinmask;
 #endif
 	int8_t _cs, _mosi, _miso, _sck;
-	
-	inline void csHigh();
-	inline void csLow();
 };

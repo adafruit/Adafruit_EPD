@@ -30,7 +30,7 @@ All text above, and the splash screen must be included in any redistribution
 /*=========================================================================
 
     -----------------------------------------------------------------------*/
-   #define IL91874_104_212
+   #define IL0376F_200_200
 /*=========================================================================*/
 
 #if defined(__SAM3X8E__)
@@ -98,10 +98,10 @@ class Adafruit_EINK : public Adafruit_GFX {
 #endif
   
   void EINK_command(uint8_t c, const uint8_t *buf, uint16_t len);
-  void EINK_command(uint8_t c, bool end=true);
+  uint8_t EINK_command(uint8_t c, bool end=true);
   void EINK_data(const uint8_t *buf, uint16_t len);
   
-  void fastSPIwrite(uint8_t c);
+  uint8_t fastSPIwrite(uint8_t c);
 
   boolean hwSPI;
 #ifdef HAVE_PORTREG
@@ -119,6 +119,7 @@ class Adafruit_EINK : public Adafruit_GFX {
 #include "Adafruit_IL0376F.h"
 #include "Adafruit_IL91874.h"
 
-extern uint16_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
+extern uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE];
 
 #endif /* _Adafruit_EINK_H_ */
