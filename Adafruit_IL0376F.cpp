@@ -157,7 +157,7 @@ void Adafruit_IL0376F::display()
 	
 	uint8_t b[2];
 	b[0] = (EINK_BUFSIZE >> 8);
-	b[1] = (EINK_BUFSIZE);
+	b[1] = (EINK_BUFSIZE & 0xFF);
 	//send address
 	fastSPIwrite(b[0]);
 	fastSPIwrite(b[1]);

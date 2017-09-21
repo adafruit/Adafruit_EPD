@@ -108,10 +108,10 @@ class Adafruit_EINK : public Adafruit_GFX {
   PortReg *mosiport, *clkport, *csport, *dcport;
   PortMask mosipinmask, clkpinmask, cspinmask, dcpinmask;
 #endif
-  inline void csLow();
-  inline void csHigh();
-  inline void dcHigh();
-  inline void dcLow();
+ void csLow();
+ void csHigh();
+ void dcHigh();
+  void dcLow();
 };
 
 #include "Adafruit_EPDx.h"
