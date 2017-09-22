@@ -1,9 +1,7 @@
 /***************************************************
-  This is our Bitmap drawing example for the Adafruit ILI9341 Breakout and Shield
-  ----> http://www.adafruit.com/products/1651
+  This is our Bitmap drawing example for the Adafruit eInk Breakout and Shield
+  ----> http://www.adafruit.com/products/xxx
   Check out the links above for our tutorials and wiring diagrams
-  These displays use SPI to communicate, 4 or 5 pins are required to
-  interface (RST is optional)
   Adafruit invests time and resources providing this open source code,
   please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
@@ -12,7 +10,7 @@
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include "Adafruit_SSD1675.h" // Hardware-specific library
+#include "Adafruit_EINK.h" // Hardware-specific library
 #include <SPI.h>
 #include <SD.h>
 
@@ -21,11 +19,11 @@
 // cannot be remapped to alternate pins.  For Arduino Uno,
 // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define OLED_DC     6
-#define OLED_CS     7
-#define OLED_RESET  8
-#define OLED_BUSY   5
-Adafruit_SSD1675 display(OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, 10);
+#define EINK_DC     6
+#define EINK_CS     7
+#define EINK_RESET  8
+#define EINK_BUSY   5
+Adafruit_IL91874 display(EINK_DC, EINK_RESET, EINK_CS, EINK_BUSY, 10);
 
 #define SD_CS 4
 
@@ -42,15 +40,16 @@ void setup(void) {
   }
   Serial.println("OK!");
 
-  display.clearDisplay();
-    display.display();
-}
+  display.clearBuffer();
 
-void loop() {
-  display.setRotation(3);
+  
+  display.setRotation(1);
   bmpDraw("face2.bmp",0,0);
   delay(3000);
 
+}
+
+void loop() {
   /*
   for(uint8_t r=0; r<4; r++) {
     display.setRotation(r);
@@ -170,9 +169,9 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
               r = sdbuffer[buffidx++];
 
               uint8_t c;
-              if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = SSD1675_BLACK; //try to infer black
-              else if(r == 0xFF && g == 0xFF && b == 0xFF) c = SSD1675_WHITE;
-              else if(r > 0 && g > 0x3F && b > 0x3F) c = SSD1675_RED; //try to infer red color
+              if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = EINK_BLACK; //try to infer black
+              else if(r == 0xFF && g == 0xFF && b == 0xFF) c = EINK_WHITE;
+              else if(r == 0xFF) c = EINK_RED; //try to infer red color
               
               display.writePixel(row, col, c);
             } // end pixel
