@@ -1,14 +1,14 @@
 #ifndef LIB_ADAFRUIT_GDEX
 #define LIB_ADAFRUIT_GDEX
 
-#include "Adafruit_EINK.h"
+#include "Adafruit_EPD.h"
 #include <Arduino.h>
 
 #if defined(GDEX_72_172)
-	#define EINK_LCDWIDTH                  172
-	#define EINK_LCDHEIGHT                 72
-	#define EINK_BUFSIZE				   3096
-	#define EINK_RAM_BW						0x24
+	#define EPD_LCDWIDTH                  172
+	#define EPD_LCDHEIGHT                 72
+	#define EPD_BUFSIZE				   3096
+	#define EPD_RAM_BW						0x24
 #endif
 
 #define GDEX_DRIVER_OUTPUT_CONTROL 0x01
@@ -40,7 +40,7 @@
 #define GDEX_RAM_Y_ADDRESS_COUNTER 0x4F
 #define GDEX_BOOSTER_FEEDBACK 0xF0
 
-class Adafruit_GDEx : public Adafruit_EINK {
+class Adafruit_GDEx : public Adafruit_EPD {
 	public:
 
 	#ifdef USE_EXTERNAL_SRAM

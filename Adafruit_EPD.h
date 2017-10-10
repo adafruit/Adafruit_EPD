@@ -1,5 +1,5 @@
 /*********************************************************************
-This is a library for our eInk displays based on EINK drivers
+This is a library for our EPD displays based on EPD drivers
 
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/TODO
@@ -15,8 +15,8 @@ Written by Dean Miller for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
-#ifndef _Adafruit_EINK_H_
-#define _Adafruit_EINK_H_
+#ifndef _Adafruit_EPD_H_
+#define _Adafruit_EPD_H_
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -58,25 +58,25 @@ All text above, and the splash screen must be included in any redistribution
 #include <Adafruit_GFX.h>
 
 enum{
-	EINK_BLACK,
-	EINK_WHITE,
-	EINK_INVERSE,
-	EINK_RED,
-	EINK_DARK,
-	EINK_LIGHT,	
+	EPD_BLACK,
+	EPD_WHITE,
+	EPD_INVERSE,
+	EPD_RED,
+	EPD_DARK,
+	EPD_LIGHT,	
 };
 
-#define EINK_swap(a, b) { int16_t t = a; a = b; b = t; }
+#define EPD_swap(a, b) { int16_t t = a; a = b; b = t; }
 
-class Adafruit_EINK : public Adafruit_GFX {
+class Adafruit_EPD : public Adafruit_GFX {
  public:
 
 #ifdef USE_EXTERNAL_SRAM
-  Adafruit_EINK(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
-  Adafruit_EINK(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
+  Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
+  Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
 #else
-  Adafruit_EINK(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
-  Adafruit_EINK(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+  Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+  Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
 #endif
 
   void begin(bool reset=true);
@@ -97,9 +97,9 @@ class Adafruit_EINK : public Adafruit_GFX {
   Adafruit_23k640 sram;
 #endif
   
-  void EINK_command(uint8_t c, const uint8_t *buf, uint16_t len);
-  uint8_t EINK_command(uint8_t c, bool end=true);
-  void EINK_data(const uint8_t *buf, uint16_t len);
+  void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
+  uint8_t EPD_command(uint8_t c, bool end=true);
+  void EPD_data(const uint8_t *buf, uint16_t len);
   
   uint8_t fastSPIwrite(uint8_t c);
 
@@ -119,7 +119,7 @@ class Adafruit_EINK : public Adafruit_GFX {
 #include "Adafruit_IL0376F.h"
 #include "Adafruit_IL91874.h"
 
-extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
-extern uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE];
+extern uint8_t EPD_BUFFER[EPD_BUFSIZE];
+extern uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE];
 
-#endif /* _Adafruit_EINK_H_ */
+#endif /* _Adafruit_EPD_H_ */

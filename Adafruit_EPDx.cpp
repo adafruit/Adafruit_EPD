@@ -1,4 +1,4 @@
-﻿#include "Adafruit_EINK.h"
+﻿#include "Adafruit_EPD.h"
 #include "Adafruit_EPDx.h"
 
 #if defined(EPDX_104_212)
@@ -27,40 +27,42 @@ const uint8_t init_data[] = {};
 #endif
 
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPDx::Adafruit_EPDx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_EPDx::Adafruit_EPDx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
 
-extern uint8_t EINK_BUFFER[EINK_BUFSIZE];
-extern uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE];
+extern uint8_t EPD_BUFFER[EPD_BUFSIZE];
+extern uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE];
 
-Adafruit_EPDx::Adafruit_EPDx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(SID, SCLK, DC, RST, CS, BUSY) {
+Adafruit_EPDx::Adafruit_EPDx(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY) {
 #endif
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPDx::Adafruit_EPDx(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EINK(DC, RST, CS, BUSY, SRCS) {
+Adafruit_EPDx::Adafruit_EPDx(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(DC, RST, CS, BUSY, SRCS) {
 #else
-Adafruit_EPDx::Adafruit_EPDx(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EINK(DC, RST, CS, BUSY) {
+Adafruit_EPDx::Adafruit_EPDx(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(DC, RST, CS, BUSY) {
 #endif
 }
 
 void Adafruit_EPDx::begin(bool reset)
 {
 	uint8_t buf[5];
-	Adafruit_EINK::begin(reset);
+	Adafruit_EPD::begin(reset);
+
+  	while(digitalRead(busy)); //wait for busy low
 	
 	  // Init sequence
 	  if(reset){
-		  EINK_command(EPDX_SWRST);
+		  EPD_command(EPDX_SWRST);
 		  while(digitalRead(busy)); //wait for busy low
 	  }
 	  
 	  buf[0] = 0x54;
-	  EINK_command(EPDX_SET_ANALOG_BLOCK_CONTROL, buf, 1);
+	  EPD_command(EPDX_SET_ANALOG_BLOCK_CONTROL, buf, 1);
 	  
 	  buf[0] = 0x3B;
-	  EINK_command(EPDX_SET_DIGITAL_BLOCK_CONTROL, buf, 1);
+	  EPD_command(EPDX_SET_DIGITAL_BLOCK_CONTROL, buf, 1);
 	  
 	  //set display size and driver output control
 #if defined(EPDX_104_212)
@@ -72,31 +74,31 @@ void Adafruit_EPDx::begin(bool reset)
 	  buf[1] = 0x01;
 	  buf[2] = 0x00;
 #endif
-	  EINK_command(EPDX_DRIVER_OUTPUT_CONTROL, buf, 3);
+	  EPD_command(EPDX_DRIVER_OUTPUT_CONTROL, buf, 3);
 
 #if defined(EPDX_104_212)
 	  buf[0] = 0x18;
 #elif defined(EPDX_128_296)
 	  buf[0] = 0x35;
 #endif
-	  EINK_command(EPDX_SET_DUMMY_LINE_PERIOD, buf, 1);
+	  EPD_command(EPDX_SET_DUMMY_LINE_PERIOD, buf, 1);
 	  
 #if defined(EPDX_104_212)
 	  buf[0] = 0x05;
 #elif defined(EPDX_128_296)
 	  buf[0] = 0x04;
 #endif
-	  EINK_command(EPDX_SET_GATE_LINE_WIDTH, buf, 1);
+	  EPD_command(EPDX_SET_GATE_LINE_WIDTH, buf, 1);
 	  
 	  //ram data entry mode
 	  buf[0] = 0x03;
-	  EINK_command(EPDX_DATA_ENTRY_MODE_SETTING, buf, 1);
+	  EPD_command(EPDX_DATA_ENTRY_MODE_SETTING, buf, 1);
 
 #if defined(EPDX_104_212)
 	  //ram x address
 	  buf[0] = 0x00;
 	  buf[1] = 0x0c;
-	  EINK_command(EPDX_SET_RAM_X_START_END, buf, 2);
+	  EPD_command(EPDX_SET_RAM_X_START_END, buf, 2);
 	  
 	  //ram y address
 	  buf[0] = 0x00;
@@ -104,13 +106,13 @@ void Adafruit_EPDx::begin(bool reset)
 	  buf[2] = 0xD3;
 	  buf[3] = 0x00;
 	  buf[4] = 0x00;
-	  EINK_command(EPDX_SET_RAM_Y_START_END, buf, 5);
+	  EPD_command(EPDX_SET_RAM_Y_START_END, buf, 5);
 
 #elif defined(EPDX_128_296)
 	  //ram x address
 	  buf[0] = 0x00;
 	  buf[1] = 0x0F;
-	  EINK_command(EPDX_SET_RAM_X_START_END, buf, 2);
+	  EPD_command(EPDX_SET_RAM_X_START_END, buf, 2);
 	  
 	  //ram y address
 	  buf[0] = 0x00;
@@ -118,37 +120,37 @@ void Adafruit_EPDx::begin(bool reset)
 	  buf[2] = 0x27;
 	  buf[3] = 0x01;
 	  buf[4] = 0x00;
-	  EINK_command(EPDX_SET_RAM_Y_START_END, buf, 5);
+	  EPD_command(EPDX_SET_RAM_Y_START_END, buf, 5);
 #endif
 	  
 	  buf[0] = 0x17; //20V
-	  EINK_command(EPDX_GATE_VOLTAGE_CONTROL, buf, 1);
+	  EPD_command(EPDX_GATE_VOLTAGE_CONTROL, buf, 1);
 	  
 	  buf[0] = 0x2D; //11V
 	  buf[1] = 0xA8; //5V
 	  buf[2] = 0x32; //-15V
-	  EINK_command(EPDX_SOURCE_VOLTAGE_CONTROL, buf, 1);
+	  EPD_command(EPDX_SOURCE_VOLTAGE_CONTROL, buf, 1);
 	  
 	  buf[0] = 0x3C; //-1.5V
-	  EINK_command(EPDX_WRITE_VCOM, buf, 1);
+	  EPD_command(EPDX_WRITE_VCOM, buf, 1);
 	  
 	  //set border
 	  buf[0] = 0x33;
-	  EINK_command(EPDX_BORDER_WAVEFORM_CONTROL, buf, 1);
+	  EPD_command(EPDX_BORDER_WAVEFORM_CONTROL, buf, 1);
 	  
 	  buf[0] = 0x08;
-	  EINK_command(EPDX_DISPLAY_UPDATE_CTRL_1, buf, 1);
+	  EPD_command(EPDX_DISPLAY_UPDATE_CTRL_1, buf, 1);
 	  
 	  //write LUT
-	  EINK_command(EPDX_WRITE_LUT_REGISTER, init_data, 70);
+	  EPD_command(EPDX_WRITE_LUT_REGISTER, init_data, 70);
 }
 
 void Adafruit_EPDx::update()
 {
 	uint8_t c = 0xc7;
-	EINK_command(EPDX_DISPLAY_UPDATE_CTRL_2, &c, 1);
+	EPD_command(EPDX_DISPLAY_UPDATE_CTRL_2, &c, 1);
 	
-	EINK_command(EPDX_MASTER_ACTIVATION);
+	EPD_command(EPDX_MASTER_ACTIVATION);
 	
 	while(digitalRead(busy)); //wait for busy low
 }
@@ -159,13 +161,13 @@ void Adafruit_EPDx::display()
 	uint8_t cmdbuf[2];
 
 	cmdbuf[0] = 0x00;
-	EINK_command(EPDX_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
+	EPD_command(EPDX_SET_RAM_X_ADDRESS_COUNTER, cmdbuf, 1);
 
 	cmdbuf[0] = 0x00;
 	cmdbuf[1] = 0x00;
-	EINK_command(EPDX_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
+	EPD_command(EPDX_SET_RAM_Y_ADDRESS_COUNTER, cmdbuf, 2);
 	
-	Adafruit_EINK::display();
+	Adafruit_EPD::display();
 	
 	update();
 }
@@ -174,21 +176,21 @@ void Adafruit_EPDx::sleep()
 {
 	//enter deep sleep. MUST HW RESET TO EXIT DEEP SLEEP
 	uint8_t c = 0x01;
-	EINK_command(EPDX_DEEP_SLEEP_MODE, &c, 1);
+	EPD_command(EPDX_DEEP_SLEEP_MODE, &c, 1);
 }
 
 void Adafruit_EPDx::invertDisplay(bool black, bool red)
 {
 	uint8_t c = (blackInverted << 3) | (redInverted << 7);
-	if(EINK_BLACK){
+	if(EPD_BLACK){
 		blackInverted = blackInverted;
 		c ^= (blackInverted << 3);
 	}
-	if(EINK_RED){
+	if(EPD_RED){
 		redInverted = !redInverted;
 		c ^= (redInverted << 7);
 	}
-	EINK_command(EPDX_DISPLAY_UPDATE_CTRL_1, &c, 1);
+	EPD_command(EPDX_DISPLAY_UPDATE_CTRL_1, &c, 1);
 }
 
 void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -200,7 +202,7 @@ void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
   case 1:
-    EINK_swap(x, y);
+    EPD_swap(x, y);
     x = WIDTH - x - 1;
     break;
   case 2:
@@ -208,37 +210,37 @@ void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
     y = HEIGHT - y - 1;
     break;
   case 3:
-    EINK_swap(x, y);
+    EPD_swap(x, y);
     y = HEIGHT - y - 1;
     break;
   }
    //make our buffer happy
    x = (x == 0 ? 1 : x);
 
-	uint16_t addr = ( (EINK_LCDWIDTH - x) * EINK_LCDHEIGHT + y )/8;
+	uint16_t addr = ( (EPD_LCDWIDTH - x) * EPD_LCDHEIGHT + y )/8;
 
 #ifdef USE_EXTERNAL_SRAM
-	if(color == EINK_RED){
+	if(color == EPD_RED){
 		//red is written after bw
-		addr = addr + EINK_BUFSIZE;
+		addr = addr + EPD_BUFSIZE;
 	}
 	uint8_t c = sram.read8(addr);
 	pBuf = &c;
 #else
-	if(color == EINK_RED){
-		pBuf = EINK_REDBUFFER + addr;
+	if(color == EPD_RED){
+		pBuf = EPD_REDBUFFER + addr;
 	}
 	else{
-		pBuf = EINK_BUFFER + addr;
+		pBuf = EPD_BUFFER + addr;
 	}
 #endif
   // x is which column
     switch (color)
     {
-	  case EINK_RED:
-      case EINK_BLACK:   *pBuf |= (1 << (7 - y%8)); break;
-      case EINK_WHITE:   *pBuf &= ~(1 << (7 - y%8)); break;
-      case EINK_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
+	  case EPD_RED:
+      case EPD_BLACK:   *pBuf |= (1 << (7 - y%8)); break;
+      case EPD_WHITE:   *pBuf &= ~(1 << (7 - y%8)); break;
+      case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
     }
 #ifdef USE_EXTERNAL_SRAM
 	sram.write8(addr, *pBuf);
@@ -248,10 +250,10 @@ void Adafruit_EPDx::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 void Adafruit_EPDx::clearBuffer() {
 #ifdef USE_EXTERNAL_SRAM
-  sram.erase(0x00, EINK_BUFSIZE + EINK_REDBUFSIZE);
+  sram.erase(0x00, EPD_BUFSIZE + EPD_REDBUFSIZE);
 #else
-  memset(EINK_BUFFER, 0x00, EINK_BUFSIZE);
-  memset(EINK_REDBUFFER, 0x00, EINK_REDBUFSIZE);
+  memset(EPD_BUFFER, 0x00, EPD_BUFSIZE);
+  memset(EPD_REDBUFFER, 0x00, EPD_REDBUFSIZE);
 #endif
 }
 

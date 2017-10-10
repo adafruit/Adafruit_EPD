@@ -1,18 +1,18 @@
 #ifndef LIB_ADAFRUIT_IL0376F
 #define LIB_ADAFRUIT_IL0376F
 
-#include "Adafruit_EINK.h"
+#include "Adafruit_EPD.h"
 #include <Arduino.h>
 
 #if defined(IL0376F_200_200)
-#define EINK_LCDWIDTH                  200
-#define EINK_LCDHEIGHT                 200
-#define EINK_BUFSIZE				   10000
-#define EINK_REDBUFSIZE				   5000
+#define EPD_LCDWIDTH                  200
+#define EPD_LCDHEIGHT                 200
+#define EPD_BUFSIZE				   10000
+#define EPD_REDBUFSIZE				   5000
 #endif
 
-#define EINK_RAM_BW					   0x10
-#define EINK_RAM_RED				   0x13
+#define EPD_RAM_BW					   0x10
+#define EPD_RAM_RED				   0x13
 
 #define IL0376F_PANEL_SETTING 0x00
 #define IL0376F_POWER_SETTING 0x01
@@ -38,7 +38,7 @@
 #define IL0376F_RESOLUTION 0x61
 #define IL0376F_VCM_DC_SETTING 0x82
 
-class Adafruit_IL0376F : public Adafruit_EINK {
+class Adafruit_IL0376F : public Adafruit_EPD {
 	public:
 
 #ifdef USE_EXTERNAL_SRAM

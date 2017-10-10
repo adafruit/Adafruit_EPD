@@ -1,18 +1,18 @@
 #ifndef LIB_ADAFRUIT_IL91874
 #define LIB_ADAFRUIT_IL91874
 
-#include "Adafruit_EINK.h"
+#include "Adafruit_EPD.h"
 #include <Arduino.h>
 
 #if defined(IL91874_104_212)
-#define EINK_LCDWIDTH                  212
-#define EINK_LCDHEIGHT                 104
-#define EINK_BUFSIZE				   2756
-#define EINK_REDBUFSIZE				   2756
+#define EPD_LCDWIDTH                  212
+#define EPD_LCDHEIGHT                 104
+#define EPD_BUFSIZE				   2756
+#define EPD_REDBUFSIZE				   2756
 #endif
 
-#define EINK_RAM_BW 0x10
-#define EINK_RAM_RED 0x13
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
 
 #define IL91874_PANEL_SETTING 0x00
 #define IL91874_POWER_SETTING 0x01
@@ -38,7 +38,7 @@
 #define IL91874_RESOLUTION 0x61
 #define IL91874_VCM_DC_SETTING 0x82
 
-class Adafruit_IL91874 : public Adafruit_EINK {
+class Adafruit_IL91874 : public Adafruit_EPD {
 	public:
 
 	#ifdef USE_EXTERNAL_SRAM

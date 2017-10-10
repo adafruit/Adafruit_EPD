@@ -1,22 +1,22 @@
 #ifndef LIB_ADAFRUIT_EPDX
 #define LIB_ADAFRUIT_EPDX
 
-#include "Adafruit_EINK.h"
+#include "Adafruit_EPD.h"
 #include <Arduino.h>
 
 #if defined(EPDX_104_212)
-  #define EINK_LCDWIDTH                  212
-  #define EINK_LCDHEIGHT                 104
-  #define EINK_BUFSIZE					2756
-  #define EINK_RAM_BW					 0x24
-  #define EINK_RAM_RED					 0x26
+  #define EPD_LCDWIDTH                  212
+  #define EPD_LCDHEIGHT                 104
+  #define EPD_BUFSIZE					2756
+  #define EPD_RAM_BW					 0x24
+  #define EPD_RAM_RED					 0x26
   
 #elif defined(EPDX_128_296)
-  #define EINK_LCDWIDTH                  296
-  #define EINK_LCDHEIGHT                 128
-  #define EINK_BUFSIZE					4736
-  #define EINK_RAM_BW					 0x24
-  #define EINK_RAM_RED					 0x26
+  #define EPD_LCDWIDTH                  296
+  #define EPD_LCDHEIGHT                 128
+  #define EPD_BUFSIZE					4736
+  #define EPD_RAM_BW					 0x24
+  #define EPD_RAM_RED					 0x26
 #endif
 
 #define EPDX_DRIVER_OUTPUT_CONTROL 0x01
@@ -45,7 +45,7 @@
 #define EPDX_SET_ANALOG_BLOCK_CONTROL 0x74
 #define EPDX_SET_DIGITAL_BLOCK_CONTROL 0x7E
 
-class Adafruit_EPDx : public Adafruit_EINK {
+class Adafruit_EPDx : public Adafruit_EPD {
 public:
 
 #ifdef USE_EXTERNAL_SRAM

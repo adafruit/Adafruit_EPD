@@ -1,10 +1,10 @@
 /*********************************************************************
-This is a library for our eInk displays based on EINK drivers
+This is a library for our EPD displays based on EPD drivers
 
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/TODO
 
-These displays use SPI to communicate, 6 pins are requiEINK_RED to
+These displays use SPI to communicate, 6 pins are requiEPD_RED to
 interface
 
 Adafruit invests time and resources providing this open source code,
@@ -13,7 +13,7 @@ products from Adafruit!
 
 Written by Dean Miller  for Adafruit Industries.
 BSD license, check license.txt for more information
-All text above, and the splash screen below must be included in any EINK_REDistribution
+All text above, and the splash screen below must be included in any EPD_REDistribution
 *********************************************************************/
 
 #ifdef __AVR__
@@ -32,13 +32,13 @@ All text above, and the splash screen below must be included in any EINK_REDistr
 
 #include <SPI.h>
 #include "Adafruit_GFX.h"
-#include "Adafruit_EINK.h"
+#include "Adafruit_EPD.h"
 
 #ifndef USE_EXTERNAL_SRAM
 // the memory buffer for the LCD
-uint8_t EINK_BUFFER[EINK_BUFSIZE] = {};
-	#ifdef EINK_REDBUFSIZE
-uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE] = {};
+uint8_t EPD_BUFFER[EPD_BUFSIZE] = {};
+	#ifdef EPD_REDBUFSIZE
+uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE] = {};
 	#endif
 
 #else
@@ -50,10 +50,10 @@ uint8_t EINK_REDBUFFER[EINK_REDBUFSIZE] = {};
 // the most basic function, set a single pixel
 
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EINK::Adafruit_EINK(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(EINK_LCDWIDTH, EINK_LCDHEIGHT),
+Adafruit_EPD::Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT),
 sram(SID, MISO, SCLK, SRCS) {
 #else
-Adafruit_EINK::Adafruit_EINK(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EINK_LCDWIDTH, EINK_LCDHEIGHT) {
+Adafruit_EPD::Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT) {
 #endif
   cs = CS;
   rst = RST;
@@ -66,10 +66,10 @@ Adafruit_EINK::Adafruit_EINK(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EINK::Adafruit_EINK(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(EINK_LCDWIDTH, EINK_LCDHEIGHT),
+Adafruit_EPD::Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT),
 sram(SRCS) {
 #else
-Adafruit_EINK::Adafruit_EINK(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EINK_LCDWIDTH, EINK_LCDHEIGHT) {
+Adafruit_EPD::Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT) {
 #endif
   dc = DC;
   rst = RST;
@@ -79,7 +79,7 @@ Adafruit_EINK::Adafruit_EINK(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Ad
 }
 
 
-void Adafruit_EINK::begin(bool reset) {
+void Adafruit_EPD::begin(bool reset) {
   blackInverted = true;
   redInverted = false;
   
@@ -134,16 +134,15 @@ void Adafruit_EINK::begin(bool reset) {
     digitalWrite(rst, HIGH);
   }
   pinMode(busy, INPUT);
-  while(digitalRead(busy)); //wait for busy low
 }
 
-void Adafruit_EINK::EINK_command(uint8_t c, const uint8_t *buf, uint16_t len)
+void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)
 {
-	EINK_command(c, false);
-	EINK_data(buf, len);
+	EPD_command(c, false);
+	EPD_data(buf, len);
 }
 
-uint8_t Adafruit_EINK::EINK_command(uint8_t c, bool end) {
+uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
     // SPI
 	csHigh();
 	dcLow();
@@ -158,7 +157,7 @@ uint8_t Adafruit_EINK::EINK_command(uint8_t c, bool end) {
 	return data;
 }
 
-void Adafruit_EINK::EINK_data(const uint8_t *buf, uint16_t len)
+void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
 {
 	// SPI
 	dcHigh();
@@ -169,7 +168,7 @@ void Adafruit_EINK::EINK_data(const uint8_t *buf, uint16_t len)
 	csHigh();
 }
 
-inline uint8_t Adafruit_EINK::fastSPIwrite(uint8_t d) {
+inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
 
   if(hwSPI) {
     return SPI.transfer(d);
@@ -191,12 +190,12 @@ inline uint8_t Adafruit_EINK::fastSPIwrite(uint8_t d) {
   }
 }
 
-void Adafruit_EINK::display()
+void Adafruit_EPD::display()
 {
 
 }
 
-void Adafruit_EINK::csHigh()
+void Adafruit_EPD::csHigh()
 {
 #ifdef HAVE_PORTREG
 	*csport |= cspinmask;
@@ -205,7 +204,7 @@ void Adafruit_EINK::csHigh()
 #endif
 }
 
-void Adafruit_EINK::csLow()
+void Adafruit_EPD::csLow()
 {
 #ifdef HAVE_PORTREG
 	*csport &= ~cspinmask;
@@ -214,7 +213,7 @@ void Adafruit_EINK::csLow()
 #endif
 }
 
-void Adafruit_EINK::dcHigh()
+void Adafruit_EPD::dcHigh()
 {
 #ifdef HAVE_PORTREG
 	*dcport |= dcpinmask;
@@ -223,7 +222,7 @@ void Adafruit_EINK::dcHigh()
 #endif
 }
 
-void Adafruit_EINK::dcLow()
+void Adafruit_EPD::dcLow()
 {
 #ifdef HAVE_PORTREG
 	*dcport &= ~dcpinmask;
@@ -232,7 +231,7 @@ void Adafruit_EINK::dcLow()
 #endif
 }
 
-void Adafruit_EINK::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
+void Adafruit_EPD::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
 		startWrite();
         writeLine(x0, y0, x1, y1, color);
         endWrite();

@@ -1,5 +1,5 @@
 /***************************************************
-  This is our Bitmap drawing example for the Adafruit eInk Breakout and Shield
+  This is our Bitmap drawing example for the Adafruit EPD Breakout and Shield
   ----> http://www.adafruit.com/products/xxx
   Check out the links above for our tutorials and wiring diagrams
   Adafruit invests time and resources providing this open source code,
@@ -10,7 +10,7 @@
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include "Adafruit_EINK.h" // Hardware-specific library
+#include "Adafruit_EPD.h" // Hardware-specific library
 #include <SPI.h>
 #include <SD.h>
 
@@ -19,11 +19,11 @@
 // cannot be remapped to alternate pins.  For Arduino Uno,
 // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define EINK_DC     6
-#define EINK_CS     7
-#define EINK_RESET  8
-#define EINK_BUSY   5
-Adafruit_IL91874 display(EINK_DC, EINK_RESET, EINK_CS, EINK_BUSY, 10);
+#define EPD_DC     6
+#define EPD_CS     7
+#define EPD_RESET  8
+#define EPD_BUSY   5
+Adafruit_IL91874 display(EPD_DC, EPD_RESET, EPD_CS, EPD_BUSY, 10);
 
 #define SD_CS 4
 
@@ -169,9 +169,9 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
               r = sdbuffer[buffidx++];
 
               uint8_t c;
-              if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = EINK_BLACK; //try to infer black
-              else if(r == 0xFF && g == 0xFF && b == 0xFF) c = EINK_WHITE;
-              else if(r == 0xFF) c = EINK_RED; //try to infer red color
+              if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = EPD_BLACK; //try to infer black
+              else if(r == 0xFF && g == 0xFF && b == 0xFF) c = EPD_WHITE;
+              else if(r == 0xFF) c = EPD_RED; //try to infer red color
               
               display.writePixel(row, col, c);
             } // end pixel
