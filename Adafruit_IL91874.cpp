@@ -82,10 +82,16 @@ void Adafruit_IL91874::powerUp()
 	
 	buf[0] = 0x29;
 	EPD_command(IL91874_PLL, buf, 1);
-			
+
+#if defined(IL91874_104_212)
 	buf[0] = 0x68;
 	buf[1] = 0x00;
 	buf[2] = 0xD4;
+#elif defined(IL91874_152_152)
+	buf[0] = 0x98;
+	buf[1] = 0x00;
+	buf[2] = 0x98;
+#endif
 	EPD_command(IL91874_RESOLUTION, buf, 3);
 			
 	buf[0] = 0x0A;

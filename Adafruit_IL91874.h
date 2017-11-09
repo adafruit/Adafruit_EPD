@@ -9,6 +9,11 @@
 #define EPD_LCDHEIGHT                 104
 #define EPD_BUFSIZE				   2756
 #define EPD_REDBUFSIZE				   2756
+#elif defined(IL91874_152_152)
+#define EPD_LCDWIDTH                  152
+#define EPD_LCDHEIGHT                 152
+#define EPD_BUFSIZE				   2888
+#define EPD_REDBUFSIZE				   2888
 #endif
 
 #define EPD_RAM_BW 0x10
