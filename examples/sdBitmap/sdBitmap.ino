@@ -7,6 +7,11 @@
   products from Adafruit!
   Written by Limor Fried/Ladyada for Adafruit Industries.
   MIT license, all text above must be included in any redistribution
+
+
+  THE BMP IMAGE YOU ARE USING MUST BE THE SAME DIMENSIONS AS YOUR EPD DISPLAY
+  For the 1.54" EPD, this is 152x152 pixels
+  For the 2.13" EPD, this is 104x212 pixels
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -14,18 +19,24 @@
 #include <SPI.h>
 #include <SD.h>
 
-// TFT display and SD card will share the hardware SPI interface.
+// EPD display and SD card will share the hardware SPI interface.
 // Hardware SPI pins are specific to the Arduino board type and
 // cannot be remapped to alternate pins.  For Arduino Uno,
 // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define EPD_DC     6
-#define EPD_CS     7
-#define EPD_RESET  8
-#define EPD_BUSY   5
-Adafruit_IL91874 display(EPD_DC, EPD_RESET, EPD_CS, EPD_BUSY, 10);
+#define OLED_DC     6
+#define OLED_CS     7
+#define OLED_RESET  8
+#define OLED_BUSY   5
+#define SRAM_CS     10
 
 #define SD_CS 4
+
+/* Uncomment the following line if you are using 1.54" tricolor EPD */
+Adafruit_IL91874 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+
+/* Uncomment the following line if you are using 2.15" tricolor EPD */
+//Adafruit_IL91874 display(104, 212 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 void setup(void) {
   Serial.begin(9600);
@@ -50,17 +61,7 @@ void setup(void) {
 }
 
 void loop() {
-  /*
-  for(uint8_t r=0; r<4; r++) {
-    display.setRotation(r);
-    display.clearDisplay();
-    display.display();
-    
-    bmpDraw("face.bmp",0,0);
-    
-    delay(1000);
-  }
-  */
+  //don't do anything!
 }
 
 // This function opens a Windows Bitmap (BMP) file and
@@ -163,7 +164,7 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
                 bmpFile.read(sdbuffer, sizeof(sdbuffer));
                 buffidx = 0; // Set index to beginning
               }
-              // Convert pixel from BMP to TFT format, push to display
+              // Convert pixel from BMP to EPD format, push to display
               b = sdbuffer[buffidx++];
               g = sdbuffer[buffidx++];
               r = sdbuffer[buffidx++];
