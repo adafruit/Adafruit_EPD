@@ -65,8 +65,10 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t 
 
 Adafruit_EPD::~Adafruit_EPD()
 {
+#ifndef USE_EXTERNAL_SRAM
   free(bw_buf);
   free(red_buf);
+#endif
 }
 
 void Adafruit_EPD::begin(bool reset) {

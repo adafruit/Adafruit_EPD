@@ -89,8 +89,10 @@ class Adafruit_EPD : public Adafruit_GFX {
   bool blackInverted, redInverted;
   int bw_bufsize, red_bufsize;
 
+#ifndef USE_EXTERNAL_SRAM
   uint8_t *bw_buf;
   uint8_t *red_buf;
+#endif
   
 #ifdef USE_EXTERNAL_SRAM
   Adafruit_MCPSRAM sram;
