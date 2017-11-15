@@ -34,26 +34,11 @@ All text above, and the splash screen below must be included in any EPD_REDistri
 #include "Adafruit_GFX.h"
 #include "Adafruit_EPD.h"
 
-#ifndef USE_EXTERNAL_SRAM
-// the memory buffer for the LCD
-uint8_t EPD_BUFFER[EPD_BUFSIZE] = {};
-	#ifdef EPD_REDBUFSIZE
-uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE] = {};
-	#endif
-
-#else
-
-#define RAMBUFSIZE 64
-
-#endif
-
-// the most basic function, set a single pixel
-
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPD::Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT),
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(width, height),
 sram(SID, MISO, SCLK, SRCS) {
 #else
-Adafruit_EPD::Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
 #endif
   cs = CS;
   rst = RST;
@@ -66,10 +51,10 @@ Adafruit_EPD::Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPD::Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT),
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(width, height),
 sram(SRCS) {
 #else
-Adafruit_EPD::Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(EPD_LCDWIDTH, EPD_LCDHEIGHT) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
 #endif
   dc = DC;
   rst = RST;
@@ -78,6 +63,11 @@ Adafruit_EPD::Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adaf
   hwSPI = true;
 }
 
+Adafruit_EPD::~Adafruit_EPD()
+{
+  free(bw_buf);
+  free(red_buf);
+}
 
 void Adafruit_EPD::begin(bool reset) {
   blackInverted = true;
@@ -113,9 +103,7 @@ void Adafruit_EPD::begin(bool reset) {
       }
     if (hwSPI){
       SPI.begin();
-#ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
-#else
+#ifndef SPI_HAS_TRANSACTION
       SPI.setClockDivider (4);
 #endif
     }
@@ -197,6 +185,9 @@ void Adafruit_EPD::display()
 
 void Adafruit_EPD::csHigh()
 {
+#ifdef SPI_HAS_TRANSACTION
+      SPI.endTransaction();
+#endif
 #ifdef HAVE_PORTREG
 	*csport |= cspinmask;
 #else
@@ -206,6 +197,9 @@ void Adafruit_EPD::csHigh()
 
 void Adafruit_EPD::csLow()
 {
+#ifdef SPI_HAS_TRANSACTION
+      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+#endif
 #ifdef HAVE_PORTREG
 	*csport &= ~cspinmask;
 #else

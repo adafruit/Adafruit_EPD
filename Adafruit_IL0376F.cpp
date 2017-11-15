@@ -1,8 +1,6 @@
 ﻿#include "Adafruit_EPD.h"
 #include "Adafruit_IL0376F.h"
 
-#if defined(IL0376F_200_200)  || defined(IL0376F_152_152)
-
 const uint8_t lut_vcom0[] ={	0x0E	,0x14	,0x01	,0x0A	,0x06	,0x04	,0x0A	,0x0A	,0x0F	,0x03	,0x03	,0x0C	,0x06	,0x0A	,0x00	};
 const uint8_t lut_w[] ={	0x0E	,0x14	,0x01	,0x0A	,0x46	,0x04	,0x8A	,0x4A	,0x0F	,0x83	,0x43	,0x0C	,0x86	,0x0A	,0x04	};
 const uint8_t lut_b[] ={	0x0E	,0x14	,0x01	,0x8A	,0x06	,0x04	,0x8A	,0x4A	,0x0F	,0x83	,0x43	,0x0C	,0x06	,0x4A	,0x04	};
@@ -12,37 +10,27 @@ const uint8_t lut_vcom1[] ={	0x03	,0x1D	,0x01	,0x01	,0x08	,0x23	,0x37	,0x37	,0x0
 const uint8_t lut_red0[] ={	0x83	,0x5D	,0x01	,0x81	,0x48	,0x23	,0x77	,0x77	,0x01	,0x00	,0x00	,0x00	,0x00	,0x00	,0x00	};
 const uint8_t lut_red1[] ={	0x03	,0x1D	,0x01	,0x01	,0x08	,0x23	,0x37	,0x37	,0x01	,0x00	,0x00	,0x00	,0x00	,0x00	,0x00	};
 
-#else
-
-const uint8_t lut_vcom0[] ={};
-const uint8_t lut_w[] ={};
-const uint8_t lut_b[] ={};
-const uint8_t lut_g1[] ={};
-const uint8_t lut_g2[] ={};
-const uint8_t lut_vcom1[] ={};
-const uint8_t lut_red0[] ={};
-const uint8_t lut_red1[] ={};
-
-
-#endif
-
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0376F::Adafruit_IL0376F(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
-
-extern uint8_t EPD_BUFFER[EPD_BUFSIZE];
-extern uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE];
-
-Adafruit_IL0376F::Adafruit_IL0376F(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY) {
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
+	bw_buf = (uint8_t *)malloc(width * height / 4);
+	red_buf = (uint8_t *)malloc(width * height / 8);
 #endif
+	bw_bufsize = width * height / 4;
+	red_bufsize = width * height / 8;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0376F::Adafruit_IL0376F(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(DC, RST, CS, BUSY, SRCS) {
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(width, height, DC, RST, CS, BUSY, SRCS) {
 #else
-Adafruit_IL0376F::Adafruit_IL0376F(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(DC, RST, CS, BUSY) {
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
+	bw_buf = (uint8_t *)malloc(width * height / 4);
+	red_buf = (uint8_t *)malloc(width * height / 8);
 #endif
+	bw_bufsize = width * height / 4;
+	red_bufsize = width * height / 8;
 }
 
 void Adafruit_IL0376F::begin(bool reset)
@@ -105,12 +93,11 @@ void Adafruit_IL0376F::powerUp()
 	buf[0] = 0x39;
 	EPD_command(IL0376F_PLL, buf, 1);
 
-#if defined(IL0376F_200_200)
-	buf[0] = 0xC8;
-	buf[1] = 0x00;
-	buf[2] = 0xC8;
-#endif
-	EPD_command(IL0376F_RESOLUTION, buf, 3);
+	buf[0] = height() & 0xFF;
+	buf[1] = (height() >> 8) & 0xFF;
+	buf[2] = width() & 0xFF;
+	buf[3] = (width() >> 8) & 0xFF;
+	EPD_command(IL0376F_RESOLUTION, buf, 4);
 	
 	buf[0] = 0x0E;
 	EPD_command(IL0376F_VCM_DC_SETTING, buf, 1);
@@ -146,7 +133,7 @@ void Adafruit_IL0376F::display()
 	
 	dcHigh();
 	
-	for(uint16_t i=0; i<EPD_BUFSIZE; i++){
+	for(uint16_t i=0; i<bw_bufsize; i++){
 		c = fastSPIwrite(c);
 	}
 	csHigh();
@@ -159,8 +146,8 @@ void Adafruit_IL0376F::display()
 	fastSPIwrite(K640_READ);
 	
 	uint8_t b[2];
-	b[0] = (EPD_BUFSIZE >> 8);
-	b[1] = (EPD_BUFSIZE & 0xFF);
+	b[0] = (bw_bufsize >> 8);
+	b[1] = (bw_bufsize & 0xFF);
 	//send address
 	fastSPIwrite(b[0]);
 	fastSPIwrite(b[1]);
@@ -170,7 +157,7 @@ void Adafruit_IL0376F::display()
 	
 	dcHigh();
 	
-	for(uint16_t i=0; i<EPD_REDBUFSIZE; i++){
+	for(uint16_t i=0; i<red_bufsize; i++){
 		c = fastSPIwrite(c);
 	}
 	csHigh();
@@ -181,16 +168,16 @@ void Adafruit_IL0376F::display()
 	EPD_command(EPD_RAM_BW, false);
 	dcHigh();
 
-	for(uint16_t i=0; i<EPD_BUFSIZE; i++){
-		fastSPIwrite(EPD_BUFFER[i]);
+	for(uint16_t i=0; i<bw_bufsize; i++){
+		fastSPIwrite(bw_buf[i]);
 	}
 	csHigh();
 	
 	EPD_command(EPD_RAM_RED, false);
 	dcHigh();
 		
-	for(uint16_t i=0; i<EPD_REDBUFSIZE; i++){
-		fastSPIwrite(EPD_REDBUFFER[i]);
+	for(uint16_t i=0; i<red_bufsize; i++){
+		fastSPIwrite(red_buf[i]);
 	}
 	csHigh();
 
@@ -225,25 +212,25 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	uint16_t addr;
 
 	if(color == EPD_RED){
-		addr = ( (EPD_LCDWIDTH - x) * EPD_LCDHEIGHT + y)/8;
+		addr = ( (width() - x) * height() + y)/8;
 	}
 	else{
-		addr = ( (EPD_LCDWIDTH - x) * EPD_LCDHEIGHT + y)/4;
+		addr = ( (width() - x) * height() + y)/4;
 	}
 
 #ifdef USE_EXTERNAL_SRAM
 		if(color == EPD_RED){
 			//red is written after bw
-			addr = addr + EPD_BUFSIZE;
+			addr = addr + bw_bufsize;
 		}
 		uint8_t c = sram.read8(addr);
 		pBuf = &c;
 #else
 		if(color == EPD_RED){
-			pBuf = EPD_REDBUFFER + addr;
+			pBuf = red_buf + addr;
 		}
 		else{
-			pBuf = EPD_BUFFER + addr;
+			pBuf = bw_buf + addr;
 		}
 #endif
 	
@@ -271,10 +258,10 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_IL0376F::clearBuffer()
 {
 	#ifdef USE_EXTERNAL_SRAM
-	sram.erase(0x00, EPD_BUFSIZE + EPD_REDBUFSIZE, 0xFF);
+	sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
 	#else
-	memset(EPD_BUFFER, 0xFF, EPD_BUFSIZE);
-	memset(EPD_REDBUFFER, 0xFF, EPD_REDBUFSIZE);
+	memset(bw_buf, 0xFF, bw_bufsize);
+	memset(red_buf, 0xFF, red_bufsize);
 	#endif
 }
 

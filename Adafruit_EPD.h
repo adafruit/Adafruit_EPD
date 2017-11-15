@@ -24,14 +24,8 @@ All text above, and the splash screen must be included in any redistribution
  #include "WProgram.h"
 #endif
 
-
 #define USE_EXTERNAL_SRAM
-
-/*=========================================================================
-
-    -----------------------------------------------------------------------*/
-   #define IL91874_152_152
-/*=========================================================================*/
+#define RAMBUFSIZE 64
 
 #if defined(__SAM3X8E__)
  typedef volatile RwReg PortReg;
@@ -52,7 +46,7 @@ All text above, and the splash screen must be included in any redistribution
   typedef uint32_t PortMask;
 #endif
 
-#include "Adafruit_23k640.h"
+#include "Adafruit_MCPSRAM.h"
 
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -72,12 +66,13 @@ class Adafruit_EPD : public Adafruit_GFX {
  public:
 
 #ifdef USE_EXTERNAL_SRAM
-  Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
-  Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
+  Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
+  Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
 #else
-  Adafruit_EPD(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
-  Adafruit_EPD(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+  Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+  Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
 #endif
+  ~Adafruit_EPD();
 
   void begin(bool reset=true);
 
@@ -92,9 +87,13 @@ class Adafruit_EPD : public Adafruit_GFX {
  protected:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs, busy;
   bool blackInverted, redInverted;
+  int bw_bufsize, red_bufsize;
+
+  uint8_t *bw_buf;
+  uint8_t *red_buf;
   
 #ifdef USE_EXTERNAL_SRAM
-  Adafruit_23k640 sram;
+  Adafruit_MCPSRAM sram;
 #endif
   
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
@@ -111,15 +110,10 @@ class Adafruit_EPD : public Adafruit_GFX {
  void csLow();
  void csHigh();
  void dcHigh();
-  void dcLow();
+ void dcLow();
 };
 
-#include "Adafruit_EPDx.h"
-#include "Adafruit_GDEx.h"
 #include "Adafruit_IL0376F.h"
 #include "Adafruit_IL91874.h"
-
-extern uint8_t EPD_BUFFER[EPD_BUFSIZE];
-extern uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE];
 
 #endif /* _Adafruit_EPD_H_ */

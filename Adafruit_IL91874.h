@@ -4,18 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#if defined(IL91874_104_212)
-#define EPD_LCDWIDTH                  212
-#define EPD_LCDHEIGHT                 104
-#define EPD_BUFSIZE				   2756
-#define EPD_REDBUFSIZE				   2756
-#elif defined(IL91874_152_152)
-#define EPD_LCDWIDTH                  152
-#define EPD_LCDHEIGHT                 152
-#define EPD_BUFSIZE				   2888
-#define EPD_REDBUFSIZE				   2888
-#endif
-
 #define EPD_RAM_BW 0x10
 #define EPD_RAM_RED 0x13
 
@@ -47,11 +35,11 @@ class Adafruit_IL91874 : public Adafruit_EPD {
 	public:
 
 	#ifdef USE_EXTERNAL_SRAM
-	Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
-	Adafruit_IL91874(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
+	Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
+	Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
 	#else
-	Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
-	Adafruit_IL91874(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+	Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
+	Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
 	#endif
 
 	void begin(bool reset=true);

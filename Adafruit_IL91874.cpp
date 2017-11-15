@@ -2,23 +2,26 @@
 #include "Adafruit_IL91874.h"
 
 #ifdef USE_EXTERNAL_SRAM
-#define RAMBUFSIZE 64
-Adafruit_IL91874::Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
 #else
-
-extern uint8_t EPD_BUFFER[EPD_BUFSIZE];
-extern uint8_t EPD_REDBUFFER[EPD_REDBUFSIZE];
-
-Adafruit_IL91874::Adafruit_IL91874(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(SID, SCLK, DC, RST, CS, BUSY) {
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
+	bw_buf = (uint8_t *)malloc(width * height / 8);
+	red_buf = (uint8_t *)malloc(width * height / 8);
 #endif
+	bw_bufsize = width * height / 8;
+	red_bufsize = bw_bufsize;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL91874::Adafruit_IL91874(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(DC, RST, CS, BUSY, SRCS) {
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(width, height, DC, RST, CS, BUSY, SRCS) {
 #else
-Adafruit_IL91874::Adafruit_IL91874(int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(DC, RST, CS, BUSY) {
-	#endif
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
+	bw_buf = (uint8_t *)malloc(width * height / 8);
+	red_buf = (uint8_t *)malloc(width * height / 8);
+#endif
+	bw_bufsize = width * height / 8;
+	red_bufsize = bw_bufsize;
 }
 
 void Adafruit_IL91874::begin(bool reset)
@@ -83,16 +86,11 @@ void Adafruit_IL91874::powerUp()
 	buf[0] = 0x29;
 	EPD_command(IL91874_PLL, buf, 1);
 
-#if defined(IL91874_104_212)
-	buf[0] = 0x68;
-	buf[1] = 0x00;
-	buf[2] = 0xD4;
-#elif defined(IL91874_152_152)
-	buf[0] = 0x98;
-	buf[1] = 0x00;
-	buf[2] = 0x98;
-#endif
-	EPD_command(IL91874_RESOLUTION, buf, 3);
+	buf[0] = height() & 0xFF;
+	buf[1] = (height() >> 8) & 0xFF;
+	buf[2] = width() & 0xFF;
+	buf[3] = (width() >> 8) & 0xFF;
+	EPD_command(IL91874_RESOLUTION, buf, 4);
 			
 	buf[0] = 0x0A;
 	EPD_command(IL91874_VCM_DC_SETTING, buf, 1);
@@ -119,7 +117,7 @@ void Adafruit_IL91874::display()
 	
 	dcHigh();
 	
-	for(uint16_t i=0; i<EPD_BUFSIZE; i++){
+	for(uint16_t i=0; i<bw_bufsize; i++){
 		c = fastSPIwrite(c);
 	}
 	csHigh();
@@ -132,8 +130,8 @@ void Adafruit_IL91874::display()
 	fastSPIwrite(K640_READ);
 	
 	uint8_t b[2];
-	b[0] = (EPD_BUFSIZE >> 8);
-	b[1] = (EPD_BUFSIZE & 0xFF);
+	b[0] = (bw_bufsize >> 8);
+	b[1] = (bw_bufsize & 0xFF);
 	//send address
 	fastSPIwrite(b[0]);
 	fastSPIwrite(b[1]);
@@ -143,7 +141,7 @@ void Adafruit_IL91874::display()
 	
 	dcHigh();
 	
-	for(uint16_t i=0; i<EPD_REDBUFSIZE; i++){
+	for(uint16_t i=0; i<red_bufsize; i++){
 		c = fastSPIwrite(c);
 	}
 	csHigh();
@@ -154,16 +152,16 @@ void Adafruit_IL91874::display()
 	EPD_command(EPD_RAM_BW, false);
 	dcHigh();
 
-	for(uint16_t i=0; i<EPD_BUFSIZE; i++){
-		fastSPIwrite(EPD_BUFFER[i]);
+	for(uint16_t i=0; i<bw_bufsize; i++){
+		fastSPIwrite(bw_buf[i]);
 	}
 	csHigh();
 	
 	EPD_command(EPD_RAM_RED, false);
 	dcHigh();
 		
-	for(uint16_t i=0; i<EPD_REDBUFSIZE; i++){
-		fastSPIwrite(EPD_REDBUFFER[i]);
+	for(uint16_t i=0; i<red_bufsize; i++){
+		fastSPIwrite(red_buf[i]);
 	}
 	csHigh();
 
@@ -195,21 +193,21 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	//make our buffer happy
 	x = (x == 0 ? 1 : x);
 
-	uint16_t addr = ( (EPD_LCDWIDTH - x) * EPD_LCDHEIGHT + y)/8;
+	uint16_t addr = ( (width() - x) * height() + y)/8;
 
 #ifdef USE_EXTERNAL_SRAM
 	if(color == EPD_RED){
 		//red is written after bw
-		addr = addr + EPD_BUFSIZE;
+		addr = addr + bw_bufsize;
 	}
 	uint8_t c = sram.read8(addr);
 	pBuf = &c;
 #else
 	if(color == EPD_RED){
-		pBuf = EPD_REDBUFFER + addr;
+		pBuf = red_buf + addr;
 	}
 	else{
-		pBuf = EPD_BUFFER + addr;
+		pBuf = bw_buf + addr;
 	}
 #endif
 	// x is which column
@@ -229,10 +227,10 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_IL91874::clearBuffer()
 {
 #ifdef USE_EXTERNAL_SRAM
-	sram.erase(0x00, EPD_BUFSIZE + EPD_REDBUFSIZE, 0xFF);
+	sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
 #else
-	memset(EPD_BUFFER, 0xFF, EPD_BUFSIZE);
-	memset(EPD_REDBUFFER, 0xFF, EPD_REDBUFSIZE);
+	memset(bw_buf, 0xFF, bw_bufsize);
+	memset(red_buf, 0xFF, red_bufsize);
 #endif
 }
 

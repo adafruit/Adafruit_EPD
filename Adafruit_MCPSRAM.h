@@ -7,11 +7,11 @@
 
 #define K640_SEQUENTIAL_MODE (1 << 6)
 
-class Adafruit_23k640 {
+class Adafruit_MCPSRAM {
  public:
-	Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs);
-	Adafruit_23k640(int8_t cs);
-	~Adafruit_23k640() {}
+	Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t cs);
+	Adafruit_MCPSRAM(int8_t cs);
+	~Adafruit_MCPSRAM() {}
 		
 	void begin();
 	

@@ -1,10 +1,10 @@
-﻿#include "Adafruit_23k640.h"
+﻿#include "Adafruit_MCPSRAM.h"
 
 #include <Arduino.h>
 
 #include <SPI.h>
 
-Adafruit_23k640::Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs)
+Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t cs)
 {
 	_mosi = mosi;
 	_miso = miso;
@@ -13,13 +13,13 @@ Adafruit_23k640::Adafruit_23k640(int8_t mosi, int8_t miso, int8_t sck, int8_t cs
 	hwSPI = false;
 }
 
-Adafruit_23k640::Adafruit_23k640(int8_t cs)
+Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t cs)
 {
 	_cs = cs;
 	hwSPI = true;
 }
 
-void Adafruit_23k640::begin()
+void Adafruit_MCPSRAM::begin()
 {
 	 pinMode(_cs, OUTPUT);
 #ifdef HAVE_PORTREG
@@ -43,9 +43,7 @@ void Adafruit_23k640::begin()
       }
     if (hwSPI){
       SPI.begin();
-#ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
-#else
+#ifndef SPI_HAS_TRANSACTION
       SPI.setClockDivider (4);
 #endif
 	}
@@ -75,7 +73,7 @@ csHigh();
 
 }
 
-void Adafruit_23k640::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
+void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
 {
 csLow();
 
@@ -137,7 +135,7 @@ for(int i=0; i<num; i++){
 csHigh();
 }
 
-void Adafruit_23k640::read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
+void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
 {
 
 csLow();
@@ -195,26 +193,26 @@ for(int i=0; i<num; i++){
 csHigh();
 }
 	
-uint8_t Adafruit_23k640::read8(uint16_t addr, uint8_t reg)
+uint8_t Adafruit_MCPSRAM::read8(uint16_t addr, uint8_t reg)
 {
 	uint8_t c;
 	this->read(addr, &c, 1, reg);
 	return c;
 }
 
-uint16_t Adafruit_23k640::read16(uint16_t addr)
+uint16_t Adafruit_MCPSRAM::read16(uint16_t addr)
 {
 	uint8_t b[2];
 	this->read(addr, b, 2);
 	return ((uint16_t)b[0] << 8) | b[1];
 }
 
-void Adafruit_23k640::write8(uint16_t addr, uint8_t val, uint8_t reg)
+void Adafruit_MCPSRAM::write8(uint16_t addr, uint8_t val, uint8_t reg)
 {
 	this->write(addr, &val, 1, reg);
 }
 
-void Adafruit_23k640::write16(uint16_t addr, uint16_t val)
+void Adafruit_MCPSRAM::write16(uint16_t addr, uint16_t val)
 {
 	uint8_t b[2];
 	b[0] = (val >> 8);
@@ -222,7 +220,7 @@ void Adafruit_23k640::write16(uint16_t addr, uint16_t val)
 	this->write(addr, b, 2);
 }
 
-void Adafruit_23k640::erase(uint16_t addr, uint16_t length, uint8_t val)
+void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val)
 {
 	csLow();
 	//write command and address
@@ -282,8 +280,11 @@ void Adafruit_23k640::erase(uint16_t addr, uint16_t length, uint8_t val)
 	csHigh();
 }
 
-void Adafruit_23k640::csHigh()
+void Adafruit_MCPSRAM::csHigh()
 {
+#ifdef SPI_HAS_TRANSACTION
+      SPI.endTransaction();
+#endif
 #ifdef HAVE_PORTREG
 	*csport |= cspinmask;
 #else
@@ -291,8 +292,11 @@ void Adafruit_23k640::csHigh()
 #endif
 }
 
-void Adafruit_23k640::csLow()
+void Adafruit_MCPSRAM::csLow()
 {
+#ifdef SPI_HAS_TRANSACTION
+      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+#endif	
 #ifdef HAVE_PORTREG
 	*csport &= ~cspinmask;
 #else
