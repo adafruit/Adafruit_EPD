@@ -10,7 +10,7 @@
 Adafruit_IL91874 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-//Adafruit_IL91874 display(104, 212 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+//Adafruit_IL91874 display(212, 104 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 void setup() {
   display.begin();
@@ -24,7 +24,7 @@ void setup() {
     display.drawLine(0, 0, i, display.height()-1, color);
   }
 
-  color = EPD_WHITE;
+  color = EPD_RED;
   for (int16_t i=0; i<display.height(); i+=4) {
   if(i == 64) color = EPD_BLACK;
   if(i == 128) color = EPD_RED;

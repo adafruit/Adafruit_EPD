@@ -36,7 +36,7 @@
 Adafruit_IL91874 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-//Adafruit_IL91874 display(104, 212 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+//Adafruit_IL91874 display(212, 104 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 void setup(void) {
   Serial.begin(9600);
