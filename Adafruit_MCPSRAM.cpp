@@ -295,7 +295,7 @@ void Adafruit_MCPSRAM::csHigh()
 void Adafruit_MCPSRAM::csLow()
 {
 #ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
 #endif	
 #ifdef HAVE_PORTREG
 	*csport &= ~cspinmask;

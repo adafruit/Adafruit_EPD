@@ -33,10 +33,13 @@
 #define SD_CS 4
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-Adafruit_IL91874 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+//Adafruit_IL0373 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-//Adafruit_IL91874 display(212, 104 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+Adafruit_IL0373 display(212, 104 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+
+/* Uncomment the following line if you are using 2.7" tricolor EPD */
+//Adafruit_IL91874 display(264, 176 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
 
 void setup(void) {
   Serial.begin(9600);

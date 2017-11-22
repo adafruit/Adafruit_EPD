@@ -88,6 +88,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs, busy;
   bool blackInverted, redInverted;
   int bw_bufsize, red_bufsize;
+  bool singleByteTxns;
 
 #ifndef USE_EXTERNAL_SRAM
   uint8_t *bw_buf;
@@ -118,5 +119,7 @@ class Adafruit_EPD : public Adafruit_GFX {
 #include "Adafruit_IL0376F.h"
 #include "Adafruit_IL91874.h"
 #include "Adafruit_IL0398.h"
+#include "Adafruit_IL0371.h"
+#include "Adafruit_IL0373.h"
 
 #endif /* _Adafruit_EPD_H_ */

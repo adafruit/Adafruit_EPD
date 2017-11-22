@@ -47,6 +47,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_
   sid = SID;
   busy = BUSY;
   hwSPI = false;
+  singleByteTxns = false;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
@@ -61,6 +62,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t 
   cs = CS;
   busy = BUSY;
   hwSPI = true;
+  singleByteTxns = false;
 }
 
 Adafruit_EPD::~Adafruit_EPD()
@@ -110,9 +112,9 @@ void Adafruit_EPD::begin(bool reset) {
 #endif
     }
 
+    pinMode(rst, OUTPUT);
   if ((reset) && (rst >= 0)) {
     // Setup reset pin direction
-    pinMode(rst, OUTPUT);
     digitalWrite(rst, HIGH);
     // VDD (3.3V) goes high at start, lets just chill for a ms
     delay(1);
@@ -143,7 +145,7 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 	if(end){
 		csHigh();
 	}
-	
+
 	return data;
 }
 
@@ -159,9 +161,15 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
 }
 
 inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
-
   if(hwSPI) {
-    return SPI.transfer(d);
+    if(singleByteTxns){
+      uint8_t b;
+      csLow();
+      b = SPI.transfer(d);
+      csHigh();
+      return b;
+    }
+    else return SPI.transfer(d);
   } else {
 	  //TODO: return read data for software SPI
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
@@ -200,7 +208,7 @@ void Adafruit_EPD::csHigh()
 void Adafruit_EPD::csLow()
 {
 #ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
 #endif
 #ifdef HAVE_PORTREG
 	*csport &= ~cspinmask;
