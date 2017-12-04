@@ -1,6 +1,8 @@
 ﻿#include "Adafruit_EPD.h"
 #include "Adafruit_IL91874.h"
 
+#define BUSY_WAIT 500
+
 const unsigned char lut_vcomDC[] =
 {
 0x00	,0x00,
@@ -55,7 +57,7 @@ const unsigned char lut_wb[] ={
 					};
 
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
 #else
 Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 8);
@@ -67,7 +69,7 @@ Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCL
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(width, height, DC, RST, CS, BUSY, SRCS) {
+Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 #else
 Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 8);
@@ -75,6 +77,14 @@ Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST,
 #endif
 	bw_bufsize = width * height / 8;
 	red_bufsize = bw_bufsize;
+}
+
+void Adafruit_IL91874::busy_wait(void)
+{
+	if(busy > -1)
+		while(!digitalRead(busy)) delay(1); //wait for busy high
+	else
+		delay(BUSY_WAIT);
 }
 
 void Adafruit_IL91874::begin(bool reset)
@@ -88,13 +98,13 @@ void Adafruit_IL91874::update()
 {
 	EPD_command(IL91874_DISPLAY_REFRESH);
 			
-	while(!digitalRead(busy)) delay(1); //wait for busy low
+	busy_wait();
 	
 	//power off
 	uint8_t buf[4];
 
 	EPD_command(IL91874_POWER_OFF);
-	while(!digitalRead(busy)) delay(1); //wait for busy low
+	busy_wait();
 
 	buf[0] = 0xA5;
 	EPD_command(IL91874_DEEP_SLEEP, buf, 1);
@@ -147,7 +157,7 @@ void Adafruit_IL91874::powerUp()
 	EPD_command(IL91874_PDRF, buf, 1);
 
 	EPD_command(IL91874_POWER_ON);
-	while(!digitalRead(busy)) delay(1); //wait for busy low
+	busy_wait();
 	
 	buf[0] = 0xAF;
 	EPD_command(IL91874_PANEL_SETTING, buf, 1);

@@ -1,8 +1,10 @@
 #include "Adafruit_EPD.h"
 #include "Adafruit_IL0398.h"
 
+#define BUSY_WAIT 500
+
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
 #else
 Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 8);
@@ -14,7 +16,7 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(width, height, DC, RST, CS, BUSY, SRCS) {
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 #else
 Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 8);
@@ -22,6 +24,14 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, i
 #endif
 	bw_bufsize = width * height / 8;
 	red_bufsize = bw_bufsize;
+}
+
+void Adafruit_IL0398::busy_wait(void)
+{
+	if(busy > -1)
+		while(digitalRead(busy)); //wait for busy low
+	else
+		delay(BUSY_WAIT);
 }
 
 void Adafruit_IL0398::begin(bool reset)
@@ -39,7 +49,7 @@ void Adafruit_IL0398::update()
 {
 	EPD_command(IL0398_DISPLAY_REFRESH);
 			
-	while(digitalRead(busy)); //wait for busy low
+	busy_wait();
 	
 	delay(10000);
 	
@@ -59,7 +69,7 @@ void Adafruit_IL0398::powerUp()
 	uint8_t buf[3];
 	 
 	EPD_command(IL0398_POWER_ON);
-	while(digitalRead(busy)); //wait for busy low
+	busy_wait();
 	delay(200);
 	
 	buf[0] = 0x0F;

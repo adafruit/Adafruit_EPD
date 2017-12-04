@@ -1,19 +1,19 @@
 #include "Adafruit_EPD.h"
 
-#define OLED_DC     6
-#define OLED_CS     7
-#define OLED_RESET  8
-#define OLED_BUSY   5
-#define SRAM_CS     10
+#define EPD_DC     9
+#define EPD_CS     10
+#define EPD_RESET  3
+#define EPD_BUSY   5
+#define SRAM_CS     8
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-//Adafruit_IL0373 display(152, 152 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+//Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-Adafruit_IL0373 display(212, 104 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+//Adafruit_IL0373 display(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.7" tricolor EPD */
-//Adafruit_IL91874 display(264, 176 ,OLED_DC, OLED_RESET, OLED_CS, OLED_BUSY, SRAM_CS);
+Adafruit_IL91874 display(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
 void setup() {
   display.begin();

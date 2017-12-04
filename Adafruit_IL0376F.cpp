@@ -1,6 +1,8 @@
 ﻿#include "Adafruit_EPD.h"
 #include "Adafruit_IL0376F.h"
 
+#define BUSY_WAIT 500
+
 const uint8_t lut_vcom0[] ={	0x0E	,0x14	,0x01	,0x0A	,0x06	,0x04	,0x0A	,0x0A	,0x0F	,0x03	,0x03	,0x0C	,0x06	,0x0A	,0x00	};
 const uint8_t lut_w[] ={	0x0E	,0x14	,0x01	,0x0A	,0x46	,0x04	,0x8A	,0x4A	,0x0F	,0x83	,0x43	,0x0C	,0x86	,0x0A	,0x04	};
 const uint8_t lut_b[] ={	0x0E	,0x14	,0x01	,0x8A	,0x06	,0x04	,0x8A	,0x4A	,0x0F	,0x83	,0x43	,0x0C	,0x06	,0x4A	,0x04	};
@@ -11,7 +13,7 @@ const uint8_t lut_red0[] ={	0x83	,0x5D	,0x01	,0x81	,0x48	,0x23	,0x77	,0x77	,0x01
 const uint8_t lut_red1[] ={	0x03	,0x1D	,0x01	,0x01	,0x08	,0x23	,0x37	,0x37	,0x01	,0x00	,0x00	,0x00	,0x00	,0x00	,0x00	};
 
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY, SRCS, MISO){
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
 #else
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 4);
@@ -23,7 +25,7 @@ Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCL
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_EPD(width, height, DC, RST, CS, BUSY, SRCS) {
+Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 #else
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 4);
@@ -33,11 +35,19 @@ Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST,
 	red_bufsize = width * height / 8;
 }
 
+void Adafruit_IL0376F::busy_wait(void)
+{
+	if(busy > -1)
+		while(digitalRead(busy)); //wait for busy low
+	else
+		delay(BUSY_WAIT);
+}
+
 void Adafruit_IL0376F::begin(bool reset)
 {
 	uint8_t buf[5];
 	Adafruit_EPD::begin(reset);
-  	while(digitalRead(busy)); //wait for busy low
+  	busy_wait();
 		
 	buf[0] = 0x07;
 	buf[1] = 0x00;
@@ -55,8 +65,8 @@ void Adafruit_IL0376F::update()
 {
 	EPD_command(IL0376F_DISPLAY_REFRESH);
 			
-	while(digitalRead(busy)); //wait for busy low
-	
+	busy_wait();
+
 	delay(10000);
 	
 	//power off
@@ -81,7 +91,7 @@ void Adafruit_IL0376F::powerUp()
 {
 	uint8_t buf[5];
 	EPD_command(IL0376F_POWER_ON);
-	while(digitalRead(busy)); //wait for busy low
+	busy_wait();
 	delay(200);
 	
 	buf[0] = 0xCF;

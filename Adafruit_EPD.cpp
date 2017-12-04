@@ -35,7 +35,7 @@ All text above, and the splash screen below must be included in any EPD_REDistri
 #include "Adafruit_EPD.h"
 
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO) : Adafruit_GFX(width, height),
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(SID, MISO, SCLK, SRCS) {
 #else
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
@@ -52,7 +52,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS) : Adafruit_GFX(width, height),
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(SRCS) {
 #else
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
@@ -125,7 +125,8 @@ void Adafruit_EPD::begin(bool reset) {
     // bring out of reset
     digitalWrite(rst, HIGH);
   }
-  pinMode(busy, INPUT);
+  if(busy > -1)
+    pinMode(busy, INPUT);
 }
 
 void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)

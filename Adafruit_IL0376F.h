@@ -41,13 +41,13 @@
 class Adafruit_IL0376F : public Adafruit_EPD {
 	public:
 
-#ifdef USE_EXTERNAL_SRAM
-	Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS, int8_t MISO);
-	Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY, int8_t SRCS);
-#else
-	Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
-	Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY);
-#endif
+	#ifdef USE_EXTERNAL_SRAM
+	  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
+	  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
+	#else
+	  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
+	  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
+	#endif
 
 	void begin(bool reset=true);
 	void powerUp();
@@ -61,6 +61,8 @@ class Adafruit_IL0376F : public Adafruit_EPD {
 	
 	void clearBuffer();
 	void clearDisplay();
+protected:
+	void busy_wait();
 };
 
 #endif
