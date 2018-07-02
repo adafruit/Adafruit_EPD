@@ -31,6 +31,11 @@
 #define IL91874_RESOLUTION 0x61
 #define IL91874_VCM_DC_SETTING 0x82
 
+/**************************************************************************/
+/*!
+    @brief  Class for interfacing with IL0373 EPD drivers
+*/
+/**************************************************************************/
 class Adafruit_IL91874 : public Adafruit_EPD {
 	public:
 
@@ -48,9 +53,7 @@ class Adafruit_IL91874 : public Adafruit_EPD {
 	void drawPixel(int16_t x, int16_t y, uint16_t color);
 	
 	void display();
-	void invertDisplay(bool black = true, bool red = true);
 	void update();
-	void sleep();
 	
 	void clearBuffer();
 	void clearDisplay();

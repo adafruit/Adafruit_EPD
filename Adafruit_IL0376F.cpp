@@ -13,8 +13,36 @@ const uint8_t lut_red0[] ={	0x83	,0x5D	,0x01	,0x81	,0x48	,0x23	,0x77	,0x77	,0x01
 const uint8_t lut_red1[] ={	0x03	,0x1D	,0x01	,0x01	,0x08	,0x23	,0x37	,0x37	,0x01	,0x00	,0x00	,0x00	,0x00	,0x00	,0x00	};
 
 #ifdef USE_EXTERNAL_SRAM
+/**************************************************************************/
+/*!
+    @brief constructor if using external SRAM chip and software SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param SID the SID pin to use
+    @param SCLK the SCLK pin to use
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param SRCS the SRAM chip select pin to use
+    @param MISO the MISO pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
 #else
+/**************************************************************************/
+/*!
+    @brief constructor if using on-chip RAM and software SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param SID the SID pin to use
+    @param SCLK the SCLK pin to use
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 4);
 	red_buf = (uint8_t *)malloc(width * height / 8);
@@ -25,8 +53,31 @@ Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCL
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 #ifdef USE_EXTERNAL_SRAM
+/**************************************************************************/
+/*!
+    @brief constructor if using on-chip RAM and hardware SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param SRCS the SRAM chip select pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 #else
+/**************************************************************************/
+/*!
+    @brief constructor if using on-chip RAM and hardware SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
 Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
 	bw_buf = (uint8_t *)malloc(width * height / 4);
 	red_buf = (uint8_t *)malloc(width * height / 8);
@@ -35,6 +86,11 @@ Adafruit_IL0376F::Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST,
 	red_bufsize = width * height / 8;
 }
 
+/**************************************************************************/
+/*!
+    @brief wait for busy signal to end
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::busy_wait(void)
 {
 	if(busy > -1)
@@ -43,6 +99,12 @@ void Adafruit_IL0376F::busy_wait(void)
 		delay(BUSY_WAIT);
 }
 
+/**************************************************************************/
+/*!
+    @brief begin communication with and set up the display.
+    @param reset if true the reset pin will be toggled.
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::begin(bool reset)
 {
 	uint8_t buf[5];
@@ -61,6 +123,11 @@ void Adafruit_IL0376F::begin(bool reset)
 	EPD_command(IL0376F_BOOSTER_SOFT_START, buf, 3);
 }
 
+/**************************************************************************/
+/*!
+    @brief signal the display to update
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::update()
 {
 	EPD_command(IL0376F_DISPLAY_REFRESH);
@@ -87,6 +154,11 @@ void Adafruit_IL0376F::update()
 	EPD_command(IL0376F_POWER_OFF);
 }
 
+/**************************************************************************/
+/*!
+    @brief start up the display
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::powerUp()
 {
 	uint8_t buf[5];
@@ -123,6 +195,11 @@ void Adafruit_IL0376F::powerUp()
 	EPD_command(IL0376F_RED1_LUT, lut_red1, 15);
 }
 
+/**************************************************************************/
+/*!
+    @brief show the data stored in the buffer on the display
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::display()
 {
 	powerUp();
@@ -194,7 +271,15 @@ void Adafruit_IL0376F::display()
 #endif
 	update();
 }
-		
+
+/**************************************************************************/
+/*!
+    @brief draw a single pixel on the screen
+	@param x the x axis position
+	@param y the y axis position
+	@param color the color of the pixel
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
 	return;
@@ -265,6 +350,11 @@ void Adafruit_IL0376F::drawPixel(int16_t x, int16_t y, uint16_t color) {
 			
 }
 
+/**************************************************************************/
+/*!
+    @brief clear all data buffers
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::clearBuffer()
 {
 	#ifdef USE_EXTERNAL_SRAM
@@ -275,6 +365,11 @@ void Adafruit_IL0376F::clearBuffer()
 	#endif
 }
 
+/**************************************************************************/
+/*!
+    @brief clear the display twice to remove any spooky ghost images
+*/
+/**************************************************************************/
 void Adafruit_IL0376F::clearDisplay() {
 	clearBuffer();
 	display();

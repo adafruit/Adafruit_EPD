@@ -4,6 +4,15 @@
 
 #include <SPI.h>
 
+/**************************************************************************/
+/*!
+    @brief  Class constructor when using software SPI
+		@param mosi master out slave in pin
+		@param miso master in slave out pin
+		@param sck serial clock pin
+		@param  cs chip select pin
+*/
+/**************************************************************************/
 Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t cs)
 {
 	_mosi = mosi;
@@ -13,12 +22,23 @@ Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t 
 	hwSPI = false;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Class constructor when using hardware SPI
+		@param cs chip select pin
+*/
+/**************************************************************************/
 Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t cs)
 {
 	_cs = cs;
 	hwSPI = true;
 }
 
+/**************************************************************************/
+/*!
+    @brief begin communication with the SRAM chip
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::begin()
 {
 	 pinMode(_cs, OUTPUT);
@@ -73,6 +93,15 @@ csHigh();
 
 }
 
+/**************************************************************************/
+/*!
+    @brief  write data to the specific address
+		@param addr the address to write to
+		@param buf the data buffer to write
+		@param num the number of bytes to write
+		@param reg pass K640_WRSR if you are writing the status register, K640_WRITE if you are writing data. Defaults to K640_WRITE.
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
 {
 csLow();
@@ -118,10 +147,10 @@ for(int i=0; i<num; i++){
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
       *clkport &= ~clkpinmask;
-      if(d & bit) *mosiport |=  mosipinmask;
-      else        *mosiport &= ~mosipinmask;
-      *clkport |=  clkpinmask;
-#else
+     readt |=  mosipinmask;
+     readt &= ~mosipinmask;
+     readask;
+#elseread
       digitalWrite(_sck, LOW);
       if(d & bit) digitalWrite(_mosi, HIGH);
       else        digitalWrite(_mosi, LOW);
@@ -135,6 +164,15 @@ for(int i=0; i<num; i++){
 csHigh();
 }
 
+/**************************************************************************/
+/*!
+    @brief  read data at the specific address
+		@param addr the address to read from
+		@param buf the data buffer to read into
+		@param num the number of bytes to read
+		@param reg pass K640_RDSR if you are reading the status register, K640_READ if you are reading data. Defaults to K640_READ.
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
 {
 
@@ -192,7 +230,15 @@ for(int i=0; i<num; i++){
 }
 csHigh();
 }
-	
+
+/**************************************************************************/
+/*!
+    @brief 1 byte of data at the specified address
+		@param addr the address to read data at
+		@param reg K640_READ if reading data, K640_RDSR if reading a status register.
+		@returns the read data byte.
+*/
+/**************************************************************************/
 uint8_t Adafruit_MCPSRAM::read8(uint16_t addr, uint8_t reg)
 {
 	uint8_t c;
@@ -200,6 +246,13 @@ uint8_t Adafruit_MCPSRAM::read8(uint16_t addr, uint8_t reg)
 	return c;
 }
 
+/**************************************************************************/
+/*!
+    @brief read 2 bytes of data at the specified address
+		@param addr the address to read
+		@returns the read data bytes as a 16 bit unsigned integer.
+*/
+/**************************************************************************/
 uint16_t Adafruit_MCPSRAM::read16(uint16_t addr)
 {
 	uint8_t b[2];
@@ -207,11 +260,26 @@ uint16_t Adafruit_MCPSRAM::read16(uint16_t addr)
 	return ((uint16_t)b[0] << 8) | b[1];
 }
 
+/**************************************************************************/
+/*!
+    @brief write 1 byte of data at the specified address.
+		@param addr the address to write to
+		@param val the value to write
+		@param reg K640_WRITE if writing data, K640_WRSR if writing a status register.
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::write8(uint16_t addr, uint8_t val, uint8_t reg)
 {
 	this->write(addr, &val, 1, reg);
 }
 
+/**************************************************************************/
+/*!
+    @brief write 2 bytes of data at the specified address.
+		@param addr the address to write to
+		@param val the value to write
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::write16(uint16_t addr, uint16_t val)
 {
 	uint8_t b[2];
@@ -220,6 +288,14 @@ void Adafruit_MCPSRAM::write16(uint16_t addr, uint16_t val)
 	this->write(addr, b, 2);
 }
 
+/**************************************************************************/
+/*!
+    @brief erase a block of data.
+		@param addr the address to start the erase at
+		@param length the number of bytes to fill
+		@param val the value to set the data to.
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val)
 {
 	csLow();
@@ -280,6 +356,11 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val)
 	csHigh();
 }
 
+/**************************************************************************/
+/*!
+    @brief set chip select pin high
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::csHigh()
 {
 #ifdef SPI_HAS_TRANSACTION
@@ -292,6 +373,11 @@ void Adafruit_MCPSRAM::csHigh()
 #endif
 }
 
+/**************************************************************************/
+/*!
+    @brief set chip select pin low
+*/
+/**************************************************************************/
 void Adafruit_MCPSRAM::csLow()
 {
 #ifdef SPI_HAS_TRANSACTION

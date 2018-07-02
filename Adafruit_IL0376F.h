@@ -38,6 +38,11 @@
 #define IL0376F_RESOLUTION 0x61
 #define IL0376F_VCM_DC_SETTING 0x82
 
+/**************************************************************************/
+/*!
+    @brief  Class for interfacing with IL0376F EPD drivers
+*/
+/**************************************************************************/
 class Adafruit_IL0376F : public Adafruit_EPD {
 	public:
 
@@ -55,9 +60,7 @@ class Adafruit_IL0376F : public Adafruit_EPD {
 	void drawPixel(int16_t x, int16_t y, uint16_t color);
 	
 	void display();
-	void invertDisplay(bool black = true, bool red = true);
 	void update();
-	void sleep();
 	
 	void clearBuffer();
 	void clearDisplay();
