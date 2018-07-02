@@ -81,8 +81,6 @@ class Adafruit_EPD : public Adafruit_GFX {
   void invertDisplay(bool black = true, bool red = true);
   void update();
   void sleep();
-  
-  virtual void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 
  protected:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs, busy;

@@ -235,9 +235,3 @@ void Adafruit_EPD::dcLow()
 	digitalWrite(dc, LOW);
 #endif
 }
-
-void Adafruit_EPD::drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
-		startWrite();
-        writeLine(x0, y0, x1, y1, color);
-        endWrite();
-}

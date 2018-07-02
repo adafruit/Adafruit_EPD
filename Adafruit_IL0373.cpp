@@ -76,7 +76,7 @@ void Adafruit_IL0373::update()
 	
 	EPD_command(IL0373_POWER_OFF);
 	
-	delay(10000);
+	delay(2000);
 }
 
 void Adafruit_IL0373::powerUp()
