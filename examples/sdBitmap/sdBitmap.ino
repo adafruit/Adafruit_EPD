@@ -58,7 +58,7 @@ void setup(void) {
 
   
   display.setRotation(1);
-  bmpDraw("face2.bmp",0,0);
+  bmpDraw((char *)"face2.bmp",0,0);
   delay(3000);
 
 }
@@ -100,7 +100,7 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
   Serial.println('\'');
 
   // Open requested file on SD card
-  if ((bmpFile = SD.open(filename)) == NULL) {
+  if ((bmpFile = SD.open(filename)) == (int)NULL) {
     Serial.print(F("File not found"));
     return;
   }
@@ -172,7 +172,7 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
               g = sdbuffer[buffidx++];
               r = sdbuffer[buffidx++];
 
-              uint8_t c;
+              uint8_t c = 0;
               if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = EPD_BLACK; //try to infer black
               else if(r == 0xFF && g == 0xFF && b == 0xFF) c = EPD_WHITE;
               else if(r == 0xFF) c = EPD_RED; //try to infer red color
