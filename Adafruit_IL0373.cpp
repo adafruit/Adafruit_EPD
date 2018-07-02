@@ -157,7 +157,7 @@ void Adafruit_IL0373::update()
 /**************************************************************************/
 void Adafruit_IL0373::powerUp()
 {
-	uint8_t buf[3];
+	uint8_t buf[4];
 	 
 	EPD_command(IL0373_POWER_ON);
 	busy_wait();

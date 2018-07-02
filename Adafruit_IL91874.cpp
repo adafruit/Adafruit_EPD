@@ -151,7 +151,6 @@ void Adafruit_IL91874::busy_wait(void)
 /**************************************************************************/
 void Adafruit_IL91874::begin(bool reset)
 {
-	uint8_t buf[5];
 	singleByteTxns = true;
 	Adafruit_EPD::begin(reset);
 }

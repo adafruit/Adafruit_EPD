@@ -296,6 +296,7 @@ inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
       digitalWrite(sclk, HIGH);
 #endif
     }
+    return 0;
   }
 }
 
