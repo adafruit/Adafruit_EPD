@@ -34,7 +34,6 @@ void setup(void) {
   Serial.print("Hello! EPD Test");
 
   epd.begin();
-  epd.clearBuffer();
 
   Serial.println("Initialized");
 
@@ -50,6 +49,8 @@ void setup(void) {
   epd.clearBuffer();
   epd.drawPixel(epd.width()/2, epd.height()/2, EPD_BLACK);
 
+  testtriangles();
+  
   // line draw test
   testlines(EPD_BLACK);
 
@@ -65,8 +66,6 @@ void setup(void) {
   testdrawcircles(10, EPD_BLACK);
 
   testroundrects();
-
-  testtriangles();
 
   mediabuttons();
 
