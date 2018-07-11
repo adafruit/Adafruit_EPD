@@ -89,7 +89,7 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, i
 void Adafruit_IL0373::busy_wait(void)
 {
 	if(busy > -1)
-		while(digitalRead(busy)); //wait for busy low
+		while(!digitalRead(busy)); //wait for busy low
 	else
 		delay(BUSY_WAIT);
 }
@@ -105,15 +105,16 @@ void Adafruit_IL0373::begin(bool reset)
 	uint8_t buf[5];
 	Adafruit_EPD::begin(reset);
 			
-	buf[0] = 0x07;
+	buf[0] = 0x03;
 	buf[1] = 0x00;
-	buf[2] = 0x0A;
-	buf[3] = 0x00;
-	EPD_command(IL0373_POWER_SETTING, buf, 4);
+	buf[2] = 0x2b;
+	buf[3] = 0x2b;
+	buf[4] = 0x09;
+	EPD_command(IL0373_POWER_SETTING, buf, 5);
 		
-	buf[0] = 0x07;
-	buf[1] = 0x07;
-	buf[2] = 0x07;
+	buf[0] = 0x17;
+	buf[1] = 0x17;
+	buf[2] = 0x17;
 	EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3);
 }
 
@@ -128,8 +129,6 @@ void Adafruit_IL0373::update()
 	
 	busy_wait();
 	
-	delay(10000);
-	
 	//power off
 	uint8_t buf[4];
 	
@@ -138,12 +137,6 @@ void Adafruit_IL0373::update()
 	
 	buf[0] = 0x00;
 	EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
-	
-	buf[0] = 0x02;
-	buf[1] = 0x00;
-	buf[2] = 0x00;
-	buf[3] = 0x00;
-	EPD_command(IL0373_POWER_SETTING);
 	
 	EPD_command(IL0373_POWER_OFF);
 	
