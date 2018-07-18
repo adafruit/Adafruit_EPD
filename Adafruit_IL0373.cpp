@@ -88,10 +88,10 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, i
 /**************************************************************************/
 void Adafruit_IL0373::busy_wait(void)
 {
-	if(busy > -1)
-		while(!digitalRead(busy)); //wait for busy low
-	else
-		delay(BUSY_WAIT);
+  if (busy >= 0)
+    while(!digitalRead(busy)); //wait for busy low
+  else
+    delay(BUSY_WAIT);
 }
 
 /**************************************************************************/
@@ -102,20 +102,20 @@ void Adafruit_IL0373::busy_wait(void)
 /**************************************************************************/
 void Adafruit_IL0373::begin(bool reset)
 {
-	uint8_t buf[5];
-	Adafruit_EPD::begin(reset);
-			
-	buf[0] = 0x03;
-	buf[1] = 0x00;
-	buf[2] = 0x2b;
-	buf[3] = 0x2b;
-	buf[4] = 0x09;
-	EPD_command(IL0373_POWER_SETTING, buf, 5);
-		
-	buf[0] = 0x17;
-	buf[1] = 0x17;
-	buf[2] = 0x17;
-	EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3);
+  uint8_t buf[5];
+  Adafruit_EPD::begin(reset);
+  
+  buf[0] = 0x03;
+  buf[1] = 0x00;
+  buf[2] = 0x2b;
+  buf[3] = 0x2b;
+  buf[4] = 0x09;
+  EPD_command(IL0373_POWER_SETTING, buf, 5);
+  
+  buf[0] = 0x17;
+  buf[1] = 0x17;
+  buf[2] = 0x17;
+  EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3);
 }
 
 /**************************************************************************/
@@ -125,22 +125,22 @@ void Adafruit_IL0373::begin(bool reset)
 /**************************************************************************/
 void Adafruit_IL0373::update()
 {
-	EPD_command(IL0373_DISPLAY_REFRESH);
+  EPD_command(IL0373_DISPLAY_REFRESH);
 	
-	busy_wait();
-	
-	//power off
-	uint8_t buf[4];
-	
-	buf[0] = 0x17;
-	EPD_command(IL0373_CDI, buf, 1);
-	
-	buf[0] = 0x00;
-	EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
-	
-	EPD_command(IL0373_POWER_OFF);
-	
-	delay(2000);
+  busy_wait();
+  
+  //power off
+  uint8_t buf[4];
+  
+  buf[0] = 0x17;
+  EPD_command(IL0373_CDI, buf, 1);
+  
+  buf[0] = 0x00;
+  EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
+  
+  EPD_command(IL0373_POWER_OFF);
+  
+  delay(2000);
 }
 
 /**************************************************************************/
@@ -261,58 +261,54 @@ void Adafruit_IL0373::display()
 */
 /**************************************************************************/
 void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
-	if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
-	return;
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
+    return;
 	
-	uint8_t *pBuf;
-
-	// check rotation, move pixel around if necessary
-	switch (getRotation()) {
-		case 1:
-		EPD_swap(x, y);
-		x = WIDTH - x - 1;
-		break;
-		case 2:
-		x = WIDTH - x - 1;
-		y = HEIGHT - y - 1;
-		break;
-		case 3:
-		EPD_swap(x, y);
-		y = HEIGHT - y - 1;
-		break;
-	}
-	//make our buffer happy
-	x = (x == 0 ? 1 : x);
-
-	uint16_t addr = ( (width() - x) * height() + y)/8;
-
+  uint8_t *pBuf;
+  
+  // check rotation, move pixel around if necessary
+  switch (getRotation()) {
+  case 1:
+    EPD_swap(x, y);
+    x = WIDTH - x - 1;
+    break;
+  case 2:
+    x = WIDTH - x - 1;
+    y = HEIGHT - y - 1;
+    break;
+  case 3:
+    EPD_swap(x, y);
+    y = HEIGHT - y - 1;
+    break;
+  }
+  //make our buffer happy
+  x = (x == 0 ? 1 : x);
+  
+  uint16_t addr = ( (width() - x) * height() + y)/8;
+  
 #ifdef USE_EXTERNAL_SRAM
-	if(color == EPD_RED){
-		//red is written after bw
-		addr = addr + bw_bufsize;
-	}
-	uint8_t c = sram.read8(addr);
-	pBuf = &c;
+  if (color == EPD_RED){
+    addr = addr + bw_bufsize;    //red is written after bw
+  }
+  uint8_t c = sram.read8(addr);
+  pBuf = &c;
 #else
-	if(color == EPD_RED){
-		pBuf = red_buf + addr;
-	}
-	else{
-		pBuf = bw_buf + addr;
-	}
+  if(color == EPD_RED){
+    pBuf = red_buf + addr;
+  } else {
+    pBuf = bw_buf + addr;
+  }
 #endif
-	// x is which column
-	switch (color)
-	{
-		case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
-		case EPD_RED:
-		case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
-		case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
-	}
+  // x is which column
+  switch (color) {
+     case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
+     case EPD_RED:
+     case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
+     case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
+  }
 #ifdef USE_EXTERNAL_SRAM
-	sram.write8(addr, *pBuf);
+  sram.write8(addr, *pBuf);
 #endif
-	
 }
 
 /**************************************************************************/
@@ -323,10 +319,10 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_IL0373::clearBuffer()
 {
 #ifdef USE_EXTERNAL_SRAM
-	sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
+  sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
 #else
-	memset(bw_buf, 0xFF, bw_bufsize);
-	memset(red_buf, 0xFF, red_bufsize);
+  memset(bw_buf, 0xFF, bw_bufsize);
+  memset(red_buf, 0xFF, red_bufsize);
 #endif
 }
 
@@ -336,8 +332,8 @@ void Adafruit_IL0373::clearBuffer()
 */
 /**************************************************************************/
 void Adafruit_IL0373::clearDisplay() {
-	clearBuffer();
-	display();
-	delay(100);
-	display();
+  clearBuffer();
+  display();
+  delay(100);
+  display();
 }

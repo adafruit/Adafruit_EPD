@@ -1,6 +1,6 @@
 /***************************************************
   This is our Bitmap drawing example for the Adafruit EPD Breakout and Shield
-  ----> http://www.adafruit.com/products/xxx
+  ----> http://www.adafruit.com/products/3625
   Check out the links above for our tutorials and wiring diagrams
   Adafruit invests time and resources providing this open source code,
   please support Adafruit and open-source hardware by purchasing
@@ -15,8 +15,7 @@
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include "Adafruit_EPD.h" // Hardware-specific library
-#include <SPI.h>
+#include "Adafruit_EPD.h"    // Hardware-specific library
 #include <SD.h>
 
 // EPD display and SD card will share the hardware SPI interface.
@@ -24,19 +23,19 @@
 // cannot be remapped to alternate pins.  For Arduino Uno,
 // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define EPD_DC     9
 #define EPD_CS     10
-#define EPD_RESET  3
-#define EPD_BUSY   5
+#define EPD_DC      9
 #define SRAM_CS     8
+#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 #define SD_CS 4
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-//Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-Adafruit_IL0373 display(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_IL0373 display(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.7" tricolor EPD */
 //Adafruit_IL91874 display(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
@@ -50,21 +49,19 @@ void setup(void) {
 
   Serial.print("Initializing SD card...");
   if (!SD.begin(SD_CS)) {
-    Serial.println("failed!");
+    Serial.println("SD Card Init failed!");
   }
   Serial.println("OK!");
 
   display.clearBuffer();
-
-  
   display.setRotation(1);
-  bmpDraw((char *)"face2.bmp",0,0);
-  delay(3000);
+  bmpDraw("/blinka.bmp",0,0);
 
 }
 
 void loop() {
   //don't do anything!
+  delay(3000);
 }
 
 // This function opens a Windows Bitmap (BMP) file and
@@ -173,9 +170,13 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
               r = sdbuffer[buffidx++];
 
               uint8_t c = 0;
-              if(r <= 0x7F && g <= 0x7F && b <= 0x7F) c = EPD_BLACK; //try to infer black
-              else if(r == 0xFF && g == 0xFF && b == 0xFF) c = EPD_WHITE;
-              else if(r == 0xFF) c = EPD_RED; //try to infer red color
+              if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
+                 c = EPD_BLACK; // try to infer black
+              } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
+                 c = EPD_WHITE;
+              } else if (r >= 0x80) {
+                c = EPD_RED; //try to infer red color
+              }
               
               display.writePixel(row, col, c);
             } // end pixel

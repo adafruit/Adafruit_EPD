@@ -8,14 +8,13 @@
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include <SPI.h>
 #include "Adafruit_EPD.h"
 
-#define EPD_DC     9
 #define EPD_CS     10
-#define EPD_RESET  3
-#define EPD_BUSY   5
+#define EPD_DC      9
 #define SRAM_CS     8
+#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
 Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);

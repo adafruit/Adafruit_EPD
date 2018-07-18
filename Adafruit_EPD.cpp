@@ -9,7 +9,7 @@
  * Arduino platform.  It is designed specifically to work with the
  * Adafruit EPD breakouts.
  *
- * These displays use SPI to communicate, 6 pins are requiEPD_RED to
+ * These displays use SPI to communicate, 6 pins are required to
  * interface
  *
  * Adafruit invests time and resources providing this open source code,
@@ -67,8 +67,8 @@
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_GFX(width, height),
-sram(SID, MISO, SCLK, SRCS) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t spi_miso, int8_t BUSY) : Adafruit_GFX(width, height),
+sram(spi_mosi, spi_miso, spi_clock, SRCS) {
 #else
 /**************************************************************************/
 /*!
@@ -83,13 +83,13 @@ sram(SID, MISO, SCLK, SRCS) {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
 #endif
   cs = CS;
   rst = RST;
   dc = DC;
-  sclk = SCLK;
-  sid = SID;
+  sclk = spi_clock;
+  sid = spi_mosi;
   busy = BUSY;
   hwSPI = false;
   singleByteTxns = false;
@@ -157,45 +157,44 @@ void Adafruit_EPD::begin(bool reset) {
   redInverted = false;
   
 #ifdef USE_EXTERNAL_SRAM
-	sram.begin();
-	sram.write8(0, K640_SEQUENTIAL_MODE, K640_WRSR);
+  sram.begin();
+  sram.write8(0, K640_SEQUENTIAL_MODE, K640_WRSR);
 #endif
   
   // set pin directions
-    pinMode(dc, OUTPUT);
-    pinMode(cs, OUTPUT);
+  pinMode(dc, OUTPUT);
+  pinMode(cs, OUTPUT);
 #ifdef HAVE_PORTREG
-    csport      = portOutputRegister(digitalPinToPort(cs));
-    cspinmask   = digitalPinToBitMask(cs);
-    dcport      = portOutputRegister(digitalPinToPort(dc));
-    dcpinmask   = digitalPinToBitMask(dc);
+  csport      = portOutputRegister(digitalPinToPort(cs));
+  cspinmask   = digitalPinToBitMask(cs);
+  dcport      = portOutputRegister(digitalPinToPort(dc));
+  dcpinmask   = digitalPinToBitMask(dc);
 #endif
 
-	csHigh();
+  csHigh();
 
-    if (!hwSPI){
-      // set pins for software-SPI
-      pinMode(sid, OUTPUT);
-      pinMode(sclk, OUTPUT);
+  if (!hwSPI){
+    // set pins for software-SPI
+    pinMode(sid, OUTPUT);
+    pinMode(sclk, OUTPUT);
 #ifdef HAVE_PORTREG
-      clkport     = portOutputRegister(digitalPinToPort(sclk));
-      clkpinmask  = digitalPinToBitMask(sclk);
-      mosiport    = portOutputRegister(digitalPinToPort(sid));
-      mosipinmask = digitalPinToBitMask(sid);
+    clkport     = portOutputRegister(digitalPinToPort(sclk));
+    clkpinmask  = digitalPinToBitMask(sclk);
+    mosiport    = portOutputRegister(digitalPinToPort(sid));
+    mosipinmask = digitalPinToBitMask(sid);
 #endif
-      }
-    if (hwSPI){
-      SPI.begin();
+  } else {
+    SPI.begin();
 #ifndef SPI_HAS_TRANSACTION
-      SPI.setClockDivider (4);
+    SPI.setClockDivider (4);
 #endif
-    }
+  }
 
-    pinMode(rst, OUTPUT);
   if ((reset) && (rst >= 0)) {
     // Setup reset pin direction
-    digitalWrite(rst, HIGH);
+    pinMode(rst, OUTPUT);
     // VDD (3.3V) goes high at start, lets just chill for a ms
+    digitalWrite(rst, HIGH);
     delay(1);
     // bring reset low
     digitalWrite(rst, LOW);
@@ -204,8 +203,10 @@ void Adafruit_EPD::begin(bool reset) {
     // bring out of reset
     digitalWrite(rst, HIGH);
   }
-  if(busy > -1)
+
+  if (busy >= 0) {
     pinMode(busy, INPUT);
+  }
 }
 
 /**************************************************************************/
@@ -218,8 +219,8 @@ void Adafruit_EPD::begin(bool reset) {
 /**************************************************************************/
 void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)
 {
-	EPD_command(c, false);
-	EPD_data(buf, len);
+  EPD_command(c, false);
+  EPD_data(buf, len);
 }
 
 /**************************************************************************/
@@ -231,18 +232,18 @@ void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)
 */
 /**************************************************************************/
 uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
-    // SPI
-	csHigh();
-	dcLow();
-	csLow();
-	
-	uint8_t data = fastSPIwrite(c);
-
-	if(end){
-		csHigh();
-	}
-
-	return data;
+  // SPI
+  csHigh();
+  dcLow();
+  csLow();
+  
+  uint8_t data = fastSPIwrite(c);
+  
+  if (end) {
+    csHigh();
+  }
+  
+  return data;
 }
 
 
@@ -255,13 +256,13 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 /**************************************************************************/
 void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
 {
-	// SPI
-	dcHigh();
-
-	for (uint16_t i=0; i<len; i++) {
-		fastSPIwrite(buf[i]);
-	}
-	csHigh();
+  // SPI
+  dcHigh();
+  
+  for (uint16_t i=0; i<len; i++) {
+    fastSPIwrite(buf[i]);
+  }
+  csHigh();
 }
 
 /**************************************************************************/
@@ -272,17 +273,18 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
 */
 /**************************************************************************/
 inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
-  if(hwSPI) {
-    if(singleByteTxns){
+  if (hwSPI) {
+    if (singleByteTxns){
       uint8_t b;
       csLow();
       b = SPI.transfer(d);
       csHigh();
       return b;
     }
-    else return SPI.transfer(d);
+    else 
+      return SPI.transfer(d);
   } else {
-	  //TODO: return read data for software SPI
+    //TODO: return read data for software SPI
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
       *clkport &= ~clkpinmask;
@@ -308,12 +310,12 @@ inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
 void Adafruit_EPD::csHigh()
 {
 #ifdef SPI_HAS_TRANSACTION
-      SPI.endTransaction();
+  SPI.endTransaction();
 #endif
 #ifdef HAVE_PORTREG
-	*csport |= cspinmask;
+  *csport |= cspinmask;
 #else
-	digitalWrite(cs, HIGH);
+  digitalWrite(cs, HIGH);
 #endif
 }
 
@@ -325,12 +327,12 @@ void Adafruit_EPD::csHigh()
 void Adafruit_EPD::csLow()
 {
 #ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
 #endif
 #ifdef HAVE_PORTREG
-	*csport &= ~cspinmask;
+  *csport &= ~cspinmask;
 #else
-	digitalWrite(cs, LOW);
+  digitalWrite(cs, LOW);
 #endif
 }
 
@@ -342,9 +344,9 @@ void Adafruit_EPD::csLow()
 void Adafruit_EPD::dcHigh()
 {
 #ifdef HAVE_PORTREG
-	*dcport |= dcpinmask;
+  *dcport |= dcpinmask;
 #else
-	digitalWrite(dc, HIGH);
+  digitalWrite(dc, HIGH);
 #endif
 }
 
@@ -356,8 +358,8 @@ void Adafruit_EPD::dcHigh()
 void Adafruit_EPD::dcLow()
 {
 #ifdef HAVE_PORTREG
-	*dcport &= ~dcpinmask;
+  *dcport &= ~dcpinmask;
 #else
-	digitalWrite(dc, LOW);
+  digitalWrite(dc, LOW);
 #endif
 }

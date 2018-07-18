@@ -1,19 +1,28 @@
+/***************************************************
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
+  products from Adafruit!
+
+  Written by Limor Fried/Ladyada for Adafruit Industries.
+  MIT license, all text above must be included in any redistribution
+ ****************************************************/
+
 #include "Adafruit_EPD.h"
 
-#define EPD_DC     9
 #define EPD_CS     10
-#define EPD_RESET  3
-#define EPD_BUSY   5
+#define EPD_DC      9
 #define SRAM_CS     8
+#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-//Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
 //Adafruit_IL0373 display(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.7" tricolor EPD */
-Adafruit_IL91874 display(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
+//Adafruit_IL91874 display(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
 void setup() {
   display.begin();
