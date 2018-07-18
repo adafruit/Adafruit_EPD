@@ -1,9 +1,9 @@
 # Adafruit EPD Library [![Build Status](https://travis-ci.org/adafruit/Adafruit_EPD.svg?branch=master)](https://travis-ci.org/adafruit/Adafruit_EPD)
 
-<img src="https://cdn-shop.adafruit.com/970x728/1947-05.jpg" height="300"/>
+<img src="https://cdn-shop.adafruit.com/970x728/3625-03.jpg" height="300"/>
 
 This is a library for the Adafruit E-paper displays:
-  * https://www.adafruit.com/products/xxxx
+  * https://www.adafruit.com/products/3625
  
 Check out the links above for our tutorials and wiring diagrams. These devices use SPI to communicate
 
