@@ -57,13 +57,13 @@
     @brief constructor if using external SRAM chip and software SPI
     @param width the width of the display in pixels
     @param height the height of the display in pixels
-    @param SID the SID pin to use
-    @param SCLK the SCLK pin to use
+    @param spi_mosi the SID pin to use
+    @param spi_clock the SCLK pin to use
     @param DC the data/command pin to use
     @param RST the reset pin to use
     @param CS the chip select pin to use
     @param SRCS the SRAM chip select pin to use
-    @param MISO the MISO pin to use
+    @param spi_miso the MISO pin to use
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
@@ -75,8 +75,8 @@ sram(spi_mosi, spi_miso, spi_clock, SRCS) {
     @brief constructor if using on-chip RAM and software SPI
     @param width the width of the display in pixels
     @param height the height of the display in pixels
-    @param SID the SID pin to use
-    @param SCLK the SCLK pin to use
+    @param spi_mosi the SID pin to use
+    @param spi_clock the SCLK pin to use
     @param DC the data/command pin to use
     @param RST the reset pin to use
     @param CS the chip select pin to use
