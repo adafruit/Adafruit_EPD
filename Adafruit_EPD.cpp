@@ -272,9 +272,6 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
     @returns the data byte read
 */
 /**************************************************************************/
-#if !defined(__arm__) || (defined(__GNUC__) && __GNUC__ < 5)
-inline // causes "undefined reference" for other cpp files with ARM gcc 5.4
-#endif
 uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
   if (hwSPI) {
     if (singleByteTxns){
