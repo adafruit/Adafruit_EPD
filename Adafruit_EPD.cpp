@@ -272,7 +272,7 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
     @returns the data byte read
 */
 /**************************************************************************/
-inline uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
+uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
   if (hwSPI) {
     if (singleByteTxns){
       uint8_t b;
