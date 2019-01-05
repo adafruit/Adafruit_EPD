@@ -52,6 +52,8 @@
 
 #ifdef USE_EXTERNAL_SRAM
 
+#define DEBUG
+
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -195,13 +197,14 @@ void Adafruit_EPD::begin(bool reset) {
     pinMode(rst, OUTPUT);
     // VDD (3.3V) goes high at start, lets just chill for a ms
     digitalWrite(rst, HIGH);
-    delay(1);
+    delay(10);
     // bring reset low
     digitalWrite(rst, LOW);
     // wait 10ms
     delay(10);
     // bring out of reset
     digitalWrite(rst, HIGH);
+    delay(10);
   }
 
   if (busy >= 0) {
@@ -238,6 +241,10 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
   csLow();
   
   uint8_t data = fastSPIwrite(c);
+#ifdef DEBUG
+  Serial.print("\nCommand: 0x"); Serial.print(c, HEX);
+  Serial.print(" - ");
+#endif
   
   if (end) {
     csHigh();
@@ -259,9 +266,19 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
   // SPI
   dcHigh();
   
+
+#ifdef DEBUG
+  Serial.print("Data: ");
+#endif
   for (uint16_t i=0; i<len; i++) {
     fastSPIwrite(buf[i]);
+#ifdef DEBUG
+    Serial.print("0x"); Serial.print(buf[i], HEX); Serial.print(", ");
+#endif
   }
+#ifdef DEBUG
+  Serial.println();
+#endif
   csHigh();
 }
 

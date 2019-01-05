@@ -137,5 +137,6 @@ class Adafruit_EPD : public Adafruit_GFX {
 #include "Adafruit_IL0398.h"
 #include "Adafruit_IL0371.h"
 #include "Adafruit_IL0373.h"
+#include "Adafruit_SSD1675.h"
 
 #endif /* _Adafruit_EPD_H_ */
