@@ -209,7 +209,7 @@ void Adafruit_IL0376F::display()
 	
 	sram.csLow();
 	//send read command
-	fastSPIwrite(K640_READ);
+	fastSPIwrite(MCPSRAM_READ);
 	
 	//send address
 	fastSPIwrite(0x00);
@@ -230,7 +230,7 @@ void Adafruit_IL0376F::display()
 	
 	sram.csLow();
 	//send write command
-	fastSPIwrite(K640_READ);
+	fastSPIwrite(MCPSRAM_READ);
 	
 	uint8_t b[2];
 	b[0] = (bw_bufsize >> 8);

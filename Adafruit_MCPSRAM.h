@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#define K640_READ 0x03 ///< read command
-#define K640_WRITE 0x02 ///< write command
-#define K640_RDSR 0x05 ///< read status register command
-#define K640_WRSR 0x01 ///< write status register command
+#define MCPSRAM_READ 0x03 ///< read command
+#define MCPSRAM_WRITE 0x02 ///< write command
+#define MCPSRAM_RDSR 0x05 ///< read status register command
+#define MCPSRAM_WRSR 0x01 ///< write status register command
 
 #define K640_SEQUENTIAL_MODE (1 << 6) ///< put ram chip in sequential mode
 
@@ -20,14 +20,14 @@ class Adafruit_MCPSRAM {
 		
 	void begin();
 	
-	void write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = K640_WRITE);
-	void read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = K640_READ);
+	void write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = MCPSRAM_WRITE);
+	void read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg = MCPSRAM_READ);
 	void erase(uint16_t addr, uint16_t length, uint8_t val = 0x00);
 	
-	uint8_t read8(uint16_t addr, uint8_t reg = K640_READ);
+	uint8_t read8(uint16_t addr, uint8_t reg = MCPSRAM_READ);
 	uint16_t read16(uint16_t addr);
 	
-	void write8(uint16_t addr, uint8_t val, uint8_t reg = K640_WRITE);
+	void write8(uint16_t addr, uint8_t val, uint8_t reg = MCPSRAM_WRITE);
 	void write16(uint16_t addr, uint16_t val);
 	
 	void csHigh();

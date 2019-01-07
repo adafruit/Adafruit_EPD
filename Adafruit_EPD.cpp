@@ -52,7 +52,7 @@
 
 #ifdef USE_EXTERNAL_SRAM
 
-#define DEBUG
+//#define DEBUG
 
 /**************************************************************************/
 /*!
@@ -160,7 +160,7 @@ void Adafruit_EPD::begin(bool reset) {
   
 #ifdef USE_EXTERNAL_SRAM
   sram.begin();
-  sram.write8(0, K640_SEQUENTIAL_MODE, K640_WRSR);
+  sram.write8(0, K640_SEQUENTIAL_MODE, MCPSRAM_WRSR);
 #endif
   
   // set pin directions

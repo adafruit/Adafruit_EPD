@@ -99,7 +99,7 @@ csHigh();
 		@param addr the address to write to
 		@param buf the data buffer to write
 		@param num the number of bytes to write
-		@param reg pass K640_WRSR if you are writing the status register, K640_WRITE if you are writing data. Defaults to K640_WRITE.
+		@param reg pass MCPSRAM_WRSR if you are writing the status register, MCPSRAM_WRITE if you are writing data. Defaults to MCPSRAM_WRITE.
 */
 /**************************************************************************/
 void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
@@ -133,7 +133,7 @@ for(int i=0; i<3; i++){
 #endif
     }
   }
-  if(reg != K640_WRITE) break;
+  if(reg != MCPSRAM_WRITE) break;
 }
 
 //write buffer of data
@@ -170,7 +170,7 @@ csHigh();
 		@param addr the address to read from
 		@param buf the data buffer to read into
 		@param num the number of bytes to read
-		@param reg pass K640_RDSR if you are reading the status register, K640_READ if you are reading data. Defaults to K640_READ.
+		@param reg pass MCPSRAM_RDSR if you are reading the status register, MCPSRAM_READ if you are reading data. Defaults to MCPSRAM_READ.
 */
 /**************************************************************************/
 void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num, uint8_t reg)
@@ -204,7 +204,7 @@ for(int i=0; i<3; i++){
 #endif
     }
   }
-  if(reg != K640_READ) break;
+  if(reg != MCPSRAM_READ) break;
 }
 
 //read data into buffer
@@ -235,7 +235,7 @@ csHigh();
 /*!
     @brief 1 byte of data at the specified address
 		@param addr the address to read data at
-		@param reg K640_READ if reading data, K640_RDSR if reading a status register.
+		@param reg MCPSRAM_READ if reading data, MCPSRAM_RDSR if reading a status register.
 		@returns the read data byte.
 */
 /**************************************************************************/
@@ -265,7 +265,7 @@ uint16_t Adafruit_MCPSRAM::read16(uint16_t addr)
     @brief write 1 byte of data at the specified address.
 		@param addr the address to write to
 		@param val the value to write
-		@param reg K640_WRITE if writing data, K640_WRSR if writing a status register.
+		@param reg MCPSRAM_WRITE if writing data, MCPSRAM_WRSR if writing a status register.
 */
 /**************************************************************************/
 void Adafruit_MCPSRAM::write8(uint16_t addr, uint8_t val, uint8_t reg)
@@ -301,7 +301,7 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val)
 	csLow();
 	//write command and address
 	uint8_t cmdbuf[3];
-	cmdbuf[0] = K640_WRITE;
+	cmdbuf[0] = MCPSRAM_WRITE;
 	cmdbuf[1] = (addr >> 8);
 	cmdbuf[2] = addr & 0xFF;
 	
