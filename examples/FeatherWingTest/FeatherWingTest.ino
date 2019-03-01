@@ -74,26 +74,12 @@ void setup() {
 
   Serial.println("begin");
   epd.begin();
+  epd.setTextWrap(true);
+  epd.setTextSize(1);
 }
 
 void loop() {
-  Serial.println("clear");
-  epd.clearBuffer();
-
-  //draw some pretty lines
-  Serial.println("black lines");
-  for (int16_t i=0; i<epd.width(); i+=4) {
-    epd.drawLine(0, 0, i, epd.height()-1, EPD_BLACK);
-  }
-
-  Serial.println("red line");
-  for (int16_t i=0; i<epd.height(); i+=4) {
-    epd.drawLine(epd.width()-1, 0, 0, i, EPD_RED);
-  }
-  epd.display();
-
-  delay(15*1000);
-
+  // Draw a bitmap
   if (drawBitmap) {
     epd.clearBuffer();  
     epd.fillScreen(EPD_WHITE);
@@ -101,6 +87,30 @@ void loop() {
   
     delay(15*1000);
   }
+
+  // Draw some pretty lines
+  epd.clearBuffer();
+  for (int16_t i=0; i<epd.width(); i+=4) {
+    epd.drawLine(0, 0, i, epd.height()-1, EPD_BLACK);
+  }
+  for (int16_t i=0; i<epd.height(); i+=4) {
+    epd.drawLine(epd.width()-1, 0, 0, i, EPD_RED);
+  }
+  epd.display();
+
+  delay(15*1000);
+
+  // Draw some text
+  epd.clearBuffer();
+  epd.setCursor(10, 10);
+  epd.setTextColor(EPD_BLACK);
+  epd.print("Get as much education as you can. Nobody can take that away from you");
+  epd.setCursor(50, 70);
+  epd.setTextColor(EPD_RED);
+  epd.print("--Eben Upton");
+  epd.display();
+
+  delay(15*1000);
 }
 
 
@@ -218,7 +228,7 @@ bool bmpDraw(char *filename, int16_t x, int16_t y) {
                 c = EPD_RED; //try to infer red color
               }
               
-              epd.writePixel(row, w - col, c);
+              epd.writePixel(col, row, c);
             } // end pixel
           } // end scanline
         } // end onscreen
