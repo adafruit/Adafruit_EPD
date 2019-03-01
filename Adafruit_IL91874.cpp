@@ -243,10 +243,10 @@ void Adafruit_IL91874::powerUp()
   buf[0] = 0x3a;
   EPD_command(IL91874_PLL, buf, 1);
   
-  buf[0] = (height() >> 8) & 0xFF;
-  buf[1] = height() & 0xFF;
-  buf[2] = (width() >> 8) & 0xFF;
-  buf[3] = width() & 0xFF;
+  buf[0] = (HEIGHT >> 8) & 0xFF;
+  buf[1] = HEIGHT & 0xFF;
+  buf[2] = (WIDTH >> 8) & 0xFF;
+  buf[3] = WIDTH & 0xFF;
   EPD_command(IL91874_RESOLUTION, buf, 4);
   
   buf[0] = 0x12;
@@ -376,8 +376,8 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
   //make our buffer happy
   x = (x == 0 ? 1 : x);
   
-  uint32_t temp = (width() - x);
-  temp *= height();
+  uint32_t temp = (WIDTH - x);
+  temp *= HEIGHT;
   temp += y;
   temp /= 8;
   uint16_t addr = temp;
