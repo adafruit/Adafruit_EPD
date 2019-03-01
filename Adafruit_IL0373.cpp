@@ -165,10 +165,10 @@ void Adafruit_IL0373::powerUp()
 	buf[0] = 0x29;
 	EPD_command(IL0373_PLL, buf, 1);
 
-	buf[0] = height() & 0xFF;
-	buf[1] = (height() >> 8) & 0xFF;
-	buf[2] = width() & 0xFF;
-	buf[3] = (width() >> 8) & 0xFF;
+	buf[0] = HEIGHT & 0xFF;
+	buf[1] = (HEIGHT >> 8) & 0xFF;
+	buf[2] = WIDTH & 0xFF;
+	buf[3] = (WIDTH >> 8) & 0xFF;
 	EPD_command(IL0373_RESOLUTION, buf, 4);
 			
 	buf[0] = 0x0A;
@@ -284,7 +284,7 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
   //make our buffer happy
   x = (x == 0 ? 1 : x);
   
-  uint16_t addr = ( (width() - x) * height() + y)/8;
+  uint16_t addr = ( (WIDTH - x) * HEIGHT + y)/8;
   
 #ifdef USE_EXTERNAL_SRAM
   if (color == EPD_RED){
