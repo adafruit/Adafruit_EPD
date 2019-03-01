@@ -218,7 +218,7 @@ bool bmpDraw(char *filename, int16_t x, int16_t y) {
                 c = EPD_RED; //try to infer red color
               }
               
-              epd.writePixel(row, col, c);
+              epd.writePixel(row, w - col, c);
             } // end pixel
           } // end scanline
         } // end onscreen
