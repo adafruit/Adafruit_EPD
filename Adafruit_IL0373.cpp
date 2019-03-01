@@ -88,10 +88,13 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, i
 /**************************************************************************/
 void Adafruit_IL0373::busy_wait(void)
 {
-  if (busy >= 0)
-    while(!digitalRead(busy)); //wait for busy low
-  else
+  if (busy >= 0) {
+    while(!digitalRead(busy)) {
+      delay(1); //wait for busy high
+    }
+  } else {
     delay(BUSY_WAIT);
+  }
 }
 
 /**************************************************************************/
