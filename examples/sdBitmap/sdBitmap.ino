@@ -8,10 +8,9 @@
   Written by Limor Fried/Ladyada for Adafruit Industries.
   MIT license, all text above must be included in any redistribution
 
-
-  THE BMP IMAGE YOU ARE USING MUST BE THE SAME DIMENSIONS AS YOUR EPD DISPLAY
-  For the 1.54" EPD, this is 152x152 pixels
-  For the 2.13" EPD, this is 104x212 pixels
+  For the 1.54" EPD, the max image size is 152x152 pixels
+  For the 2.13" EPD, the max image size is 212x104 pixels
+  For the 2.13" EPD, the max image size is 264x176 pixels
  ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -28,7 +27,6 @@
 #define SRAM_CS     8
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
-
 #define SD_CS       4
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
@@ -42,7 +40,7 @@ Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 void setup(void) {
   Serial.begin(115200);
-  while (!Serial) {  delay(10); }
+  //while (!Serial) {  delay(10); }
   display.begin();
   yield();
 
