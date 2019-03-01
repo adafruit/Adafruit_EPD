@@ -29,22 +29,21 @@
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
-#define SD_CS 4
+#define SD_CS       4
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
 Adafruit_IL0373 display(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-/* Uncomment the following line if you are using 2.15" tricolor EPD */
+/* Uncomment the following line if you are using 2.13" tricolor EPD */
 //Adafruit_IL0373 display(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.7" tricolor EPD */
 //Adafruit_IL91874 display(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
 void setup(void) {
-  Serial.begin(9600);
-
+  Serial.begin(115200);
+  while (!Serial) {  delay(10); }
   display.begin();
-  
   yield();
 
   Serial.print("Initializing SD card...");
@@ -54,7 +53,8 @@ void setup(void) {
   Serial.println("OK!");
 
   display.clearBuffer();
-  display.setRotation(1);
+
+  //display.setRotation(3);  // rotate the display if desired
   bmpDraw("/blinka.bmp",0,0);
 
 }
@@ -178,7 +178,7 @@ void bmpDraw(char *filename, int16_t x, int16_t y) {
                 c = EPD_RED; //try to infer red color
               }
               
-              display.writePixel(row, col, c);
+              display.writePixel(col, row, c);
             } // end pixel
           } // end scanline
         } // end onscreen
