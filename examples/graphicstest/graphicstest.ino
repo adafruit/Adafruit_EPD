@@ -22,7 +22,7 @@ Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
 //Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-/* Uncomment the following line if you are using 2.7" tricolor EPD */
+/* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
 //Adafruit_IL91874 epd(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
 
@@ -36,35 +36,62 @@ void setup(void) {
 
   Serial.println("Initialized");
 
+  epd.clearBuffer();
+  epd.fillRect(epd.width()/3, 0, epd.width()/3, epd.height(), EPD_GRAY);
+  epd.fillRect((epd.width()*2)/3, 0, epd.width()/3, epd.height(), EPD_BLACK);
+  epd.display();
+
+  delay(15 * 1000);
+
   // large block of text
   epd.clearBuffer();
   epd.fillScreen(EPD_WHITE);
   testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", EPD_BLACK);
 
+  delay(15 * 1000);
+
   // epd print function!
   epdPrintTest();
+
+  delay(15 * 1000);
 
   // a single pixel
   epd.clearBuffer();
   epd.drawPixel(epd.width()/2, epd.height()/2, EPD_BLACK);
 
+  delay(15 * 1000);
+
   testtriangles();
+
+  delay(15 * 1000);
   
   // line draw test
   testlines(EPD_BLACK);
 
+  delay(15 * 1000);
+
   // optimized lines
   testfastlines(EPD_BLACK, EPD_RED);
 
+  delay(15 * 1000);
+
   testdrawrects(EPD_RED);
 
+  delay(15 * 1000);
+
   testfillrects(EPD_BLACK, EPD_RED);
+
+  delay(15 * 1000);
 
   epd.fillScreen(EPD_WHITE);
   testfillcircles(10, EPD_RED);
   testdrawcircles(10, EPD_BLACK);
 
+  delay(15 * 1000);
+
   testroundrects();
+
+  delay(15 * 1000);
 
   mediabuttons();
 
