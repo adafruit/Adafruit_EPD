@@ -17,13 +17,22 @@
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-//Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
 //Adafruit_IL91874 epd(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
+
+#if defined(FLEXIBLE_213)
+  #define COLOR1 EPD_RED
+  #define COLOR2 EPD_RED
+#else // any other tricolor
+  #define COLOR1 EPD_BLACK
+  #define COLOR2 EPD_RED
+#endif
 
 
 float p = 3.1415926;
@@ -33,12 +42,17 @@ void setup(void) {
   Serial.print("Hello! EPD Test");
 
   epd.begin();
+  
+#if defined(FLEXIBLE_213)
+  epd.invertColorLogic(0, false);
+  epd.invertColorLogic(1, false);
+#endif
 
   Serial.println("Initialized");
 
   epd.clearBuffer();
-  epd.fillRect(epd.width()/3, 0, epd.width()/3, epd.height(), EPD_GRAY);
-  epd.fillRect((epd.width()*2)/3, 0, epd.width()/3, epd.height(), EPD_BLACK);
+  epd.fillRect(epd.width()/3, 0, epd.width()/3, epd.height(), COLOR2);
+  epd.fillRect((epd.width()*2)/3, 0, epd.width()/3, epd.height(), COLOR1);
   epd.display();
 
   delay(15 * 1000);
@@ -46,7 +60,7 @@ void setup(void) {
   // large block of text
   epd.clearBuffer();
   epd.fillScreen(EPD_WHITE);
-  testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", EPD_BLACK);
+  testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", COLOR1);
 
   delay(15 * 1000);
 
@@ -57,7 +71,7 @@ void setup(void) {
 
   // a single pixel
   epd.clearBuffer();
-  epd.drawPixel(epd.width()/2, epd.height()/2, EPD_BLACK);
+  epd.drawPixel(epd.width()/2, epd.height()/2, COLOR1);
 
   delay(15 * 1000);
 
@@ -66,26 +80,26 @@ void setup(void) {
   delay(15 * 1000);
   
   // line draw test
-  testlines(EPD_BLACK);
+  testlines(COLOR1);
 
   delay(15 * 1000);
 
   // optimized lines
-  testfastlines(EPD_BLACK, EPD_RED);
+  testfastlines(COLOR1, COLOR2);
 
   delay(15 * 1000);
 
-  testdrawrects(EPD_RED);
+  testdrawrects(COLOR2);
 
   delay(15 * 1000);
 
-  testfillrects(EPD_BLACK, EPD_RED);
+  testfillrects(COLOR1, COLOR2);
 
   delay(15 * 1000);
 
   epd.fillScreen(EPD_WHITE);
-  testfillcircles(10, EPD_RED);
-  testdrawcircles(10, EPD_BLACK);
+  testfillcircles(10, COLOR2);
+  testdrawcircles(10, COLOR1);
 
   delay(15 * 1000);
 
@@ -140,7 +154,7 @@ void testlines(uint16_t color) {
 
 void testdrawtext(char *text, uint16_t color) {
   epd.clearBuffer();
-  epd.setCursor(0, 0);
+  epd.setCursor(5, 5);
   epd.setTextColor(color);
   epd.setTextWrap(true);
   epd.print(text);
@@ -201,7 +215,7 @@ void testdrawcircles(uint8_t radius, uint16_t color) {
 void testtriangles() {
   epd.clearBuffer();
   epd.fillScreen(EPD_WHITE);
-  int color = EPD_BLACK;
+  int color = COLOR1;
   int t;
   int w = epd.width()/2;
   int x = epd.height()-1;
@@ -212,7 +226,7 @@ void testtriangles() {
     x-=4;
     y+=4;
     z-=4;
-    if(t == 8) color = EPD_RED;
+    if(t == 8) color = COLOR2;
   }
   epd.display();
 }
@@ -220,7 +234,7 @@ void testtriangles() {
 void testroundrects() {
   epd.clearBuffer();
   epd.fillScreen(EPD_WHITE);
-  int color = EPD_BLACK;
+  int color = COLOR1;
   int i;
   int t;
   for(t = 0 ; t <= 4; t+=1) {
@@ -234,9 +248,9 @@ void testroundrects() {
       y+=3;
       w-=4;
       h-=6;
-      if(i == 7) color = EPD_RED;
+      if(i == 7) color = COLOR2;
     }
-    color = EPD_BLACK;
+    color = COLOR1;
   }
   epd.display();
 }
@@ -245,23 +259,23 @@ void epdPrintTest() {
   epd.clearBuffer();
   epd.setCursor(2, 0);
   epd.fillScreen(EPD_WHITE);
-  epd.setTextColor(EPD_BLACK);
+  epd.setTextColor(COLOR1);
   epd.setTextSize(2);
   epd.println("Hello World!");
   epd.setTextSize(1);
-  epd.setTextColor(EPD_RED);
+  epd.setTextColor(COLOR2);
   epd.print(p, 6);
   epd.println(" Want pi?");
   epd.println(" ");
   epd.print(8675309, HEX); // print 8,675,309 out in HEX!
   epd.println(" Print HEX!");
   epd.println(" ");
-  epd.setTextColor(EPD_BLACK);
+  epd.setTextColor(COLOR1);
   epd.println("Sketch has been");
   epd.println("running for: ");
-  epd.setTextColor(EPD_RED);
+  epd.setTextColor(COLOR2);
   epd.print(millis() / 1000);
-  epd.setTextColor(EPD_BLACK);
+  epd.setTextColor(COLOR1);
   epd.print(" seconds.");
   epd.display();
 }
@@ -270,11 +284,11 @@ void mediabuttons() {
   epd.clearBuffer();
   // play
   epd.fillScreen(EPD_WHITE);
-  epd.fillRoundRect(25, 10, 78, 60, 8, EPD_BLACK);
-  epd.fillTriangle(42, 20, 42, 60, 90, 40, EPD_RED);
+  epd.fillRoundRect(25, 10, 78, 60, 8, COLOR1);
+  epd.fillTriangle(42, 20, 42, 60, 90, 40, COLOR2);
   // pause
-  epd.fillRoundRect(25, 90, 78, 60, 8, EPD_BLACK);
-  epd.fillRoundRect(39, 98, 20, 45, 5, EPD_RED);
-  epd.fillRoundRect(69, 98, 20, 45, 5, EPD_RED);
+  epd.fillRoundRect(25, 90, 78, 60, 8, COLOR1);
+  epd.fillRoundRect(39, 98, 20, 45, 5, COLOR2);
+  epd.fillRoundRect(69, 98, 20, 45, 5, COLOR2);
   epd.display();
 }
