@@ -107,6 +107,8 @@ void Adafruit_IL0373::begin(bool reset)
 {
   uint8_t buf[5];
   Adafruit_EPD::begin(reset);
+  invertColorLogic(0, true);  // black defaults to inverted
+  invertColorLogic(1, true);  // red defaults to inverted
   
   buf[0] = 0x03;
   buf[1] = 0x00;
@@ -290,24 +292,26 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
   uint16_t addr = ( (WIDTH - x) * HEIGHT + y)/8;
   
 #ifdef USE_EXTERNAL_SRAM
-  if (color == EPD_RED){
+  if ((color == EPD_RED) || (color == EPD_GRAY)) {
     addr = addr + bw_bufsize;    //red is written after bw
   }
   uint8_t c = sram.read8(addr);
   pBuf = &c;
 #else
-  if(color == EPD_RED){
+  if((color == EPD_RED) || (color == EPD_GRAY)) {
     pBuf = red_buf + addr;
   } else {
     pBuf = bw_buf + addr;
   }
 #endif
-  // x is which column
-  switch (color) {
-     case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
-     case EPD_RED:
-     case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
-     case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
+  if (((color == EPD_RED || color == EPD_GRAY) && redInverted) || 
+      ((color == EPD_BLACK) && blackInverted)) {
+    *pBuf &= ~(1 << (7 - y%8));
+  } else if (((color == EPD_RED || color == EPD_GRAY) && !redInverted) || 
+	     ((color == EPD_BLACK) && !blackInverted)) {
+    Serial.print("|");
+  } else if (color == EPD_INVERSE) {
+    *pBuf ^= (1 << (7 - y%8));
   }
 #ifdef USE_EXTERNAL_SRAM
   sram.write8(addr, *pBuf);

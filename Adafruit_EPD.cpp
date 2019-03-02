@@ -50,9 +50,9 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_EPD.h"
 
-#ifdef USE_EXTERNAL_SRAM
+//#define DEBUG 1
 
-//#define DEBUG
+#ifdef USE_EXTERNAL_SRAM
 
 /**************************************************************************/
 /*!
@@ -155,8 +155,8 @@ Adafruit_EPD::~Adafruit_EPD()
 */
 /**************************************************************************/
 void Adafruit_EPD::begin(bool reset) {
-  blackInverted = true;
-  redInverted = false;
+  invertColorLogic(0, true);   // black defaults to inverted
+  invertColorLogic(1, false);  // red defaults to not inverted
   
 #ifdef USE_EXTERNAL_SRAM
   sram.begin();
@@ -282,6 +282,32 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
   csHigh();
 }
 
+
+
+/**************************************************************************/
+/*!
+    @brief send data to the display
+    @param data the data byte to send
+*/
+/**************************************************************************/
+void Adafruit_EPD::EPD_data(uint8_t data)
+{
+  // SPI
+  csHigh();
+  dcHigh();
+  csLow();
+
+
+#ifdef DEBUG
+  Serial.print("Data: ");
+  Serial.print("0x"); Serial.println(data, HEX); 
+#endif
+  fastSPIwrite(data);
+  
+  csHigh();
+}
+
+
 /**************************************************************************/
 /*!
     @brief transfer a single byte over SPI.
@@ -379,4 +405,18 @@ void Adafruit_EPD::dcLow()
 #else
   digitalWrite(dc, LOW);
 #endif
+}
+
+
+/**************************************************************************/
+/*!
+    @brief Determine whether the data for the first or second is inverted or not
+    @param colorLayer 0 for black, 1 for red (or yellow or gray)
+    @param invert Whether to invert the logical value
+*/
+/**************************************************************************/
+void Adafruit_EPD::invertColorLogic(uint8_t colorLayer, bool invert)
+{
+  if (colorLayer == 0) { blackInverted = invert; }
+  if (colorLayer == 1) { redInverted = invert; }
 }

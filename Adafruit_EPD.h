@@ -63,6 +63,7 @@ enum{
 	EPD_WHITE, ///< white color
 	EPD_INVERSE, ///< invert color
 	EPD_RED, ///< red color
+	EPD_GRAY, ///< gray color ('red' on grayscale)
 	EPD_DARK, ///< darker color
 	EPD_LIGHT, ///< lighter color
 };
@@ -112,7 +113,9 @@ class Adafruit_EPD : public Adafruit_GFX {
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end=true);
   void EPD_data(const uint8_t *buf, uint16_t len);
-  
+  void EPD_data(uint8_t data);
+  void invertColorLogic(uint8_t colorLayer, bool invert);
+
   uint8_t fastSPIwrite(uint8_t c);
 
   boolean hwSPI; ///< true if using hardware SPI
