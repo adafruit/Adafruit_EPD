@@ -37,11 +37,11 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
 */
 /**************************************************************************/
 Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
+  bw_buf = (uint8_t *)malloc(((uint32_t)width * (uint32_t)height) / 8);
+  red_buf = (uint8_t *)malloc(((uint32_t)width * (uint32_t)height) / 8);
 #endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+  bw_bufsize = ((uint32_t)width * (uint32_t)height) / 8;
+  red_bufsize = bw_bufsize;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
@@ -74,11 +74,11 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, i
 */
 /**************************************************************************/
 Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
+  bw_buf = (uint8_t *)malloc(((uint32_t)width * (uint32_t)height) / 8);
+  red_buf = (uint8_t *)malloc(((uint32_t)width * (uint32_t)height) / 8);
 #endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+  bw_bufsize = ((uint32_t)width * (uint32_t)height) / 8;
+  red_bufsize = bw_bufsize;
 }
 
 /**************************************************************************/
@@ -171,10 +171,9 @@ void Adafruit_IL0373::powerUp()
 	EPD_command(IL0373_PLL, buf, 1);
 
 	buf[0] = HEIGHT & 0xFF;
-	buf[1] = (HEIGHT >> 8) & 0xFF;
+	buf[1] = (WIDTH >> 8) & 0xFF;
 	buf[2] = WIDTH & 0xFF;
-	buf[3] = (WIDTH >> 8) & 0xFF;
-	EPD_command(IL0373_RESOLUTION, buf, 4);
+	EPD_command(IL0373_RESOLUTION, buf, 3);
 			
 	buf[0] = 0x0A;
 	EPD_command(IL0373_VCM_DC_SETTING, buf, 1);
@@ -205,7 +204,6 @@ void Adafruit_IL0373::display()
 	c = EPD_command(EPD_RAM_BW, false);
 	
 	dcHigh();
-	
 	for(uint16_t i=0; i<bw_bufsize; i++){
 		c = fastSPIwrite(c);
 	}
@@ -289,7 +287,7 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
   //make our buffer happy
   x = (x == 0 ? 1 : x);
   
-  uint16_t addr = ( (WIDTH - x) * HEIGHT + y)/8;
+  uint16_t addr = ( (uint32_t)(WIDTH - x) * (uint32_t)HEIGHT + y)/8;
   
 #ifdef USE_EXTERNAL_SRAM
   if ((color == EPD_RED) || (color == EPD_GRAY)) {

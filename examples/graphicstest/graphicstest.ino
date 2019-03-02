@@ -17,16 +17,20 @@
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-//Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.15" tricolor EPD */
-Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
 //Adafruit_IL91874 epd(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
-#if defined(FLEXIBLE_213)
+/* Uncomment the following line if you are using 2.9" EPD */
+//Adafruit_IL0373 epd(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//#define FLEXIBLE_290
+
+#if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   #define COLOR1 EPD_RED
   #define COLOR2 EPD_RED
 #else // any other tricolor
@@ -43,7 +47,7 @@ void setup(void) {
 
   epd.begin();
   
-#if defined(FLEXIBLE_213)
+#if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   epd.invertColorLogic(0, false);
   epd.invertColorLogic(1, false);
 #endif
