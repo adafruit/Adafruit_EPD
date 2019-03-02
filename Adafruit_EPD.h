@@ -88,6 +88,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   ~Adafruit_EPD();
 
   void begin(bool reset=true);
+  void invertColorLogic(uint8_t colorLayer, bool invert);
 
  protected:
   int8_t sid, ///< sid pin
@@ -114,7 +115,6 @@ class Adafruit_EPD : public Adafruit_GFX {
   uint8_t EPD_command(uint8_t c, bool end=true);
   void EPD_data(const uint8_t *buf, uint16_t len);
   void EPD_data(uint8_t data);
-  void invertColorLogic(uint8_t colorLayer, bool invert);
 
   uint8_t fastSPIwrite(uint8_t c);
 

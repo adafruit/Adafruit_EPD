@@ -309,7 +309,7 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
     *pBuf &= ~(1 << (7 - y%8));
   } else if (((color == EPD_RED || color == EPD_GRAY) && !redInverted) || 
 	     ((color == EPD_BLACK) && !blackInverted)) {
-    Serial.print("|");
+    *pBuf |= (1 << (7 - y%8));
   } else if (color == EPD_INVERSE) {
     *pBuf ^= (1 << (7 - y%8));
   }
@@ -326,10 +326,27 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_IL0373::clearBuffer()
 {
 #ifdef USE_EXTERNAL_SRAM
-  sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
+  if (blackInverted) {
+    sram.erase(0x00, bw_bufsize, 0xFF);
+  } else {
+    sram.erase(0x00, bw_bufsize, 0x00);
+  }
+  if (redInverted) {
+    sram.erase(bw_bufsize, red_bufsize, 0xFF);
+  } else {
+    sram.erase(bw_bufsize, red_bufsize, 0x00);
+  }
 #else
-  memset(bw_buf, 0xFF, bw_bufsize);
-  memset(red_buf, 0xFF, red_bufsize);
+  if (blackInverted) {
+    memset(bw_buf, 0xFF, bw_bufsize);
+  } else {
+    memset(bw_buf, 0x00, bw_bufsize);
+  }
+  if (redInverted) {
+    memset(red_buf, 0xFF, red_bufsize);
+  } else {
+    memset(red_buf, 0x00, red_bufsize);
+  }
 #endif
 }
 
