@@ -257,7 +257,7 @@ void testroundrects() {
 
 void epdPrintTest() {
   epd.clearBuffer();
-  epd.setCursor(2, 0);
+  epd.setCursor(5, 5);
   epd.fillScreen(EPD_WHITE);
   epd.setTextColor(COLOR1);
   epd.setTextSize(2);
