@@ -140,8 +140,8 @@ Adafruit_IL91874::Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST,
 void Adafruit_IL91874::busy_wait(void)
 {
   if (busy >= 0) {
-    while(!digitalRead(busy)) {
-      delay(1); //wait for busy high
+    while (!digitalRead(busy)) {
+      delay(1); //wait for busy low
     }
   } else {
     delay(BUSY_WAIT);
@@ -383,14 +383,14 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
   uint16_t addr = temp;
   
 #ifdef USE_EXTERNAL_SRAM
-  if(color == EPD_RED){
+  if ((color == EPD_RED) || (color == EPD_GRAY)) {
     //red is written after bw
     addr = addr + bw_bufsize;
   }
   uint8_t c = sram.read8(addr);
   pBuf = &c;
 #else
-  if(color == EPD_RED){
+  if ((color == EPD_RED) || (color == EPD_GRAY)) {
     pBuf = red_buf + addr;
   }
   else{
@@ -398,13 +398,13 @@ void Adafruit_IL91874::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 #endif
   // x is which column
-  switch (color)
-    {
+  switch (color) {
+    case EPD_GRAY:
     case EPD_RED:
     case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
     case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
     case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
-    }
+  }
 #ifdef USE_EXTERNAL_SRAM
   sram.write8(addr, *pBuf);
 #endif
