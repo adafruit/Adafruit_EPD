@@ -152,11 +152,9 @@ void Adafruit_SSD1675::begin(bool reset)
 
   // soft reset
   EPD_command(SSD1675_SW_RESET);
-  Serial.println("Soft Reset");
 
   busy_wait();
 
-  Serial.println("Initializing");
   // set analog block control
   buf[0] = 0x54;
   EPD_command(SSD1675_SET_ANALOGBLOCK, buf, 1);
@@ -225,8 +223,6 @@ void Adafruit_SSD1675::begin(bool reset)
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
   busy_wait();
-  
-  Serial.println("Done!");
 }
 
 
@@ -282,7 +278,7 @@ void Adafruit_SSD1675::display()
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // Set RAM Y address counter
-  buf[0] = 0x00;
+  buf[0] = 0xF9;
   buf[1] = 0x00;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
@@ -301,7 +297,7 @@ void Adafruit_SSD1675::display()
   
   for(uint16_t i=0; i<bw_bufsize; i++){
     c = fastSPIwrite(c);
-    Serial.print("0x"); Serial.print(c, HEX); Serial.print(", ");
+    Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
     if (i % 32 == 31) Serial.println();
   }
   csHigh();
@@ -314,7 +310,7 @@ void Adafruit_SSD1675::display()
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count to 0   
-  buf[0] = 0;
+  buf[0] = 0xF9;
   buf[1] = 0;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 

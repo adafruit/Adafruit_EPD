@@ -24,7 +24,7 @@ Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
-//Adafruit_SSD1675 epd(250, 122, EPD_DC, EPD_RESET, EPD_CS, EPD_BUSY);
+//Adafruit_SSD1675 epd(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define MONOCHROME
 
 /* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
