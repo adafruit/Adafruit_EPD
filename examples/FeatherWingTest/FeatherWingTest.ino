@@ -219,7 +219,7 @@ bool bmpDraw(char *filename, int16_t x, int16_t y) {
               g = sdbuffer[buffidx++];
               r = sdbuffer[buffidx++];
 
-              uint8_t c;
+              uint8_t c = 0;
               if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
                  c = EPD_BLACK; // try to infer black
               } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
