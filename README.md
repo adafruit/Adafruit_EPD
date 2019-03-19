@@ -1,4 +1,4 @@
-# Adafruit EPD Library [![Build Status](https://travis-ci.org/adafruit/Adafruit_EPD.svg?branch=master)](https://travis-ci.org/adafruit/Adafruit_EPD)
+# Adafruit EPD Library [![Build Status](https://travis-ci.com/adafruit/Adafruit_EPD.svg?branch=master)](https://travis-ci.com/adafruit/Adafruit_EPD)
 
 <img src="https://cdn-shop.adafruit.com/970x728/3625-03.jpg" height="300"/>
 
