@@ -284,10 +284,7 @@ void Adafruit_IL0373::drawPixel(int16_t x, int16_t y, uint16_t color) {
     y = HEIGHT - y - 1;
     break;
   }
-  //make our buffer happy
-  x = (x == 0 ? 1 : x);
-  
-  uint16_t addr = ( (uint32_t)(WIDTH - x) * (uint32_t)HEIGHT + y)/8;
+  uint16_t addr = ( (uint32_t)(WIDTH - 1 - x) * (uint32_t)HEIGHT + y)/8;
   
 #ifdef USE_EXTERNAL_SRAM
   if ((color == EPD_RED) || (color == EPD_GRAY)) {
