@@ -102,6 +102,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a2d27941f9fd3115d38e8d8b5b2c17c58">begin</a> (bool reset=true)</td></tr>
 <tr class="memdesc:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with and set up the display.  <a href="#a2d27941f9fd3115d38e8d8b5b2c17c58">More...</a><br /></td></tr>
 <tr class="separator:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74d1e351e43efd4e31ad1a4d59202401"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a74d1e351e43efd4e31ad1a4d59202401">invertColorLogic</a> (uint8_t colorLayer, bool invert)</td></tr>
+<tr class="memdesc:a74d1e351e43efd4e31ad1a4d59202401"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the data for the first or second is inverted or not.  <a href="#a74d1e351e43efd4e31ad1a4d59202401">More...</a><br /></td></tr>
+<tr class="separator:a74d1e351e43efd4e31ad1a4d59202401"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -114,6 +117,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a625604963eee710cb4e97e67ce4aecc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a625604963eee710cb4e97e67ce4aecc9">EPD_data</a> (const uint8_t *buf, uint16_t len)</td></tr>
 <tr class="memdesc:a625604963eee710cb4e97e67ce4aecc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">send data to the display  <a href="#a625604963eee710cb4e97e67ce4aecc9">More...</a><br /></td></tr>
 <tr class="separator:a625604963eee710cb4e97e67ce4aecc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a922e8fd5ff1afa295551d681406283f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a922e8fd5ff1afa295551d681406283f4">EPD_data</a> (uint8_t data)</td></tr>
+<tr class="memdesc:a922e8fd5ff1afa295551d681406283f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">send data to the display  <a href="#a922e8fd5ff1afa295551d681406283f4">More...</a><br /></td></tr>
+<tr class="separator:a922e8fd5ff1afa295551d681406283f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeee0820dd50f8c0e4bfc2b479e255eeb"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aeee0820dd50f8c0e4bfc2b479e255eeb">fastSPIwrite</a> (uint8_t c)</td></tr>
 <tr class="memdesc:aeee0820dd50f8c0e4bfc2b479e255eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">transfer a single byte over SPI.  <a href="#aeee0820dd50f8c0e4bfc2b479e255eeb">More...</a><br /></td></tr>
 <tr class="separator:aeee0820dd50f8c0e4bfc2b479e255eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -384,6 +390,43 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
+<a id="a74d1e351e43efd4e31ad1a4d59202401"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74d1e351e43efd4e31ad1a4d59202401">&#9670;&nbsp;</a></span>invertColorLogic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_EPD::invertColorLogic </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>colorLayer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>invert</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine whether the data for the first or second is inverted or not. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">colorLayer</td><td>0 for black, 1 for red (or yellow or gray) </td></tr>
+    <tr><td class="paramname">invert</td><td>Whether to invert the logical value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a760d4138f64152a8b2bb139e5ac49370"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a760d4138f64152a8b2bb139e5ac49370">&#9670;&nbsp;</a></span>EPD_command() <span class="overload">[1/2]</span></h2>
 
@@ -483,7 +526,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div>
 </div>
 <a id="a625604963eee710cb4e97e67ce4aecc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a625604963eee710cb4e97e67ce4aecc9">&#9670;&nbsp;</a></span>EPD_data()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a625604963eee710cb4e97e67ce4aecc9">&#9670;&nbsp;</a></span>EPD_data() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -521,6 +564,40 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   <table class="params">
     <tr><td class="paramname">buf</td><td>the data buffer to send </td></tr>
     <tr><td class="paramname">len</td><td>the length of the data buffer </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a922e8fd5ff1afa295551d681406283f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a922e8fd5ff1afa295551d681406283f4">&#9670;&nbsp;</a></span>EPD_data() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_EPD::EPD_data </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>send data to the display </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>the data byte to send </td></tr>
   </table>
   </dd>
 </dl>
