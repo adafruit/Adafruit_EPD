@@ -23,6 +23,10 @@ Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
+/* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
+//Adafruit_SSD1675 epd(250, 122, EPD_DC, EPD_RESET, EPD_CS, EPD_BUSY);
+//#define MONOCHROME
+
 /* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
 //Adafruit_IL91874 epd(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
@@ -33,6 +37,9 @@ Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 #if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   #define COLOR1 EPD_RED
   #define COLOR2 EPD_RED
+#elif defined (MONOCHROME)
+  #define COLOR1 EPD_BLACK
+  #define COLOR2 EPD_BLACK
 #else // any other tricolor
   #define COLOR1 EPD_BLACK
   #define COLOR2 EPD_RED

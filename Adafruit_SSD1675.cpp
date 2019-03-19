@@ -3,6 +3,24 @@
 
 #define BUSY_WAIT 500
 
+const unsigned char LUT_DATA[]= {
+  0x80,0x60,0x40,0x00,0x00,0x00,0x00,             //LUT0: BB:     VS 0 ~7
+  0x10,0x60,0x20,0x00,0x00,0x00,0x00,             //LUT1: BW:     VS 0 ~7
+  0x80,0x60,0x40,0x00,0x00,0x00,0x00,             //LUT2: WB:     VS 0 ~7
+  0x10,0x60,0x20,0x00,0x00,0x00,0x00,             //LUT3: WW:     VS 0 ~7
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,             //LUT4: VCOM:   VS 0 ~7
+  
+  0x03,0x03,0x00,0x00,0x02,                       // TP0 A~D RP0
+  0x09,0x09,0x00,0x00,0x02,                       // TP1 A~D RP1
+  0x03,0x03,0x00,0x00,0x02,                       // TP2 A~D RP2
+  0x00,0x00,0x00,0x00,0x00,                       // TP3 A~D RP3
+  0x00,0x00,0x00,0x00,0x00,                       // TP4 A~D RP4
+  0x00,0x00,0x00,0x00,0x00,                       // TP5 A~D RP5
+  0x00,0x00,0x00,0x00,0x00,                       // TP6 A~D RP6
+  
+  0x15,0x41,0xA8,0x32,0x30,0x0A,
+};
+
 #ifdef USE_EXTERNAL_SRAM
 
 /**************************************************************************/
@@ -41,11 +59,18 @@ Adafruit_SSD1675::Adafruit_SSD1675(int width, int height,
 /**************************************************************************/
 Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) 
   : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
+  
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  bw_buf = (uint8_t *)malloc(width * height / 8);
+  red_buf = (uint8_t *)malloc(width * height / 8);
 #endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  bw_bufsize = width * height / 8;
+  red_bufsize = bw_bufsize;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
@@ -80,11 +105,17 @@ Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST,
 /**************************************************************************/
 Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY)
   : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  bw_buf = (uint8_t *)malloc(width * height / 8);
+  red_buf = (uint8_t *)malloc(width * height / 8);
 #endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  bw_bufsize = width * height / 8;
+  red_bufsize = bw_bufsize;
 }
 
 /**************************************************************************/
@@ -117,12 +148,15 @@ void Adafruit_SSD1675::begin(bool reset)
   
   delay(100);
 
+  busy_wait();
+
   // soft reset
   EPD_command(SSD1675_SW_RESET);
-  Serial.println("softreset");
+  Serial.println("Soft Reset");
 
   busy_wait();
 
+  Serial.println("Initializing");
   // set analog block control
   buf[0] = 0x54;
   EPD_command(SSD1675_SET_ANALOGBLOCK, buf, 1);
@@ -131,62 +165,64 @@ void Adafruit_SSD1675::begin(bool reset)
   buf[0] = 0x3B;
   EPD_command(SSD1675_SET_DIGITALBLOCK, buf, 1);
 
-  buf[0] = 0xD3;  // 211
-  buf[1] = 0x00;
+  // driver output control
+  buf[0] = 0xFA;   // 250-1
+  buf[1] = 0x01;
   buf[2] = 0x00;
   EPD_command(SSD1675_DRIVER_CONTROL, buf, 3);
 
-  // Set gate voltage
-  buf[0] = 0x10;
-  buf[1] = 0x01;
-  EPD_command(SSD1675_GATE_VOLTAGE, buf, 2);
-  
-  // Set dummy line period
-  buf[0] = 0x07;
-  EPD_command(SSD1675_WRITE_DUMMY, buf, 1);
-
-  // Set gate line width
-  buf[0] = 0x04;
-  EPD_command(SSD1675_WRITE_GATELINE, buf, 1);
-
-  // Data entry sequence (Y+, X+)
+  // Data entry sequence
   buf[0] = 0x03;
   EPD_command(SSD1675_DATA_MODE, buf, 1);
 
-  // border color
-  buf[0] = 0x00;
-  EPD_command(SSD1675_WRITE_BORDER, buf, 1);
-
-  // set LUT by hand
-  uint8_t LUT[70] = {0x48, 0xa0, 0x10, 0x10, 0x13, 0x0, 0x0, 0x48, 0xa0, 0x80, 
-		     0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
-		     0x0, 0x48, 0xa5, 0x0, 0xbb, 0x0, 0x0, 0x0, 0x0, 0x0, 
-		     0x0, 0x0, 0x0, 0x0, 0x0, 0x40, 0xc, 0x20, 0xc, 0x6, 
-		     0x10, 0x8, 0x4, 0x4, 0x6, 0x4, 0x8, 0x8, 0x10, 0x10, 
-		     0x2, 0x2, 0x2, 0x40, 0x20, 0x2, 0x2, 0x2, 0x2, 0x2, 
-		     0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
-  EPD_command(SSD1675_WRITE_LUT, LUT, sizeof(LUT));
-
   // Set ram X start/end postion
   buf[0] = 0x00;
-  buf[1] = 0x0C;
+  buf[1] = 0x0F;  // (15+1) * 8 = 128
   EPD_command(SSD1675_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[0] = 0x00;
+  buf[0] = 0x00;  // 0xF9-->(249+1)=250
   buf[1] = 0x00;
-  buf[2] = 0xD4;
+  buf[2] = 0xF9;
   buf[3] = 0x00;
   EPD_command(SSD1675_SET_RAMYPOS, buf, 4);
 
-  // Set temperature (use 25 *C for now)
-  //buf[0] = 25;
-  //buf[1] = 0x00;
-  //EPD_command(SSD1675_TEMP_WRITE, buf, 2);
+  // border color
+  buf[0] = 0x03;
+  EPD_command(SSD1675_WRITE_BORDER, buf, 1);
 
-  // load LUT from OTP
-  //buf[0] = 0x91;
-  //EPD_command(SSD1675_DISP_CTRL2, buf, 1);
+  // Vcom Voltage
+  buf[0] = 0x70;
+  EPD_command(SSD1675_WRITE_VCOM, buf, 1);
+
+  // Set gate voltage
+  buf[0] = LUT_DATA[70];
+  EPD_command(SSD1675_GATE_VOLTAGE, buf, 1);
+
+  // Set source voltage
+  buf[0] = LUT_DATA[71];
+  buf[1] = LUT_DATA[72];
+  buf[2] = LUT_DATA[73];
+  EPD_command(SSD1675_SOURCE_VOLTAGE, buf, 3);
+    
+  // Set dummy line period
+  buf[0] = LUT_DATA[74];
+  EPD_command(SSD1675_WRITE_DUMMY, buf, 1);
+
+  // Set gate line width
+  buf[0] = LUT_DATA[75];
+  EPD_command(SSD1675_WRITE_GATELINE, buf, 1);
+
+  EPD_command(SSD1675_WRITE_LUT, LUT_DATA, 70);
+
+  // set RAM x address count to 0;
+  buf[0] = 0;
+  EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
+
+  // set RAM y address count to 0X127;   
+  buf[0] = 0xF9;
+  buf[1] = 0;
+  EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
   busy_wait();
   
@@ -214,6 +250,7 @@ void Adafruit_SSD1675::update()
   // deep sleep
   buf[0] = 0x01;
   EPD_command(SSD1675_DEEP_SLEEP, buf, 1);
+  delay(100);
 }
 
 /**************************************************************************/
@@ -245,7 +282,7 @@ void Adafruit_SSD1675::display()
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // Set RAM Y address counter
-  buf[0] = 0xD3;
+  buf[0] = 0x00;
   buf[1] = 0x00;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
@@ -272,13 +309,13 @@ void Adafruit_SSD1675::display()
   
   delay(2);
   
-  // Set RAM X address counter
-  buf[0] = 0x00;
+  // set RAM x address count to 0;
+  buf[0] = 0;
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
-  // Set RAM Y address counter
-  buf[0] = 0xD3;
-  buf[1] = 0x00;
+  // set RAM y address count to 0   
+  buf[0] = 0;
+  buf[1] = 0;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
   sram.csLow();
@@ -306,20 +343,20 @@ void Adafruit_SSD1675::display()
   sram.csHigh();
 #else
   //write image
-  // Set RAM X address counter
-  buf[0] = 0x00;
+  // set RAM x address count to 0;
+  buf[0] = 0;
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
-  // Set RAM Y address counter
-  buf[0] = 0xD3;
-  buf[1] = 0x00;
+  // set RAM y address count to 0X127;   
+  buf[0] = 0xF9;
+  buf[1] = 0;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
   EPD_command(SSD1675_WRITE_RAM1, false);
   dcHigh();
   for(uint16_t i=0; i<bw_bufsize; i++){
     fastSPIwrite(bw_buf[i]);
-    Serial.print("0x"); Serial.print(bw_buf[i]); Serial.print(", ");
+    Serial.print("0x"); Serial.print(bw_buf[i], HEX); Serial.print(", ");
     if (i % 32 == 31) Serial.println();
   }
   csHigh();
@@ -329,7 +366,7 @@ void Adafruit_SSD1675::display()
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // Set RAM Y address counter
-  buf[0] = 0xD3;
+  buf[0] = 0x0;
   buf[1] = 0x00;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
   
@@ -358,7 +395,13 @@ void Adafruit_SSD1675::drawPixel(int16_t x, int16_t y, uint16_t color) {
     return;
 	
   uint8_t *pBuf;
-  
+
+  // deal with non-8-bit heights
+  uint16_t _HEIGHT = HEIGHT;
+  if (_HEIGHT % 8 != 0) {
+    _HEIGHT += 8 - (_HEIGHT % 8);
+  }
+
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
   case 1:
@@ -367,37 +410,39 @@ void Adafruit_SSD1675::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   case 2:
     x = WIDTH - x - 1;
-    y = HEIGHT - y - 1;
+    y = _HEIGHT - y - 1;
     break;
   case 3:
     EPD_swap(x, y);
-    y = HEIGHT - y - 1;
+    y = _HEIGHT - y - 1;
     break;
   }
   //make our buffer happy
   x = (x == 0 ? 1 : x);
   
-  uint16_t addr = ( (width() - x) * height() + y)/8;
-  
+  uint16_t addr = ( (WIDTH - x) * _HEIGHT + y)/8;
+
 #ifdef USE_EXTERNAL_SRAM
-  if (color == EPD_RED){
+  if ((color == EPD_RED) || (color == EPD_GRAY)) {
     addr = addr + bw_bufsize;    //red is written after bw
   }
   uint8_t c = sram.read8(addr);
   pBuf = &c;
 #else
-  if(color == EPD_RED){
+  if((color == EPD_RED) || (color == EPD_GRAY)) {
     pBuf = red_buf + addr;
   } else {
     pBuf = bw_buf + addr;
   }
 #endif
-  // x is which column
-  switch (color) {
-     case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
-     case EPD_RED:
-     case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
-     case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
+  if (((color == EPD_RED || color == EPD_GRAY) && redInverted) || 
+      ((color == EPD_BLACK) && blackInverted)) {
+    *pBuf &= ~(1 << (7 - y%8));
+  } else if (((color == EPD_RED || color == EPD_GRAY) && !redInverted) || 
+	     ((color == EPD_BLACK) && !blackInverted)) {
+    *pBuf |= (1 << (7 - y%8));
+  } else if (color == EPD_INVERSE) {
+    *pBuf ^= (1 << (7 - y%8));
   }
 #ifdef USE_EXTERNAL_SRAM
   sram.write8(addr, *pBuf);
