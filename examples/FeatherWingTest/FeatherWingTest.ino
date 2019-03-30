@@ -53,13 +53,16 @@
 
 /* Uncomment the following line if you are using 2.13" tricolor EPD */
 Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+/* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
+//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
 
 bool drawBitmap = false;
 
 void setup() {
   Serial.begin(115200);
   //while (!Serial);
-  Serial.println("2.13 inch Tri-Color EInk Featherwing test");
+  Serial.println("2.13 inch EInk Featherwing test");
 
   Serial.print("Initializing SD card...");
   if (!SD.begin(SD_CS)) {
