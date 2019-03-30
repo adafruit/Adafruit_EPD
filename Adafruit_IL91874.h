@@ -37,28 +37,19 @@
 */
 /**************************************************************************/
 class Adafruit_IL91874 : public Adafruit_EPD {
-	public:
+ public:
 
-	#ifdef USE_EXTERNAL_SRAM
-	  Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
-	  Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
-	#else
-	  Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	  Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	#endif
+  Adafruit_IL91874(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
+  Adafruit_IL91874(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
 
-	void begin(bool reset=true);
-	void powerUp();
+  void begin(bool reset=true);
+  void powerUp();
+  void update();
 	
-	void drawPixel(int16_t x, int16_t y, uint16_t color);
-	
-	void display();
-	void update();
-	
-	void clearBuffer();
-	void clearDisplay();
 protected:
-	void busy_wait();
+  uint8_t writeRAMCommand(uint8_t index);
+  void setRAMAddress(uint16_t x, uint16_t y);
+  void busy_wait();
 };
 
 #endif
