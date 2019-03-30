@@ -43,7 +43,7 @@ void setup(void) {
   Serial.begin(115200);
   Serial.print("Hello! EPD Test");
 
-  epd.begin();
+  display.begin();
 #if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   // The flexible displays have different buffers and invert settings!
   display.setBlackBuffer(1, false);
@@ -52,22 +52,22 @@ void setup(void) {
 
   Serial.println("Initialized");
 
-  epd.setRotation(2);
+  display.setRotation(2);
 
   // large block of text
-  epd.clearBuffer();
-  epd.setTextWrap(true);
+  display.clearBuffer();
+  display.setTextWrap(true);
 
-  epd.setCursor(10, 10);
-  epd.setTextSize(1);
-  epd.setTextColor(COLOR1);
-  epd.print("Get as much education as you can. Nobody can take that away from you");
+  display.setCursor(10, 10);
+  display.setTextSize(1);
+  display.setTextColor(EPD_BLACK);
+  display.print("Get as much education as you can. Nobody can take that away from you");
 
-  epd.setCursor(50, 70);
-  epd.setTextColor(COLOR2);
-  epd.print("--Eben Upton");
+  display.setCursor(50, 70);
+  display.setTextColor(EPD_RED);
+  display.print("--Eben Upton");
 
-  epd.display();
+  display.display();
 }
 
 void loop() {
