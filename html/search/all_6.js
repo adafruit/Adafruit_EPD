@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hwspi',['hwSPI',['../class_adafruit___e_p_d.html#a871dd80eda535e291b0ef2f522f6148e',1,'Adafruit_EPD']]]
+  ['invertcolorlogic',['invertColorLogic',['../class_adafruit___e_p_d.html#a74d1e351e43efd4e31ad1a4d59202401',1,'Adafruit_EPD']]]
 ];

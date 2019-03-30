@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fastspiwrite',['fastSPIwrite',['../class_adafruit___e_p_d.html#aeee0820dd50f8c0e4bfc2b479e255eeb',1,'Adafruit_EPD']]]
+  ['invertcolorlogic',['invertColorLogic',['../class_adafruit___e_p_d.html#a74d1e351e43efd4e31ad1a4d59202401',1,'Adafruit_EPD']]]
 ];

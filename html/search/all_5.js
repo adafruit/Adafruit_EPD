@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fastspiwrite',['fastSPIwrite',['../class_adafruit___e_p_d.html#aeee0820dd50f8c0e4bfc2b479e255eeb',1,'Adafruit_EPD']]]
+  ['hwspi',['hwSPI',['../class_adafruit___e_p_d.html#a871dd80eda535e291b0ef2f522f6148e',1,'Adafruit_EPD']]]
 ];
