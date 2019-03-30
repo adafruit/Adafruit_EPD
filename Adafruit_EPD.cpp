@@ -240,7 +240,7 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
   dcLow();
   csLow();
   
-  uint8_t data = fastSPIwrite(c);
+  uint8_t data = SPItransfer(c);
 #ifdef DEBUG
   Serial.print("\nCommand: 0x"); Serial.print(c, HEX);
   Serial.print(" - ");
@@ -271,7 +271,7 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
   Serial.print("Data: ");
 #endif
   for (uint16_t i=0; i<len; i++) {
-    fastSPIwrite(buf[i]);
+    SPItransfer(buf[i]);
 #ifdef DEBUG
     Serial.print("0x"); Serial.print(buf[i], HEX); Serial.print(", ");
 #endif
@@ -302,7 +302,7 @@ void Adafruit_EPD::EPD_data(uint8_t data)
   Serial.print("Data: ");
   Serial.print("0x"); Serial.println(data, HEX); 
 #endif
-  fastSPIwrite(data);
+  SPItransfer(data);
   
   csHigh();
 }
@@ -315,7 +315,7 @@ void Adafruit_EPD::EPD_data(uint8_t data)
     @returns the data byte read
 */
 /**************************************************************************/
-uint8_t Adafruit_EPD::fastSPIwrite(uint8_t d) {
+uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
   if (hwSPI) {
     if (singleByteTxns){
       uint8_t b;

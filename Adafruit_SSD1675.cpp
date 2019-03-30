@@ -127,7 +127,7 @@ void Adafruit_SSD1675::busy_wait(void)
 {
   if (busy >= 0) {
     while(digitalRead(busy)) { //wait for busy low
-      Serial.print("."); 
+      //Serial.print("."); 
       delay(100);
     }
   } else {
@@ -284,11 +284,11 @@ void Adafruit_SSD1675::display()
 
   sram.csLow();
   //send read command
-  fastSPIwrite(MCPSRAM_READ);
+  SPItransfer(MCPSRAM_READ);
   
   //send address
-  fastSPIwrite(0x00);
-  fastSPIwrite(0x00);
+  SPItransfer(0x00);
+  SPItransfer(0x00);
   
   //first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
   c = EPD_command(SSD1675_WRITE_RAM1, false);
@@ -296,9 +296,9 @@ void Adafruit_SSD1675::display()
   dcHigh();
   
   for(uint16_t i=0; i<bw_bufsize; i++){
-    c = fastSPIwrite(c);
-    Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-    if (i % 32 == 31) Serial.println();
+    c = SPItransfer(c);
+    //Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+    //if (i % 32 == 31) Serial.println();
   }
   csHigh();
   sram.csHigh();
@@ -316,14 +316,14 @@ void Adafruit_SSD1675::display()
 
   sram.csLow();
   //send write command
-  fastSPIwrite(MCPSRAM_READ);
+  SPItransfer(MCPSRAM_READ);
   
   uint8_t b[2];
   b[0] = (bw_bufsize >> 8);
   b[1] = (bw_bufsize & 0xFF);
   //send address
-  fastSPIwrite(b[0]);
-  fastSPIwrite(b[1]);
+  SPItransfer(b[0]);
+  SPItransfer(b[1]);
   
   //first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
   c = EPD_command(SSD1675_WRITE_RAM2, false);
@@ -331,9 +331,9 @@ void Adafruit_SSD1675::display()
   dcHigh();
   
   for(uint16_t i=0; i<red_bufsize; i++){
-    c = fastSPIwrite(~c);
-    Serial.print("0x"); Serial.print(~c, HEX); Serial.print(", ");
-    if (i % 32 == 31) Serial.println();
+    c = SPItransfer(~c);
+    //Serial.print("0x"); Serial.print(~c, HEX); Serial.print(", ");
+    //if (i % 32 == 31) Serial.println();
   }
   csHigh();
   sram.csHigh();
@@ -351,9 +351,9 @@ void Adafruit_SSD1675::display()
   EPD_command(SSD1675_WRITE_RAM1, false);
   dcHigh();
   for(uint16_t i=0; i<bw_bufsize; i++){
-    fastSPIwrite(bw_buf[i]);
-    Serial.print("0x"); Serial.print(bw_buf[i], HEX); Serial.print(", ");
-    if (i % 32 == 31) Serial.println();
+    SPItransfer(bw_buf[i]);
+    //Serial.print("0x"); Serial.print(bw_buf[i], HEX); Serial.print(", ");
+    //if (i % 32 == 31) Serial.println();
   }
   csHigh();
 
@@ -370,7 +370,7 @@ void Adafruit_SSD1675::display()
   dcHigh();
   
   for(uint16_t i=0; i<red_bufsize; i++){
-    fastSPIwrite(red_buf[i]);
+    SPItransfer(red_buf[i]);
   }
   csHigh();  
 #endif

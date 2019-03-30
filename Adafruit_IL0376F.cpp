@@ -209,11 +209,11 @@ void Adafruit_IL0376F::display()
 	
 	sram.csLow();
 	//send read command
-	fastSPIwrite(MCPSRAM_READ);
+	SPItransfer(MCPSRAM_READ);
 	
 	//send address
-	fastSPIwrite(0x00);
-	fastSPIwrite(0x00);
+	SPItransfer(0x00);
+	SPItransfer(0x00);
 	
 	//first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
 	c = EPD_command(EPD_RAM_BW, false);
@@ -221,7 +221,7 @@ void Adafruit_IL0376F::display()
 	dcHigh();
 	
 	for(uint16_t i=0; i<bw_bufsize; i++){
-		c = fastSPIwrite(c);
+		c = SPItransfer(c);
 	}
 	csHigh();
 	sram.csHigh();
@@ -230,14 +230,14 @@ void Adafruit_IL0376F::display()
 	
 	sram.csLow();
 	//send write command
-	fastSPIwrite(MCPSRAM_READ);
+	SPItransfer(MCPSRAM_READ);
 	
 	uint8_t b[2];
 	b[0] = (bw_bufsize >> 8);
 	b[1] = (bw_bufsize & 0xFF);
 	//send address
-	fastSPIwrite(b[0]);
-	fastSPIwrite(b[1]);
+	SPItransfer(b[0]);
+	SPItransfer(b[1]);
 	
 	//first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
 	c = EPD_command(EPD_RAM_RED, false);
@@ -245,7 +245,7 @@ void Adafruit_IL0376F::display()
 	dcHigh();
 	
 	for(uint16_t i=0; i<red_bufsize; i++){
-		c = fastSPIwrite(c);
+		c = SPItransfer(c);
 	}
 	csHigh();
 	sram.csHigh();
@@ -256,7 +256,7 @@ void Adafruit_IL0376F::display()
 	dcHigh();
 
 	for(uint16_t i=0; i<bw_bufsize; i++){
-		fastSPIwrite(bw_buf[i]);
+		SPItransfer(bw_buf[i]);
 	}
 	csHigh();
 	
@@ -264,7 +264,7 @@ void Adafruit_IL0376F::display()
 	dcHigh();
 		
 	for(uint16_t i=0; i<red_bufsize; i++){
-		fastSPIwrite(red_buf[i]);
+		SPItransfer(red_buf[i]);
 	}
 	csHigh();
 

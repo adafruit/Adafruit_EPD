@@ -266,11 +266,11 @@ void Adafruit_SSD1608::display()
 
   sram.csLow();
   //send read command
-  fastSPIwrite(MCPSRAM_READ);
+  SPItransfer(MCPSRAM_READ);
   
   //send address
-  fastSPIwrite(0x00);
-  fastSPIwrite(0x00);
+  SPItransfer(0x00);
+  SPItransfer(0x00);
   
   //first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
   c = EPD_command(SSD1608_WRITE_RAM, false);
@@ -278,7 +278,7 @@ void Adafruit_SSD1608::display()
   dcHigh();
   
   for(uint16_t i=0; i<bw_bufsize; i++){
-    c = fastSPIwrite(c);
+    c = SPItransfer(c);
     //Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
     //if (i % 32 == 31) Serial.println();
   }
@@ -299,7 +299,7 @@ void Adafruit_SSD1608::display()
   EPD_command(SSD1608_WRITE_RAM, false);
   dcHigh();
   for(uint16_t i=0; i<bw_bufsize; i++){
-    fastSPIwrite(bw_buf[i]);
+    SPItransfer(bw_buf[i]);
     //Serial.print("0x"); Serial.print(bw_buf[i], HEX); Serial.print(", ");
     //if (i % 32 == 31) Serial.println();
   }

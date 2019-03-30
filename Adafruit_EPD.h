@@ -116,7 +116,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   void EPD_data(const uint8_t *buf, uint16_t len);
   void EPD_data(uint8_t data);
 
-  uint8_t fastSPIwrite(uint8_t c);
+  uint8_t SPItransfer(uint8_t c);
 
   boolean hwSPI; ///< true if using hardware SPI
 #ifdef HAVE_PORTREG
