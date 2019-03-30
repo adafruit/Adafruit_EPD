@@ -44,6 +44,7 @@ class Adafruit_IL0373 : public Adafruit_EPD {
 
   void begin(bool reset=true);
   void powerUp();
+  void powerDown();
   void update();
 
 protected:

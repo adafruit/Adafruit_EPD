@@ -70,9 +70,9 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST, i
 /**************************************************************************/
 void Adafruit_IL0373::busy_wait(void)
 {
-  if (busy >= 0) {
-    while(!digitalRead(busy)) {
-      delay(1); //wait for busy high
+  if (_busy_pin >= 0) {
+    while(!digitalRead(_busy_pin)) {
+      delay(10); //wait for busy high
     }
   } else {
     delay(BUSY_WAIT);
@@ -87,22 +87,11 @@ void Adafruit_IL0373::busy_wait(void)
 /**************************************************************************/
 void Adafruit_IL0373::begin(bool reset)
 {
-  uint8_t buf[5];
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, true);  // red defaults to inverted
   
-  buf[0] = 0x03;
-  buf[1] = 0x00;
-  buf[2] = 0x2b;
-  buf[3] = 0x2b;
-  buf[4] = 0x09;
-  EPD_command(IL0373_POWER_SETTING, buf, 5);
-  
-  buf[0] = 0x17;
-  buf[1] = 0x17;
-  buf[2] = 0x17;
-  EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3);
+  powerDown();
 }
 
 /**************************************************************************/
@@ -114,20 +103,12 @@ void Adafruit_IL0373::update()
 {
   EPD_command(IL0373_DISPLAY_REFRESH);
 	
+  delay(100);
+
   busy_wait();
-  
-  //power off
-  uint8_t buf[4];
-  
-  buf[0] = 0x17;
-  EPD_command(IL0373_CDI, buf, 1);
-  
-  buf[0] = 0x00;
-  EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
-  
-  EPD_command(IL0373_POWER_OFF);
-  
-  delay(2000);
+  if (_busy_pin <= -1) {
+    delay(15000);
+  }
 }
 
 /**************************************************************************/
@@ -138,7 +119,21 @@ void Adafruit_IL0373::update()
 void Adafruit_IL0373::powerUp()
 {
   uint8_t buf[4];
+
+  hardwareReset();
+
+  buf[0] = 0x03;
+  buf[1] = 0x00;
+  buf[2] = 0x2b;
+  buf[3] = 0x2b;
+  buf[4] = 0x09;
+  EPD_command(IL0373_POWER_SETTING, buf, 5);
   
+  buf[0] = 0x17;
+  buf[1] = 0x17;
+  buf[2] = 0x17;
+  EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3); 
+ 
   EPD_command(IL0373_POWER_ON);
   busy_wait();
   delay(200);
@@ -160,6 +155,25 @@ void Adafruit_IL0373::powerUp()
   buf[0] = 0x0A;
   EPD_command(IL0373_VCM_DC_SETTING, buf, 1);
   delay(20);
+}
+
+
+/**************************************************************************/
+/*!
+    @brief wind down the display
+*/
+/**************************************************************************/
+void Adafruit_IL0373::powerDown() {
+  //power off
+  uint8_t buf[4];
+  
+  buf[0] = 0x17;
+  EPD_command(IL0373_CDI, buf, 1);
+  
+  buf[0] = 0x00;
+  EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
+  
+  EPD_command(IL0373_POWER_OFF);
 }
 
 uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {

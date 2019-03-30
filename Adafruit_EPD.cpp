@@ -69,12 +69,12 @@
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t spi_miso, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(spi_mosi, spi_miso, spi_clock, SRCS) {
-  cs = CS;
-  rst = RST;
-  dc = DC;
-  sclk = spi_clock;
-  sid = spi_mosi;
-  busy = BUSY;
+  _cs_pin = CS;
+  _reset_pin = RST;
+  _dc_pin = DC;
+  _sclk_pin = spi_clock;
+  _sid_pin = spi_mosi;
+  _busy_pin = BUSY;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
@@ -103,10 +103,10 @@ sram(spi_mosi, spi_miso, spi_clock, SRCS) {
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(SRCS) {
-  dc = DC;
-  rst = RST;
-  cs = CS;
-  busy = BUSY;
+  _cs_pin = CS;
+  _reset_pin = RST;
+  _dc_pin = DC;
+  _busy_pin = BUSY;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
@@ -153,26 +153,26 @@ void Adafruit_EPD::begin(bool reset) {
   }
   
   // set pin directions
-  pinMode(dc, OUTPUT);
-  pinMode(cs, OUTPUT);
+  pinMode(_dc_pin, OUTPUT);
+  pinMode(_cs_pin, OUTPUT);
 #ifdef HAVE_PORTREG
-  csport      = portOutputRegister(digitalPinToPort(cs));
-  cspinmask   = digitalPinToBitMask(cs);
-  dcport      = portOutputRegister(digitalPinToPort(dc));
-  dcpinmask   = digitalPinToBitMask(dc);
+  csport      = portOutputRegister(digitalPinToPort(_cs_pin));
+  cspinmask   = digitalPinToBitMask(_cs_pin);
+  dcport      = portOutputRegister(digitalPinToPort(_dc_pin));
+  dcpinmask   = digitalPinToBitMask(_dc_pin);
 #endif
 
   csHigh();
 
   if (!hwSPI){
     // set pins for software-SPI
-    pinMode(sid, OUTPUT);
-    pinMode(sclk, OUTPUT);
+    pinMode(_sid_pin, OUTPUT);
+    pinMode(_sclk_pin, OUTPUT);
 #ifdef HAVE_PORTREG
-    clkport     = portOutputRegister(digitalPinToPort(sclk));
-    clkpinmask  = digitalPinToBitMask(sclk);
-    mosiport    = portOutputRegister(digitalPinToPort(sid));
-    mosipinmask = digitalPinToBitMask(sid);
+    clkport     = portOutputRegister(digitalPinToPort(_sclk_pin));
+    clkpinmask  = digitalPinToBitMask(_sclk_pin);
+    mosiport    = portOutputRegister(digitalPinToPort(_sid_pin));
+    mosipinmask = digitalPinToBitMask(_sid_pin);
 #endif
   } else {
     SPI.begin();
@@ -181,27 +181,36 @@ void Adafruit_EPD::begin(bool reset) {
 #endif
   }
 
-  if ((reset) && (rst >= 0)) {
-    // Setup reset pin direction
-    pinMode(rst, OUTPUT);
-    // VDD (3.3V) goes high at start, lets just chill for a ms
-    digitalWrite(rst, HIGH);
-    delay(10);
-    // bring reset low
-    digitalWrite(rst, LOW);
-    // wait 10ms
-    delay(10);
-    // bring out of reset
-    digitalWrite(rst, HIGH);
-    delay(10);
+  if (reset) {
+    hardwareReset();
   }
 
-  if (busy >= 0) {
-    pinMode(busy, INPUT);
+  if (_busy_pin >= 0) {
+    pinMode(_busy_pin, INPUT);
   }
 }
 
-
+/**************************************************************************/
+/*!
+    @brief reset Perform a hardware reset
+*/
+/**************************************************************************/
+void Adafruit_EPD::hardwareReset(void) {
+  if (_reset_pin >= 0) {
+    // Setup reset pin direction
+    pinMode(_reset_pin, OUTPUT);
+    // VDD (3.3V) goes high at start, lets just chill for a ms
+    digitalWrite(_reset_pin, HIGH);
+    delay(10);
+    // bring reset low
+    digitalWrite(_reset_pin, LOW);
+    // wait 10ms
+    delay(10);
+    // bring out of reset
+    digitalWrite(_reset_pin, HIGH);
+    delay(10);
+  }
+}
 
 /**************************************************************************/
 /*!
@@ -278,9 +287,10 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 /**************************************************************************/
 void Adafruit_EPD::display(void)
 {
-  powerUp();
   uint8_t c;
   uint8_t b[2];
+
+  powerUp();
    
   // Set X & Y ram counters
   setRAMAddress(0, 0);
@@ -300,8 +310,8 @@ void Adafruit_EPD::display(void)
     dcHigh();
     for(uint16_t i=0; i<buffer1_size; i++){
       c = SPItransfer(c);
-      Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-      if (i % 32 == 31) Serial.println();
+      //Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+      //if (i % 32 == 31) Serial.println();
     }
     csHigh();
     sram.csHigh();
@@ -355,6 +365,8 @@ void Adafruit_EPD::display(void)
   }
 
   update();
+
+  powerDown();
 }
 
 
@@ -586,10 +598,10 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
       else        *mosiport &= ~mosipinmask;
       *clkport |=  clkpinmask;
 #else
-      digitalWrite(sclk, LOW);
-      if(d & bit) digitalWrite(sid, HIGH);
-      else        digitalWrite(sid, LOW);
-      digitalWrite(sclk, HIGH);
+      digitalWrite(_sclk_pin, LOW);
+      if(d & bit) digitalWrite(_sid_pin, HIGH);
+      else        digitalWrite(_sid_pin, LOW);
+      digitalWrite(_sclk_pin, HIGH);
 #endif
     }
     return 0;
@@ -609,7 +621,7 @@ void Adafruit_EPD::csHigh()
 #ifdef HAVE_PORTREG
   *csport |= cspinmask;
 #else
-  digitalWrite(cs, HIGH);
+  digitalWrite(_cs_pin, HIGH);
 #endif
 }
 
@@ -626,7 +638,7 @@ void Adafruit_EPD::csLow()
 #ifdef HAVE_PORTREG
   *csport &= ~cspinmask;
 #else
-  digitalWrite(cs, LOW);
+  digitalWrite(_cs_pin, LOW);
 #endif
 }
 
@@ -640,7 +652,7 @@ void Adafruit_EPD::dcHigh()
 #ifdef HAVE_PORTREG
   *dcport |= dcpinmask;
 #else
-  digitalWrite(dc, HIGH);
+  digitalWrite(_dc_pin, HIGH);
 #endif
 }
 
@@ -654,6 +666,6 @@ void Adafruit_EPD::dcLow()
 #ifdef HAVE_PORTREG
   *dcport &= ~dcpinmask;
 #else
-  digitalWrite(dc, LOW);
+  digitalWrite(_dc_pin, LOW);
 #endif
 }

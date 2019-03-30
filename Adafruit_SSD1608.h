@@ -53,7 +53,7 @@ class Adafruit_SSD1608 : public Adafruit_EPD {
   
   void begin(bool reset=true);
   void powerUp();
-  
+  void powerDown();
   void update();
   
 protected:

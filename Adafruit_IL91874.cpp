@@ -129,8 +129,8 @@ Adafruit_IL91874::Adafruit_IL91874(int width, int height,
 /**************************************************************************/
 void Adafruit_IL91874::busy_wait(void)
 {
-  if (busy >= 0) {
-    while (!digitalRead(busy)) {
+  if (_busy_pin >= 0) {
+    while (!digitalRead(_busy_pin)) {
       delay(1); //wait for busy low
     }
   } else {
@@ -148,6 +148,11 @@ void Adafruit_IL91874::begin(bool reset)
 {
   singleByteTxns = true;
   Adafruit_EPD::begin(reset);
+
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, false);  // red defaults to not inverted
+  
+  powerDown();
 }
 
 /**************************************************************************/
@@ -160,15 +165,9 @@ void Adafruit_IL91874::update()
   EPD_command(IL91874_DISPLAY_REFRESH);
   
   busy_wait();
-  
-  //power off
-  uint8_t buf[4];
-  
-  EPD_command(IL91874_POWER_OFF);
-  busy_wait();
-  
-  buf[0] = 0xA5;
-  EPD_command(IL91874_DEEP_SLEEP, buf, 1);
+  if (_busy_pin <= -1) {
+    delay(16000);
+  }
 }
 
 /**************************************************************************/
@@ -180,14 +179,7 @@ void Adafruit_IL91874::powerUp()
 {
   uint8_t buf[5];
 
-  if (rst >= 0) {
-    digitalWrite(rst, LOW);
-    // wait 10ms
-    delay(10);
-    // bring out of reset
-    digitalWrite(rst, HIGH);
-    delay(10);
-  }
+  hardwareReset();
 
   buf[0] = 0x03;
   buf[1] = 0x00;
@@ -252,7 +244,22 @@ void Adafruit_IL91874::powerUp()
   EPD_command(IL91874_LUTBB, lut_bb, 42);
 }
 
+/**************************************************************************/
+/*!
+    @brief wind down the display
+*/
+/**************************************************************************/
+void Adafruit_IL91874::powerDown()
+{
+  //power off
+  uint8_t buf[4];
 
+  EPD_command(IL91874_POWER_OFF);
+  busy_wait();
+  
+  buf[0] = 0xA5;
+  EPD_command(IL91874_DEEP_SLEEP, buf, 1);
+}
 
 uint8_t Adafruit_IL91874::writeRAMCommand(uint8_t index) {
   if (index == 0) {

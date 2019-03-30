@@ -45,7 +45,8 @@ class Adafruit_IL91874 : public Adafruit_EPD {
   void begin(bool reset=true);
   void powerUp();
   void update();
-	
+  void powerDown();
+
 protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);

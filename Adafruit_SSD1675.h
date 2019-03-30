@@ -49,6 +49,7 @@ class Adafruit_SSD1675 : public Adafruit_EPD {
   void begin(bool reset=true);
   void powerUp();
   void update();
+  void powerDown();
 
 protected:
   uint8_t writeRAMCommand(uint8_t index);

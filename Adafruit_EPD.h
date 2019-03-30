@@ -94,13 +94,15 @@ class Adafruit_EPD : public Adafruit_GFX {
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
   virtual void powerUp(void) = 0;
   virtual void update(void) = 0;
+  virtual void powerDown(void) = 0;
+  void hardwareReset(void);
 
-  int8_t sid, ///< sid pin
-    sclk, ///< serial clock pin
-    dc, ///< data/command pin
-    rst, ///< reset pin
-    cs, ///< chip select pin
-    busy; ///< busy pin
+  int8_t _sid_pin, ///< sid pin
+    _sclk_pin, ///< serial clock pin
+    _dc_pin, ///< data/command pin
+    _reset_pin, ///< reset pin
+    _cs_pin, ///< chip select pin
+    _busy_pin; ///< busy pin
     
   bool blackInverted; ///< is black channel inverted
   bool colorInverted; ///< is red channel inverted

@@ -100,10 +100,9 @@ Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST,
 /**************************************************************************/
 void Adafruit_SSD1675::busy_wait(void)
 {
-  if (busy >= 0) {
-    while(digitalRead(busy)) { //wait for busy low
-      //Serial.print("."); 
-      delay(100);
+  if (_busy_pin >= 0) {
+    while(digitalRead(_busy_pin)) { //wait for busy low
+      delay(10);
     }
   } else {
     delay(BUSY_WAIT);
@@ -118,18 +117,50 @@ void Adafruit_SSD1675::busy_wait(void)
 /**************************************************************************/
 void Adafruit_SSD1675::begin(bool reset)
 {
-  uint8_t buf[5];
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(0, true);  // no secondary buffer, so we'll just reuse index 0
-  
-  delay(100);
 
+  powerDown();
+}
+
+
+/**************************************************************************/
+/*!
+    @brief signal the display to update
+*/
+/**************************************************************************/
+void Adafruit_SSD1675::update()
+{
+  uint8_t buf[1];
+
+  // display update sequence
+  buf[0] = 0xC7;
+  EPD_command(SSD1675_DISP_CTRL2, buf, 1);
+
+  EPD_command(SSD1675_MASTER_ACTIVATE);
+
+  busy_wait();
+  if (_busy_pin <= -1) {
+    delay(1000);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief start up the display
+*/
+/**************************************************************************/
+void Adafruit_SSD1675::powerUp()
+{
+  uint8_t buf[5];
+
+  hardwareReset();
+  delay(100);
   busy_wait();
 
   // soft reset
   EPD_command(SSD1675_SW_RESET);
-
   busy_wait();
 
   // set analog block control
@@ -205,37 +236,18 @@ void Adafruit_SSD1675::begin(bool reset)
 
 /**************************************************************************/
 /*!
-    @brief signal the display to update
+    @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_SSD1675::update()
+void Adafruit_SSD1675::powerDown()
 {
-  uint8_t buf[1];
+  uint8_t buf[5];
 
-  // display update sequence
-  buf[0] = 0xC7;
-  EPD_command(SSD1675_DISP_CTRL2, buf, 1);
-
-  EPD_command(SSD1675_MASTER_ACTIVATE);
-
-  busy_wait();
-    
   // deep sleep
   buf[0] = 0x01;
   EPD_command(SSD1675_DEEP_SLEEP, buf, 1);
   delay(100);
 }
-
-/**************************************************************************/
-/*!
-    @brief start up the display
-*/
-/**************************************************************************/
-void Adafruit_SSD1675::powerUp()
-{
-  begin();
-}
-
 
 uint8_t Adafruit_SSD1675::writeRAMCommand(uint8_t index) {
   if (index == 0) {

@@ -76,10 +76,16 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height,
 /**************************************************************************/
 void Adafruit_IL0398::busy_wait(void)
 {
-  if(busy > -1)
-    while (digitalRead(busy)); //wait for busy low
-  else
+  if (_busy_pin > -1) {
+    do {
+      EPD_command(IL0398_GETSTATUS);
+      delay(10);
+    } while (digitalRead(_busy_pin)); //wait for busy low
+    delay(200);
+  } else {
     delay(BUSY_WAIT);
+  }
+
 }
 
 /**************************************************************************/
@@ -90,17 +96,12 @@ void Adafruit_IL0398::busy_wait(void)
 /**************************************************************************/
 void Adafruit_IL0398::begin(bool reset)
 {
-  uint8_t buf[5];
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, true);  // red defaults to inverted  
 
   setRotation(1);
-
-  buf[0] = 0x07;
-  buf[1] = 0x07;
-  buf[2] = 0x07;
-  EPD_command(IL0398_BOOSTER_SOFT_START, buf, 3);
+  powerDown();
 }
 
 /**************************************************************************/
@@ -111,20 +112,12 @@ void Adafruit_IL0398::begin(bool reset)
 void Adafruit_IL0398::update()
 {
   EPD_command(IL0398_DISPLAY_REFRESH);
-			
+  delay(100);
+
   busy_wait();
-  
-  delay(10000);
-  
-  //power off
-  uint8_t buf[4];
-  
-  buf[0] = 0xF7;
-  EPD_command(IL0398_CDI, buf, 1);
-  
-  EPD_command(IL0398_POWER_OFF);
-  
-  delay(10000);
+  if (_busy_pin <= -1) {
+    delay(15000);
+  }
 }
 
 /**************************************************************************/
@@ -135,11 +128,17 @@ void Adafruit_IL0398::update()
 void Adafruit_IL0398::powerUp()
 {
   uint8_t buf[4];
-  
+
+  hardwareReset();
+
+  buf[0] = 0x17;
+  buf[1] = 0x17;
+  buf[2] = 0x17;
+  EPD_command(IL0398_BOOSTER_SOFT_START, buf, 3);
+
   EPD_command(IL0398_POWER_ON);
   busy_wait();
-  delay(200);
-  
+
   buf[0] = 0x0F;
   EPD_command(IL0398_PANEL_SETTING, buf, 1);
   
@@ -151,6 +150,26 @@ void Adafruit_IL0398::powerUp()
   
   delay(20);
 }
+
+/**************************************************************************/
+/*!
+    @brief wind down the display
+*/
+/**************************************************************************/
+void Adafruit_IL0398::powerDown()
+{
+  uint8_t buf[4];
+
+  // power off
+  buf[0] = 0xF7; // border floating
+  EPD_command(IL0398_VCOM, buf, 1);
+  EPD_command(IL0398_POWER_OFF);
+  busy_wait();
+  buf[0] = 0xA5; // deep sleep
+  EPD_command(IL0398_DEEP_SLEEP, buf, 1);
+  delay(100);
+}
+
 
 
 
@@ -166,4 +185,3 @@ uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
 void Adafruit_IL0398::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
 }
-
