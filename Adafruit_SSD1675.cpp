@@ -264,6 +264,7 @@ uint8_t Adafruit_SSD1675::writeRAMCommand(uint8_t index) {
   if (index == 1) {
     return EPD_command(SSD1675_WRITE_RAM2, false);
   }
+  return 0;
 }
 
 /**************************************************************************/

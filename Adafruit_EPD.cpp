@@ -288,7 +288,6 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_EPD::display(void)
 {
   uint8_t c;
-  uint8_t b[2];
 
   powerUp();
    

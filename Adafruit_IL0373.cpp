@@ -118,7 +118,7 @@ void Adafruit_IL0373::update()
 /**************************************************************************/
 void Adafruit_IL0373::powerUp()
 {
-  uint8_t buf[4];
+  uint8_t buf[5];
 
   hardwareReset();
 
@@ -191,6 +191,7 @@ uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
   if (index == 1) {
     return EPD_command(EPD_RAM_RED, false);
   }
+  return 0;
 }
 
 /**************************************************************************/

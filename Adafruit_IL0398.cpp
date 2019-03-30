@@ -188,6 +188,7 @@ uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
   if (index == 1) {
     return EPD_command(EPD_RAM_RED, false);
   }
+  return 0;
 }
 
 /**************************************************************************/
