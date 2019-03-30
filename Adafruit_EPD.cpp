@@ -231,14 +231,14 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   case 2:
     x = WIDTH - x - 1;
-    y = HEIGHT - y - 1;
+    y = _HEIGHT - y - 1;
     break;
   case 3:
     EPD_swap(x, y);
-    y = HEIGHT - y - 1;
+    y = _HEIGHT - y - 1;
     break;
   }
-  uint16_t addr = ( (uint32_t)(WIDTH - 1 - x) * (uint32_t)HEIGHT + y)/8;
+  uint16_t addr = ( (uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y)/8;
   uint8_t c;
   if (use_sram) {
     if ((color == EPD_RED) || (color == EPD_GRAY)) {
