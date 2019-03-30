@@ -9,8 +9,6 @@ const unsigned char LUT_DATA[30]= {
   0xF8, 0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00
 };
 
-#ifdef USE_EXTERNAL_SRAM
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -29,39 +27,27 @@ const unsigned char LUT_DATA[30]= {
 Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, 
 				   int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, 
 				   int8_t SRCS, int8_t MISO, int8_t BUSY)
-  : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
-#else
+  : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and software SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param SID the SID pin to use
-    @param SCLK the SCLK pin to use
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY)   : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
-  
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
-  bw_buf = (uint8_t *)malloc(width * height / 8);
-#endif
-  if ((height % 8) != 0) {
-    height += 8 - (height % 8);
+  buffer1_size = width * height / 8;
+  buffer2_size = 0;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = 0;
+  } else {
+    buffer1 = (uint8_t *)malloc(width * height / 8);
+    buffer2 = NULL;
   }
-  bw_bufsize = width * height / 8;
+
   setRotation(3);
-
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
-#ifdef USE_EXTERNAL_SRAM
 
 /**************************************************************************/
 /*!
@@ -77,30 +63,22 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t SID, int8_t SCL
 /**************************************************************************/
 Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY)
   : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
-#else
 
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and hardware SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY)
-  : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
-  bw_buf = (uint8_t *)malloc(width * height / 8);
-#endif
-  if ((height % 8) != 0) {
-    height += 8 - (height % 8);
+  buffer1_size = width * height / 8;
+  buffer2_size = 0;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = 0;
+  } else {
+    buffer1 = (uint8_t *)malloc(width * height / 8);
+    buffer2 = buffer1;
   }
-  bw_bufsize = width * height / 8;
+
   setRotation(3);
 }
 
@@ -131,6 +109,8 @@ void Adafruit_SSD1608::begin(bool reset)
 {
   uint8_t buf[5];
   Adafruit_EPD::begin(reset);
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(0, true);  // no secondary buffer, so we'll just reuse index 0
   
   delay(100);
 
@@ -241,156 +221,21 @@ void Adafruit_SSD1608::powerUp()
   begin();
 }
 
-/**************************************************************************/
-/*!
-    @brief show the data stored in the buffer on the display
-*/
-/**************************************************************************/
-void Adafruit_SSD1608::display()
-{
-  powerUp();
-  
+
+
+uint8_t Adafruit_SSD1608::writeRAMCommand(uint8_t index) {
+  return EPD_command(SSD1608_WRITE_RAM, false);
+}
+
+void Adafruit_SSD1608::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
-#ifdef USE_EXTERNAL_SRAM
-  uint8_t c;
-  
   // Set RAM X address counter
-  buf[0] = 0x0;
+  buf[0] = x;
   EPD_command(SSD1608_SET_RAMXCOUNT, buf, 1);
 
   // Set RAM Y address counter
-  buf[0] = 0x00;
-  buf[1] = 0x00;
+  buf[0] = y >> 8;
+  buf[1] = y;
   EPD_command(SSD1608_SET_RAMYCOUNT, buf, 2);
-
-  sram.csLow();
-  //send read command
-  SPItransfer(MCPSRAM_READ);
-  
-  //send address
-  SPItransfer(0x00);
-  SPItransfer(0x00);
-  
-  //first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
-  c = EPD_command(SSD1608_WRITE_RAM, false);
-  
-  dcHigh();
-  
-  for(uint16_t i=0; i<bw_bufsize; i++){
-    c = SPItransfer(c);
-    //Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-    //if (i % 32 == 31) Serial.println();
-  }
-  csHigh();
-  sram.csHigh();
-  
-#else
-  //write image
-  // set RAM x address count to 0
-  buf[0] = 0;
-  EPD_command(SSD1608_SET_RAMXCOUNT, buf, 1);
-
-  // set RAM y address count to 0   
-  buf[0] = 0x00;
-  buf[1] = 0x00;
-  EPD_command(SSD1608_SET_RAMYCOUNT, buf, 2);
-
-  EPD_command(SSD1608_WRITE_RAM, false);
-  dcHigh();
-  for(uint16_t i=0; i<bw_bufsize; i++){
-    SPItransfer(bw_buf[i]);
-    //Serial.print("0x"); Serial.print(bw_buf[i], HEX); Serial.print(", ");
-    //if (i % 32 == 31) Serial.println();
-  }
-  csHigh(); 
-#endif
-
-  update();
-}
-
-/**************************************************************************/
-/*!
-    @brief draw a single pixel on the screen
-	@param x the x axis position
-	@param y the y axis position
-	@param color the color of the pixel
-*/
-/**************************************************************************/
-void Adafruit_SSD1608::drawPixel(int16_t x, int16_t y, uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
-    return;
-	
-  uint8_t *pBuf;
-
-  // deal with non-8-bit heights
-  uint16_t _HEIGHT = HEIGHT;
-  if (_HEIGHT % 8 != 0) {
-    _HEIGHT += 8 - (_HEIGHT % 8);
-  }
-
-  // check rotation, move pixel around if necessary
-  switch (getRotation()) {
-  case 1:
-    EPD_swap(x, y);
-    x = WIDTH - x - 1;
-    break;
-  case 2:
-    x = WIDTH - x - 1;
-    y = _HEIGHT - y - 1;
-    break;
-  case 3:
-    EPD_swap(x, y);
-    y = _HEIGHT - y - 1;
-    break;
-  }
-  //make our buffer happy
-  x = (x == 0 ? 1 : x);
-  
-  uint16_t addr = ( (WIDTH - 1 - x) * _HEIGHT + y)/8;
-  Serial.print("X: "); Serial.print(x); Serial.print(" Y: "); Serial.print(y); 
-  Serial.print(" Addr: "); Serial.println(addr, HEX);
-
-#ifdef USE_EXTERNAL_SRAM
-  uint8_t c = sram.read8(addr);
-  pBuf = &c;
-#else
-  pBuf = bw_buf + addr;
-#endif
-  if ((color == EPD_BLACK) && blackInverted) {
-    *pBuf &= ~(1 << (7 - y%8));
-  } else if ((color == EPD_BLACK) && !blackInverted) {
-    *pBuf |= (1 << (7 - y%8));
-  } else if (color == EPD_INVERSE) {
-    *pBuf ^= (1 << (7 - y%8));
-  }
-#ifdef USE_EXTERNAL_SRAM
-  sram.write8(addr, *pBuf);
-#endif
-}
-
-/**************************************************************************/
-/*!
-    @brief clear all data buffers
-*/
-/**************************************************************************/
-void Adafruit_SSD1608::clearBuffer()
-{
-#ifdef USE_EXTERNAL_SRAM
-  sram.erase(0x00, bw_bufsize, 0xFF);
-#else
-  memset(bw_buf, 0xFF, bw_bufsize);
-#endif
-}
-
-/**************************************************************************/
-/*!
-    @brief clear the display twice to remove any spooky ghost images
-*/
-/**************************************************************************/
-void Adafruit_SSD1608::clearDisplay() {
-  clearBuffer();
-  display();
-  delay(100);
-  display();
 }

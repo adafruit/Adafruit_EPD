@@ -217,6 +217,12 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 	
   uint8_t *pBuf;
   
+  // deal with non-8-bit heights
+  uint16_t _HEIGHT = HEIGHT;
+  if (_HEIGHT % 8 != 0) {
+    _HEIGHT += 8 - (_HEIGHT % 8);
+  }
+
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
   case 1:
