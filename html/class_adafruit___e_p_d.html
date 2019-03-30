@@ -64,7 +64,7 @@ $(function() {
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_adafruit___e_p_d-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Adafruit_EPD Class Reference</div>  </div>
+<div class="title">Adafruit_EPD Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -78,13 +78,11 @@ Inheritance diagram for Adafruit_EPD:</div>
  <div class="center">
   <img src="class_adafruit___e_p_d.png" usemap="#Adafruit_5FEPD_map" alt=""/>
   <map id="Adafruit_5FEPD_map" name="Adafruit_5FEPD_map">
-<area href="class_adafruit___i_l0371.html" title="Class for interfacing with IL0371 EPD drivers. " alt="Adafruit_IL0371" shape="rect" coords="0,112,117,136"/>
-<area href="class_adafruit___i_l0373.html" title="Class for interfacing with IL0373 EPD drivers. " alt="Adafruit_IL0373" shape="rect" coords="127,112,244,136"/>
-<area href="class_adafruit___i_l0376_f.html" title="Class for interfacing with IL0376F EPD drivers. " alt="Adafruit_IL0376F" shape="rect" coords="254,112,371,136"/>
-<area href="class_adafruit___i_l0398.html" title="Class for interfacing with IL0398 EPD drivers. " alt="Adafruit_IL0398" shape="rect" coords="381,112,498,136"/>
-<area href="class_adafruit___i_l91874.html" title="Class for interfacing with IL0373 EPD drivers. " alt="Adafruit_IL91874" shape="rect" coords="508,112,625,136"/>
-<area href="class_adafruit___s_s_d1608.html" title="Class for interfacing with SSD1608 EPD drivers. " alt="Adafruit_SSD1608" shape="rect" coords="635,112,752,136"/>
-<area href="class_adafruit___s_s_d1675.html" title="Class for interfacing with SSD1675 EPD drivers. " alt="Adafruit_SSD1675" shape="rect" coords="762,112,879,136"/>
+<area href="class_adafruit___i_l0373.html" title="Class for interfacing with IL0373 EPD drivers. " alt="Adafruit_IL0373" shape="rect" coords="0,112,117,136"/>
+<area href="class_adafruit___i_l0398.html" title="Class for interfacing with IL0398 EPD drivers. " alt="Adafruit_IL0398" shape="rect" coords="127,112,244,136"/>
+<area href="class_adafruit___i_l91874.html" title="Class for interfacing with IL0373 EPD drivers. " alt="Adafruit_IL91874" shape="rect" coords="254,112,371,136"/>
+<area href="class_adafruit___s_s_d1608.html" title="Class for interfacing with SSD1608 EPD drivers. " alt="Adafruit_SSD1608" shape="rect" coords="381,112,498,136"/>
+<area href="class_adafruit___s_s_d1675.html" title="Class for interfacing with SSD1675 EPD drivers. " alt="Adafruit_SSD1675" shape="rect" coords="508,112,625,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -103,12 +101,52 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a2d27941f9fd3115d38e8d8b5b2c17c58">begin</a> (bool reset=true)</td></tr>
 <tr class="memdesc:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with and set up the display.  <a href="#a2d27941f9fd3115d38e8d8b5b2c17c58">More...</a><br /></td></tr>
 <tr class="separator:a2d27941f9fd3115d38e8d8b5b2c17c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74d1e351e43efd4e31ad1a4d59202401"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a74d1e351e43efd4e31ad1a4d59202401">invertColorLogic</a> (uint8_t colorLayer, bool invert)</td></tr>
-<tr class="memdesc:a74d1e351e43efd4e31ad1a4d59202401"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the data for the first or second is inverted or not.  <a href="#a74d1e351e43efd4e31ad1a4d59202401">More...</a><br /></td></tr>
-<tr class="separator:a74d1e351e43efd4e31ad1a4d59202401"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58b668d8526d17aebc115d222b4ce18a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a58b668d8526d17aebc115d222b4ce18a">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
+<tr class="memdesc:a58b668d8526d17aebc115d222b4ce18a"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw a single pixel on the screen  <a href="#a58b668d8526d17aebc115d222b4ce18a">More...</a><br /></td></tr>
+<tr class="separator:a58b668d8526d17aebc115d222b4ce18a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27fe53082ef65fd55bf0de3f020c2f58"><td class="memItemLeft" align="right" valign="top"><a id="a27fe53082ef65fd55bf0de3f020c2f58"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a27fe53082ef65fd55bf0de3f020c2f58">clearBuffer</a> ()</td></tr>
+<tr class="memdesc:a27fe53082ef65fd55bf0de3f020c2f58"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear all data buffers <br /></td></tr>
+<tr class="separator:a27fe53082ef65fd55bf0de3f020c2f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46c040ac3b1b649dfadc19b32f092b9a"><td class="memItemLeft" align="right" valign="top"><a id="a46c040ac3b1b649dfadc19b32f092b9a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a46c040ac3b1b649dfadc19b32f092b9a">clearDisplay</a> ()</td></tr>
+<tr class="memdesc:a46c040ac3b1b649dfadc19b32f092b9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the display twice to remove any spooky ghost images <br /></td></tr>
+<tr class="separator:a46c040ac3b1b649dfadc19b32f092b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acda2375949ce963979f645e951d0e821"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#acda2375949ce963979f645e951d0e821">setBlackBuffer</a> (int8_t index, bool inverted)</td></tr>
+<tr class="memdesc:acda2375949ce963979f645e951d0e821"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the black pixel data is the first or second buffer.  <a href="#acda2375949ce963979f645e951d0e821">More...</a><br /></td></tr>
+<tr class="separator:acda2375949ce963979f645e951d0e821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd306698b73bc05791272a315bf951ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#abd306698b73bc05791272a315bf951ac">setColorBuffer</a> (int8_t index, bool inverted)</td></tr>
+<tr class="memdesc:abd306698b73bc05791272a315bf951ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the color pixel data is the first or second buffer.  <a href="#abd306698b73bc05791272a315bf951ac">More...</a><br /></td></tr>
+<tr class="separator:abd306698b73bc05791272a315bf951ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a724af9df10d74844a1d5ce2d0e770a43"><td class="memItemLeft" align="right" valign="top"><a id="a724af9df10d74844a1d5ce2d0e770a43"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a724af9df10d74844a1d5ce2d0e770a43">display</a> (void)</td></tr>
+<tr class="memdesc:a724af9df10d74844a1d5ce2d0e770a43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfer the data stored in the buffer(s) to the display. <br /></td></tr>
+<tr class="separator:a724af9df10d74844a1d5ce2d0e770a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a1e7536fd492f7bb246a4b8c8b6fb8355"><td class="memItemLeft" align="right" valign="top">virtual uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a1e7536fd492f7bb246a4b8c8b6fb8355">writeRAMCommand</a> (uint8_t index)=0</td></tr>
+<tr class="memdesc:a1e7536fd492f7bb246a4b8c8b6fb8355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the specific command to start writing to EPD display RAM.  <a href="#a1e7536fd492f7bb246a4b8c8b6fb8355">More...</a><br /></td></tr>
+<tr class="separator:a1e7536fd492f7bb246a4b8c8b6fb8355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a405a7836e89ff6cfe39c58c52371a95a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a405a7836e89ff6cfe39c58c52371a95a">setRAMAddress</a> (uint16_t x, uint16_t y)=0</td></tr>
+<tr class="memdesc:a405a7836e89ff6cfe39c58c52371a95a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some displays require setting the RAM address pointer.  <a href="#a405a7836e89ff6cfe39c58c52371a95a">More...</a><br /></td></tr>
+<tr class="separator:a405a7836e89ff6cfe39c58c52371a95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1daf4431ea8fb234e2eccdd703c29a3"><td class="memItemLeft" align="right" valign="top"><a id="ac1daf4431ea8fb234e2eccdd703c29a3"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ac1daf4431ea8fb234e2eccdd703c29a3">powerUp</a> (void)=0</td></tr>
+<tr class="memdesc:ac1daf4431ea8fb234e2eccdd703c29a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">start up the display <br /></td></tr>
+<tr class="separator:ac1daf4431ea8fb234e2eccdd703c29a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6192b283a5f542138b6661bce3a54e8"><td class="memItemLeft" align="right" valign="top"><a id="ad6192b283a5f542138b6661bce3a54e8"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ad6192b283a5f542138b6661bce3a54e8">update</a> (void)=0</td></tr>
+<tr class="memdesc:ad6192b283a5f542138b6661bce3a54e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">signal the display to update <br /></td></tr>
+<tr class="separator:ad6192b283a5f542138b6661bce3a54e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30a8bb83e8c75d583c085773ec3cc12b"><td class="memItemLeft" align="right" valign="top"><a id="a30a8bb83e8c75d583c085773ec3cc12b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a30a8bb83e8c75d583c085773ec3cc12b">powerDown</a> (void)=0</td></tr>
+<tr class="memdesc:a30a8bb83e8c75d583c085773ec3cc12b"><td class="mdescLeft">&#160;</td><td class="mdescRight">wind down the display <br /></td></tr>
+<tr class="separator:a30a8bb83e8c75d583c085773ec3cc12b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a746e63fb0494cf978883ad6c8a42c5d2"><td class="memItemLeft" align="right" valign="top"><a id="a746e63fb0494cf978883ad6c8a42c5d2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a746e63fb0494cf978883ad6c8a42c5d2">hardwareReset</a> (void)</td></tr>
+<tr class="memdesc:a746e63fb0494cf978883ad6c8a42c5d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">reset Perform a hardware reset <br /></td></tr>
+<tr class="separator:a746e63fb0494cf978883ad6c8a42c5d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a760d4138f64152a8b2bb139e5ac49370"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a760d4138f64152a8b2bb139e5ac49370">EPD_command</a> (uint8_t c, const uint8_t *buf, uint16_t len)</td></tr>
 <tr class="memdesc:a760d4138f64152a8b2bb139e5ac49370"><td class="mdescLeft">&#160;</td><td class="mdescRight">send an EPD command followed by data  <a href="#a760d4138f64152a8b2bb139e5ac49370">More...</a><br /></td></tr>
 <tr class="separator:a760d4138f64152a8b2bb139e5ac49370"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,46 +181,30 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:aed77b43b56049b529850251b1ee3ff56"><td class="memItemLeft" align="right" valign="top"><a id="aed77b43b56049b529850251b1ee3ff56"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aed77b43b56049b529850251b1ee3ff56">sid</a></td></tr>
-<tr class="memdesc:aed77b43b56049b529850251b1ee3ff56"><td class="mdescLeft">&#160;</td><td class="mdescRight">sid pin <br /></td></tr>
-<tr class="separator:aed77b43b56049b529850251b1ee3ff56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e5fa327b9d7bbc86b1476fde263bd8e"><td class="memItemLeft" align="right" valign="top"><a id="a6e5fa327b9d7bbc86b1476fde263bd8e"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a6e5fa327b9d7bbc86b1476fde263bd8e">sclk</a></td></tr>
-<tr class="memdesc:a6e5fa327b9d7bbc86b1476fde263bd8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">serial clock pin <br /></td></tr>
-<tr class="separator:a6e5fa327b9d7bbc86b1476fde263bd8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae819043add0d56ee1207c7f00e2bc180"><td class="memItemLeft" align="right" valign="top"><a id="ae819043add0d56ee1207c7f00e2bc180"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ae819043add0d56ee1207c7f00e2bc180">dc</a></td></tr>
-<tr class="memdesc:ae819043add0d56ee1207c7f00e2bc180"><td class="mdescLeft">&#160;</td><td class="mdescRight">data/command pin <br /></td></tr>
-<tr class="separator:ae819043add0d56ee1207c7f00e2bc180"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e2da21e1c608644e8e247935b3d35e2"><td class="memItemLeft" align="right" valign="top"><a id="a7e2da21e1c608644e8e247935b3d35e2"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a7e2da21e1c608644e8e247935b3d35e2">rst</a></td></tr>
-<tr class="memdesc:a7e2da21e1c608644e8e247935b3d35e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">reset pin <br /></td></tr>
-<tr class="separator:a7e2da21e1c608644e8e247935b3d35e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac897a38ebd2d36163262bc580d27a7c"><td class="memItemLeft" align="right" valign="top"><a id="aac897a38ebd2d36163262bc580d27a7c"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aac897a38ebd2d36163262bc580d27a7c">cs</a></td></tr>
-<tr class="memdesc:aac897a38ebd2d36163262bc580d27a7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">chip select pin <br /></td></tr>
-<tr class="separator:aac897a38ebd2d36163262bc580d27a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb3dab42b665c304987758ad018d0b12"><td class="memItemLeft" align="right" valign="top"><a id="acb3dab42b665c304987758ad018d0b12"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#acb3dab42b665c304987758ad018d0b12">busy</a></td></tr>
-<tr class="memdesc:acb3dab42b665c304987758ad018d0b12"><td class="mdescLeft">&#160;</td><td class="mdescRight">busy pin <br /></td></tr>
-<tr class="separator:acb3dab42b665c304987758ad018d0b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="memItemLeft" align="right" valign="top"><a id="a4c9e0fa88fa03cf26a1ba9db31fb4d30"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a4c9e0fa88fa03cf26a1ba9db31fb4d30">blackInverted</a></td></tr>
-<tr class="memdesc:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">is black channel inverted <br /></td></tr>
-<tr class="separator:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aece54c261fc92a13e8a3f8b9b8cf52c2"><td class="memItemLeft" align="right" valign="top"><a id="aece54c261fc92a13e8a3f8b9b8cf52c2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aece54c261fc92a13e8a3f8b9b8cf52c2">redInverted</a></td></tr>
-<tr class="memdesc:aece54c261fc92a13e8a3f8b9b8cf52c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">is red channel inverted <br /></td></tr>
-<tr class="separator:aece54c261fc92a13e8a3f8b9b8cf52c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb0f22e3bdc8e9deecce5b14a372b482"><td class="memItemLeft" align="right" valign="top"><a id="acb0f22e3bdc8e9deecce5b14a372b482"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#acb0f22e3bdc8e9deecce5b14a372b482">bw_bufsize</a></td></tr>
-<tr class="memdesc:acb0f22e3bdc8e9deecce5b14a372b482"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the black and white buffer <br /></td></tr>
-<tr class="separator:acb0f22e3bdc8e9deecce5b14a372b482"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d5020c98b03c21c1163fdc727be9830"><td class="memItemLeft" align="right" valign="top"><a id="a6d5020c98b03c21c1163fdc727be9830"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a6d5020c98b03c21c1163fdc727be9830">red_bufsize</a></td></tr>
-<tr class="memdesc:a6d5020c98b03c21c1163fdc727be9830"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the red buffer <br /></td></tr>
-<tr class="separator:a6d5020c98b03c21c1163fdc727be9830"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2f5a3c7444c3f00974409d7b6f06a1c"><td class="memItemLeft" align="right" valign="top"><a id="ab2f5a3c7444c3f00974409d7b6f06a1c"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ab2f5a3c7444c3f00974409d7b6f06a1c">_sid_pin</a></td></tr>
+<tr class="memdesc:ab2f5a3c7444c3f00974409d7b6f06a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">sid pin <br /></td></tr>
+<tr class="separator:ab2f5a3c7444c3f00974409d7b6f06a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f165c405539b3f02af6c87631340e75"><td class="memItemLeft" align="right" valign="top"><a id="a4f165c405539b3f02af6c87631340e75"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a4f165c405539b3f02af6c87631340e75">_sclk_pin</a></td></tr>
+<tr class="memdesc:a4f165c405539b3f02af6c87631340e75"><td class="mdescLeft">&#160;</td><td class="mdescRight">serial clock pin <br /></td></tr>
+<tr class="separator:a4f165c405539b3f02af6c87631340e75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7037610b393b33da55c53ad00ea37465"><td class="memItemLeft" align="right" valign="top"><a id="a7037610b393b33da55c53ad00ea37465"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a7037610b393b33da55c53ad00ea37465">_dc_pin</a></td></tr>
+<tr class="memdesc:a7037610b393b33da55c53ad00ea37465"><td class="mdescLeft">&#160;</td><td class="mdescRight">data/command pin <br /></td></tr>
+<tr class="separator:a7037610b393b33da55c53ad00ea37465"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae064664f466dcbb4996f6dd5199b6e"><td class="memItemLeft" align="right" valign="top"><a id="aaae064664f466dcbb4996f6dd5199b6e"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aaae064664f466dcbb4996f6dd5199b6e">_reset_pin</a></td></tr>
+<tr class="memdesc:aaae064664f466dcbb4996f6dd5199b6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">reset pin <br /></td></tr>
+<tr class="separator:aaae064664f466dcbb4996f6dd5199b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70525641be2a740700bb32ee2c8aea04"><td class="memItemLeft" align="right" valign="top"><a id="a70525641be2a740700bb32ee2c8aea04"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a70525641be2a740700bb32ee2c8aea04">_cs_pin</a></td></tr>
+<tr class="memdesc:a70525641be2a740700bb32ee2c8aea04"><td class="mdescLeft">&#160;</td><td class="mdescRight">chip select pin <br /></td></tr>
+<tr class="separator:a70525641be2a740700bb32ee2c8aea04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dd5b241d38b2129a5fd3e6e3b06ee68"><td class="memItemLeft" align="right" valign="top"><a id="a2dd5b241d38b2129a5fd3e6e3b06ee68"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a2dd5b241d38b2129a5fd3e6e3b06ee68">_busy_pin</a></td></tr>
+<tr class="memdesc:a2dd5b241d38b2129a5fd3e6e3b06ee68"><td class="mdescLeft">&#160;</td><td class="mdescRight">busy pin <br /></td></tr>
+<tr class="separator:a2dd5b241d38b2129a5fd3e6e3b06ee68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b923d0159417b5049b5605ccb4feb4b"><td class="memItemLeft" align="right" valign="top"><a id="a7b923d0159417b5049b5605ccb4feb4b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a7b923d0159417b5049b5605ccb4feb4b">singleByteTxns</a></td></tr>
 <tr class="memdesc:a7b923d0159417b5049b5605ccb4feb4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">if true CS will go high after every data byte transferred <br /></td></tr>
@@ -191,10 +213,62 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="class_adafruit___m_c_p_s_r_a_m.html">Adafruit_MCPSRAM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a1084bb94eef7446e7bd0e5e3d698b281">sram</a></td></tr>
 <tr class="memdesc:a1084bb94eef7446e7bd0e5e3d698b281"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ram chip object if using off-chip ram <br /></td></tr>
 <tr class="separator:a1084bb94eef7446e7bd0e5e3d698b281"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a871dd80eda535e291b0ef2f522f6148e"><td class="memItemLeft" align="right" valign="top"><a id="a871dd80eda535e291b0ef2f522f6148e"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a871dd80eda535e291b0ef2f522f6148e">hwSPI</a></td></tr>
-<tr class="memdesc:a871dd80eda535e291b0ef2f522f6148e"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if using hardware SPI <br /></td></tr>
-<tr class="separator:a871dd80eda535e291b0ef2f522f6148e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="memItemLeft" align="right" valign="top"><a id="a4c9e0fa88fa03cf26a1ba9db31fb4d30"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a4c9e0fa88fa03cf26a1ba9db31fb4d30">blackInverted</a></td></tr>
+<tr class="memdesc:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">is black channel inverted <br /></td></tr>
+<tr class="separator:a4c9e0fa88fa03cf26a1ba9db31fb4d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abce115be88d3effdeab2976516bcdffd"><td class="memItemLeft" align="right" valign="top"><a id="abce115be88d3effdeab2976516bcdffd"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#abce115be88d3effdeab2976516bcdffd">colorInverted</a></td></tr>
+<tr class="memdesc:abce115be88d3effdeab2976516bcdffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">is red channel inverted <br /></td></tr>
+<tr class="separator:abce115be88d3effdeab2976516bcdffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae55988967057690de02e471afe127376"><td class="memItemLeft" align="right" valign="top"><a id="ae55988967057690de02e471afe127376"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ae55988967057690de02e471afe127376">buffer1_size</a></td></tr>
+<tr class="memdesc:ae55988967057690de02e471afe127376"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the primary buffer <br /></td></tr>
+<tr class="separator:ae55988967057690de02e471afe127376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e00fef412f88afd460ef11b2a83c59c"><td class="memItemLeft" align="right" valign="top"><a id="a8e00fef412f88afd460ef11b2a83c59c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a8e00fef412f88afd460ef11b2a83c59c">buffer2_size</a></td></tr>
+<tr class="memdesc:a8e00fef412f88afd460ef11b2a83c59c"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the secondary buffer <br /></td></tr>
+<tr class="separator:a8e00fef412f88afd460ef11b2a83c59c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d11c029dc118ae6736f0a95c749960"><td class="memItemLeft" align="right" valign="top"><a id="a94d11c029dc118ae6736f0a95c749960"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a94d11c029dc118ae6736f0a95c749960">buffer1</a></td></tr>
+<tr class="memdesc:a94d11c029dc118ae6736f0a95c749960"><td class="mdescLeft">&#160;</td><td class="mdescRight">the pointer to the primary buffer if using on-chip ram <br /></td></tr>
+<tr class="separator:a94d11c029dc118ae6736f0a95c749960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad492411340c52ff29ec4bb3eb213906e"><td class="memItemLeft" align="right" valign="top"><a id="ad492411340c52ff29ec4bb3eb213906e"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ad492411340c52ff29ec4bb3eb213906e">buffer2</a></td></tr>
+<tr class="memdesc:ad492411340c52ff29ec4bb3eb213906e"><td class="mdescLeft">&#160;</td><td class="mdescRight">the pointer to the secondary buffer if using on-chip ram <br /></td></tr>
+<tr class="separator:ad492411340c52ff29ec4bb3eb213906e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7e3661bd364e9b69cd80eb306f3441a"><td class="memItemLeft" align="right" valign="top"><a id="aa7e3661bd364e9b69cd80eb306f3441a"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aa7e3661bd364e9b69cd80eb306f3441a">color_buffer</a></td></tr>
+<tr class="memdesc:aa7e3661bd364e9b69cd80eb306f3441a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the pointer to the color buffer if using on-chip ram <br /></td></tr>
+<tr class="separator:aa7e3661bd364e9b69cd80eb306f3441a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f004bf250ff851d4a7a12de0c205cd3"><td class="memItemLeft" align="right" valign="top"><a id="a3f004bf250ff851d4a7a12de0c205cd3"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a3f004bf250ff851d4a7a12de0c205cd3">black_buffer</a></td></tr>
+<tr class="memdesc:a3f004bf250ff851d4a7a12de0c205cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">the pointer to the black buffer if using on-chip ram <br /></td></tr>
+<tr class="separator:a3f004bf250ff851d4a7a12de0c205cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ce9115719fd949329a244938f380802"><td class="memItemLeft" align="right" valign="top"><a id="a0ce9115719fd949329a244938f380802"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a0ce9115719fd949329a244938f380802">buffer1_addr</a></td></tr>
+<tr class="memdesc:a0ce9115719fd949329a244938f380802"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SRAM address offsets for the primary buffer. <br /></td></tr>
+<tr class="separator:a0ce9115719fd949329a244938f380802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba1713838d14568853f41433fc0dd2b"><td class="memItemLeft" align="right" valign="top"><a id="aeba1713838d14568853f41433fc0dd2b"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aeba1713838d14568853f41433fc0dd2b">buffer2_addr</a></td></tr>
+<tr class="memdesc:aeba1713838d14568853f41433fc0dd2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SRAM address offsets for the secondary buffer. <br /></td></tr>
+<tr class="separator:aeba1713838d14568853f41433fc0dd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a152e7ac6694a9cfdb3e05739fef3ca7a"><td class="memItemLeft" align="right" valign="top"><a id="a152e7ac6694a9cfdb3e05739fef3ca7a"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a152e7ac6694a9cfdb3e05739fef3ca7a">colorbuffer_addr</a></td></tr>
+<tr class="memdesc:a152e7ac6694a9cfdb3e05739fef3ca7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SRAM address offsets for the color buffer. <br /></td></tr>
+<tr class="separator:a152e7ac6694a9cfdb3e05739fef3ca7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96149be1dd634511a0e1e34b2cfb64d9"><td class="memItemLeft" align="right" valign="top"><a id="a96149be1dd634511a0e1e34b2cfb64d9"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a96149be1dd634511a0e1e34b2cfb64d9">blackbuffer_addr</a></td></tr>
+<tr class="memdesc:a96149be1dd634511a0e1e34b2cfb64d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SRAM address offsets for the black buffer. <br /></td></tr>
+<tr class="separator:a96149be1dd634511a0e1e34b2cfb64d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0531bb9a56f2dd811afef2a033ad001"><td class="memItemLeft" align="right" valign="top"><a id="aa0531bb9a56f2dd811afef2a033ad001"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aa0531bb9a56f2dd811afef2a033ad001">use_sram</a></td></tr>
+<tr class="memdesc:aa0531bb9a56f2dd811afef2a033ad001"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if we are using an SRAM chip as a framebuffer <br /></td></tr>
+<tr class="separator:aa0531bb9a56f2dd811afef2a033ad001"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6482d9e4e8e638de749039571ca8614"><td class="memItemLeft" align="right" valign="top"><a id="af6482d9e4e8e638de749039571ca8614"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#af6482d9e4e8e638de749039571ca8614">hwSPI</a></td></tr>
+<tr class="memdesc:af6482d9e4e8e638de749039571ca8614"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if using hardware SPI <br /></td></tr>
+<tr class="separator:af6482d9e4e8e638de749039571ca8614"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class for interfacing with Adafruit EPD display breakouts. </p>
@@ -391,23 +465,29 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a74d1e351e43efd4e31ad1a4d59202401"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74d1e351e43efd4e31ad1a4d59202401">&#9670;&nbsp;</a></span>invertColorLogic()</h2>
+<a id="a58b668d8526d17aebc115d222b4ce18a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58b668d8526d17aebc115d222b4ce18a">&#9670;&nbsp;</a></span>drawPixel()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_EPD::invertColorLogic </td>
+          <td class="memname">void Adafruit_EPD::drawPixel </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>colorLayer</em>, </td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>invert</em>&#160;</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -417,14 +497,173 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
       </table>
 </div><div class="memdoc">
 
-<p>Determine whether the data for the first or second is inverted or not. </p>
+<p>draw a single pixel on the screen </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">colorLayer</td><td>0 for black, 1 for red (or yellow or gray) </td></tr>
-    <tr><td class="paramname">invert</td><td>Whether to invert the logical value </td></tr>
+    <tr><td class="paramname">x</td><td>the x axis position </td></tr>
+    <tr><td class="paramname">y</td><td>the y axis position </td></tr>
+    <tr><td class="paramname">color</td><td>the color of the pixel </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="acda2375949ce963979f645e951d0e821"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acda2375949ce963979f645e951d0e821">&#9670;&nbsp;</a></span>setBlackBuffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_EPD::setBlackBuffer </td>
+          <td>(</td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>inverted</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine whether the black pixel data is the first or second buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>0 or 1, for primary or secondary value </td></tr>
+    <tr><td class="paramname">inverted</td><td>Whether to invert the logical value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abd306698b73bc05791272a315bf951ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd306698b73bc05791272a315bf951ac">&#9670;&nbsp;</a></span>setColorBuffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_EPD::setColorBuffer </td>
+          <td>(</td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>inverted</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine whether the color pixel data is the first or second buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>0 or 1, for primary or secondary value </td></tr>
+    <tr><td class="paramname">inverted</td><td>Whether to invert the logical value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1e7536fd492f7bb246a4b8c8b6fb8355"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e7536fd492f7bb246a4b8c8b6fb8355">&#9670;&nbsp;</a></span>writeRAMCommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual uint8_t Adafruit_EPD::writeRAMCommand </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Send the specific command to start writing to EPD display RAM. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The index for which buffer to write (0 or 1 or tri-color displays) Ignored for monochrome displays. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The byte that is read from SPI at the same time as sending the command </dd></dl>
+
+<p>Implemented in <a class="el" href="class_adafruit___i_l0398.html#aab2e4d50be1cbd877df22900369109c6">Adafruit_IL0398</a>, <a class="el" href="class_adafruit___s_s_d1608.html#a5288ceeb4055402200a62460126cf721">Adafruit_SSD1608</a>, <a class="el" href="class_adafruit___s_s_d1675.html#a5b13f63252c3b22c42dc937d46f59d27">Adafruit_SSD1675</a>, <a class="el" href="class_adafruit___i_l0373.html#a417bd349173422791cd43ef3bdfae175">Adafruit_IL0373</a>, and <a class="el" href="class_adafruit___i_l91874.html#aaf04c713dcbf5715bb362f95f32aba8c">Adafruit_IL91874</a>.</p>
+
+</div>
+</div>
+<a id="a405a7836e89ff6cfe39c58c52371a95a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a405a7836e89ff6cfe39c58c52371a95a">&#9670;&nbsp;</a></span>setRAMAddress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Adafruit_EPD::setRAMAddress </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Some displays require setting the RAM address pointer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>X address counter value </td></tr>
+    <tr><td class="paramname">y</td><td>Y address counter value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="class_adafruit___i_l0398.html#ac6cdcfed8f26eafe4a58c3d1fefda549">Adafruit_IL0398</a>, <a class="el" href="class_adafruit___s_s_d1608.html#ac5f9dc73a11a0436b14e1f8f1ac38c68">Adafruit_SSD1608</a>, <a class="el" href="class_adafruit___s_s_d1675.html#ae19aaf950a5024198eef1658bbe242d9">Adafruit_SSD1675</a>, <a class="el" href="class_adafruit___i_l0373.html#a7b6cf5e271c5ef34f395f67fb78a2c76">Adafruit_IL0373</a>, and <a class="el" href="class_adafruit___i_l91874.html#af0a9826c4a22e5eb320b292a9f219134">Adafruit_IL91874</a>.</p>
 
 </div>
 </div>
