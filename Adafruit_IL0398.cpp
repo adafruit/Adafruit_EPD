@@ -3,7 +3,6 @@
 
 #define BUSY_WAIT 500
 
-#ifdef USE_EXTERNAL_SRAM
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -19,31 +18,26 @@
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){
-#else
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and software SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param SID the SID pin to use
-    @param SCLK the SCLK pin to use
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
-#endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, 
+				 int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, 
+				 int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : 
+  Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
+
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
+  buffer2_size = buffer1_size;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
+  } else {
+    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer2 = (uint8_t *)malloc(buffer2_size);
+  }
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
-#ifdef USE_EXTERNAL_SRAM
 /**************************************************************************/
 /*!
     @brief constructor if using on-chip RAM and hardware SPI
@@ -56,25 +50,23 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
-#else
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and hardware SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
-	bw_buf = (uint8_t *)malloc(width * height / 8);
-	red_buf = (uint8_t *)malloc(width * height / 8);
-#endif
-	bw_bufsize = width * height / 8;
-	red_bufsize = bw_bufsize;
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, 
+				 int8_t DC, int8_t RST, 
+				 int8_t CS, int8_t SRCS, int8_t BUSY) : 
+  Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
+  buffer2_size = buffer1_size;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
+  } else {
+    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer2 = (uint8_t *)malloc(buffer2_size);
+  }
 }
 
 /**************************************************************************/
@@ -84,10 +76,10 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST, i
 /**************************************************************************/
 void Adafruit_IL0398::busy_wait(void)
 {
-	if(busy > -1)
-		while(digitalRead(busy)); //wait for busy low
-	else
-		delay(BUSY_WAIT);
+  if(busy > -1)
+    while (digitalRead(busy)); //wait for busy low
+  else
+    delay(BUSY_WAIT);
 }
 
 /**************************************************************************/
@@ -98,13 +90,17 @@ void Adafruit_IL0398::busy_wait(void)
 /**************************************************************************/
 void Adafruit_IL0398::begin(bool reset)
 {
-	uint8_t buf[5];
-	Adafruit_EPD::begin(reset);
+  uint8_t buf[5];
+  Adafruit_EPD::begin(reset);
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, true);  // red defaults to inverted  
 
-	buf[0] = 0x07;
-	buf[1] = 0x07;
-	buf[2] = 0x07;
-	EPD_command(IL0398_BOOSTER_SOFT_START, buf, 3);
+  setRotation(1);
+
+  buf[0] = 0x07;
+  buf[1] = 0x07;
+  buf[2] = 0x07;
+  EPD_command(IL0398_BOOSTER_SOFT_START, buf, 3);
 }
 
 /**************************************************************************/
@@ -114,21 +110,21 @@ void Adafruit_IL0398::begin(bool reset)
 /**************************************************************************/
 void Adafruit_IL0398::update()
 {
-	EPD_command(IL0398_DISPLAY_REFRESH);
+  EPD_command(IL0398_DISPLAY_REFRESH);
 			
-	busy_wait();
-	
-	delay(10000);
-	
-	//power off
-	uint8_t buf[4];
-	
-	buf[0] = 0xF7;
-	EPD_command(IL0398_CDI, buf, 1);
-	
-	EPD_command(IL0398_POWER_OFF);
-	
-	delay(10000);
+  busy_wait();
+  
+  delay(10000);
+  
+  //power off
+  uint8_t buf[4];
+  
+  buf[0] = 0xF7;
+  EPD_command(IL0398_CDI, buf, 1);
+  
+  EPD_command(IL0398_POWER_OFF);
+  
+  delay(10000);
 }
 
 /**************************************************************************/
@@ -138,187 +134,36 @@ void Adafruit_IL0398::update()
 /**************************************************************************/
 void Adafruit_IL0398::powerUp()
 {
-	uint8_t buf[4];
-	 
-	EPD_command(IL0398_POWER_ON);
-	busy_wait();
-	delay(200);
-	
-	buf[0] = 0x0F;
-	EPD_command(IL0398_PANEL_SETTING, buf, 1);
-
-	buf[0] = height() & 0xFF;
-	buf[1] = (height() >> 8) & 0xFF;
-	buf[2] = width() & 0xFF;
-	buf[3] = (width() >> 8) & 0xFF;
-	EPD_command(IL0398_RESOLUTION, buf, 4);
-			
-	delay(20);
+  uint8_t buf[4];
+  
+  EPD_command(IL0398_POWER_ON);
+  busy_wait();
+  delay(200);
+  
+  buf[0] = 0x0F;
+  EPD_command(IL0398_PANEL_SETTING, buf, 1);
+  
+  buf[0] = (HEIGHT >> 8) & 0xFF;
+  buf[1] = HEIGHT & 0xFF;
+  buf[2] = (WIDTH >> 8) & 0xFF;
+  buf[3] = WIDTH & 0xFF;
+  EPD_command(IL0398_RESOLUTION, buf, 4);
+  
+  delay(20);
 }
 
-/**************************************************************************/
-/*!
-    @brief show the data stored in the buffer on the display
-*/
-/**************************************************************************/
-void Adafruit_IL0398::display()
-{
-	powerUp();
-	
-#ifdef USE_EXTERNAL_SRAM
-	uint8_t c;
-	
-	sram.csLow();
-	//send read command
-	SPItransfer(MCPSRAM_READ);
-	
-	//send address
-	SPItransfer(0x00);
-	SPItransfer(0x00);
-	
-	//first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
-	c = EPD_command(EPD_RAM_BW, false);
-	
-	dcHigh();
-	
-	for(uint16_t i=0; i<bw_bufsize; i++){
-		c = SPItransfer(c);
-	}
-	csHigh();
-	sram.csHigh();
-	
-	delay(2);
-	
-	sram.csLow();
-	//send write command
-	SPItransfer(MCPSRAM_READ);
-	
-	uint8_t b[2];
-	b[0] = (bw_bufsize >> 8);
-	b[1] = (bw_bufsize & 0xFF);
-	//send address
-	SPItransfer(b[0]);
-	SPItransfer(b[1]);
-	
-	//first data byte from SRAM will be transfered in at the same time as the EPD command is transferred out
-	c = EPD_command(EPD_RAM_RED, false);
-	
-	dcHigh();
-	
-	for(uint16_t i=0; i<red_bufsize; i++){
-		c = SPItransfer(c);
-	}
-	csHigh();
-	sram.csHigh();
-	
-#else
-	//write image
-	EPD_command(EPD_RAM_BW, false);
-	dcHigh();
 
-	for(uint16_t i=0; i<bw_bufsize; i++){
-		SPItransfer(bw_buf[i]);
-	}
-	csHigh();
-	
-	EPD_command(EPD_RAM_RED, false);
-	dcHigh();
-		
-	for(uint16_t i=0; i<red_bufsize; i++){
-		SPItransfer(red_buf[i]);
-	}
-	csHigh();
 
-#endif
-	update();
+uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
+  if (index == 0) {
+    return EPD_command(EPD_RAM_BW, false);
+  }
+  if (index == 1) {
+    return EPD_command(EPD_RAM_RED, false);
+  }
 }
 
-/**************************************************************************/
-/*!
-    @brief draw a single pixel on the screen
-	@param x the x axis position
-	@param y the y axis position
-	@param color the color of the pixel
-*/
-/**************************************************************************/
-void Adafruit_IL0398::drawPixel(int16_t x, int16_t y, uint16_t color) {
-	if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
-	return;
-	
-	uint8_t *pBuf;
-
-	// check rotation, move pixel around if necessary
-	switch (getRotation()) {
-		case 1:
-		EPD_swap(x, y);
-		x = WIDTH - x - 1;
-		break;
-		case 2:
-		x = WIDTH - x - 1;
-		y = HEIGHT - y - 1;
-		break;
-		case 3:
-		EPD_swap(x, y);
-		y = HEIGHT - y - 1;
-		break;
-	}
-	//make our buffer happy
-	x = (x == 0 ? 1 : x);
-
-	uint16_t addr = ( (width() - x) * height() + y)/8;
-
-#ifdef USE_EXTERNAL_SRAM
-	if(color == EPD_RED){
-		//red is written after bw
-		addr = addr + bw_bufsize;
-	}
-	uint8_t c = sram.read8(addr);
-	pBuf = &c;
-#else
-	if(color == EPD_RED){
-		pBuf = red_buf + addr;
-	}
-	else{
-		pBuf = bw_buf + addr;
-	}
-#endif
-	// x is which column
-	switch (color)
-	{
-		case EPD_WHITE:   *pBuf |= (1 << (7 - y%8)); break;
-		case EPD_RED:
-		case EPD_BLACK:   *pBuf &= ~(1 << (7 - y%8)); break;
-		case EPD_INVERSE: *pBuf ^= (1 << (7 - y%8)); break;
-	}
-#ifdef USE_EXTERNAL_SRAM
-	sram.write8(addr, *pBuf);
-#endif
-	
+void Adafruit_IL0398::setRAMAddress(uint16_t x, uint16_t y) {
+  // on this chip we do nothing
 }
 
-/**************************************************************************/
-/*!
-    @brief clear all data buffers
-*/
-/**************************************************************************/
-void Adafruit_IL0398::clearBuffer()
-{
-#ifdef USE_EXTERNAL_SRAM
-	sram.erase(0x00, bw_bufsize + red_bufsize, 0xFF);
-#else
-	memset(bw_buf, 0xFF, bw_bufsize);
-	memset(red_buf, 0xFF, red_bufsize);
-#endif
-}
-
-/**************************************************************************/
-/*!
-    @brief clear the display twice to remove any spooky ghost images
-*/
-/**************************************************************************/
-void Adafruit_IL0398::clearDisplay() {
-	clearBuffer();
-	display();
-	delay(100);
-	display();
-}
