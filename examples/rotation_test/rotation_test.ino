@@ -48,6 +48,12 @@ void setup(void) {
 
   epd.begin();
   Serial.println("Initialized");
+
+#if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
+  // The flexible displays have different buffers and invert settings!
+  epd.setBlackBuffer(1, false);
+  epd.setColorBuffer(1, false);
+#endif
 }
 
 void loop() {

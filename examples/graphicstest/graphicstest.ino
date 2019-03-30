@@ -17,33 +17,27 @@
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-Adafruit_IL0373 epd(152, 152 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-/* Uncomment the following line if you are using 2.15" tricolor EPD */
-//Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+/* Uncomment the following line if you are using 1.54" monochrome EPD */
+//Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+/* Uncomment the following line if you are using 2.13" tricolor EPD */
+//Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
-//Adafruit_SSD1675 epd(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-//#define MONOCHROME
+//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-/* Uncomment the following line if you are using 2.7" tricolor or gray EPD */
-//Adafruit_IL91874 epd(264, 176 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
+/* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD */
+//Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
 /* Uncomment the following line if you are using 2.9" EPD */
-//Adafruit_IL0373 epd(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_IL0373 display(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_290
 
-#if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
-  #define COLOR1 EPD_RED
-  #define COLOR2 EPD_RED
-#elif defined (MONOCHROME)
-  #define COLOR1 EPD_BLACK
-  #define COLOR2 EPD_BLACK
-#else // any other tricolor
-  #define COLOR1 EPD_BLACK
-  #define COLOR2 EPD_RED
-#endif
+/* Uncomment the following line if you are using 4.2" tricolor EPD */
+//Adafruit_IL0398 display(300, 400, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 
 float p = 3.1415926;
@@ -55,8 +49,9 @@ void setup(void) {
   epd.begin();
   
 #if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
-  epd.invertColorLogic(0, false);
-  epd.invertColorLogic(1, false);
+  // The flexible displays have different buffers and invert settings!
+  epd.setBlackBuffer(1, false);
+  epd.setColorBuffer(1, false);
 #endif
 
   Serial.println("Initialized");
