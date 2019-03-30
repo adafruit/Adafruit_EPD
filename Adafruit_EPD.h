@@ -90,33 +90,69 @@ class Adafruit_EPD : public Adafruit_GFX {
   void display(void);
  
  protected:
+  /**************************************************************************/
+  /*!
+    @brief Send the specific command to start writing to EPD display RAM
+    @param index The index for which buffer to write (0 or 1 or tri-color displays)
+    Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the command
+  */
+  /**************************************************************************/
   virtual uint8_t writeRAMCommand(uint8_t index) = 0;
+
+  /**************************************************************************/
+  /*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+  */
+  /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
+
+  /**************************************************************************/
+  /*!
+    @brief start up the display
+  */
+  /**************************************************************************/
   virtual void powerUp(void) = 0;
+
+  /**************************************************************************/
+  /*!
+    @brief signal the display to update
+  */
+  /**************************************************************************/
   virtual void update(void) = 0;
+
+  /**************************************************************************/
+  /*!
+    @brief wind down the display
+  */
+  /**************************************************************************/
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin, ///< sid pin
+  int8_t _sid_pin ///< sid pin
     _sclk_pin, ///< serial clock pin
     _dc_pin, ///< data/command pin
     _reset_pin, ///< reset pin
     _cs_pin, ///< chip select pin
     _busy_pin; ///< busy pin
+
+  bool singleByteTxns; ///< if true CS will go high after every data byte transferred
+  Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
     
   bool blackInverted; ///< is black channel inverted
   bool colorInverted; ///< is red channel inverted
   int buffer1_size; ///< size of the primary buffer
   int buffer2_size; ///< size of the secondary buffer
-    
-  bool singleByteTxns; ///< if true CS will go high after every data byte transferred
-
   uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram
   uint8_t *buffer2; ///< the pointer to the secondary buffer if using on-chip ram
-  uint8_t *color_buffer, *black_buffer;
-  Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
-  uint16_t buffer1_addr, buffer2_addr;  // The SRAM address offsets for the two buffers
-  uint16_t colorbuffer_addr, blackbuffer_addr;
+  uint8_t *color_buffer;  ///< the pointer to the color buffer if using on-chip ram
+  uint8_t *black_buffer;  ///< the pointer to the black buffer if using on-chip ram
+  uint16_t buffer1_addr;  ///< The SRAM address offsets for the primary buffer
+  uint16_t buffer2_addr;  ///< The SRAM address offsets for the secondary buffer
+  uint16_t colorbuffer_addr;  ///< The SRAM address offsets for the color buffer
+  uint16_t blackbuffer_addr;  ///< The SRAM address offsets for the black buffer
   
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end=true);
@@ -125,7 +161,7 @@ class Adafruit_EPD : public Adafruit_GFX {
 
   uint8_t SPItransfer(uint8_t c);
 
-  bool use_sram;
+  bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
   bool hwSPI; ///< true if using hardware SPI
 #ifdef HAVE_PORTREG
   PortReg *mosiport, ///< mosi port register
