@@ -46,25 +46,25 @@ void setup(void) {
   Serial.begin(115200);
   Serial.print("Hello! EPD Test");
 
-  epd.begin();
+  display.begin();	
   Serial.println("Initialized");
 
 #if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   // The flexible displays have different buffers and invert settings!
-  epd.setBlackBuffer(1, false);
-  epd.setColorBuffer(1, false);
+  display.setBlackBuffer(1, false);
+  display.setColorBuffer(1, false);
 #endif
 }
 
 void loop() {
   for (int rot=0; rot<4; rot++) {
-    epd.setRotation(rot);
-    epd.clearBuffer();
-    epd.fillScreen(EPD_WHITE);
-    epd.drawRect(10, 20, 10, 20, EPD_BLACK);
+    display.setRotation(rot);
+    display.clearBuffer();
+    display.fillScreen(EPD_WHITE);
+    display.drawRect(10, 20, 10, 20, EPD_BLACK);
   
-    epd.display();
+    display.display();
   
-    delay(15 * 1000);
+    delay(1000);
   }
 }
