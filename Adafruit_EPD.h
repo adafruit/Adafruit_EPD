@@ -131,7 +131,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin ///< sid pin
+  int8_t _sid_pin, ///< sid pin
     _sclk_pin, ///< serial clock pin
     _dc_pin, ///< data/command pin
     _reset_pin, ///< reset pin
