@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['clearbuffer',['clearBuffer',['../class_adafruit___e_p_d.html#a27fe53082ef65fd55bf0de3f020c2f58',1,'Adafruit_EPD']]],
-  ['cleardisplay',['clearDisplay',['../class_adafruit___e_p_d.html#a46c040ac3b1b649dfadc19b32f092b9a',1,'Adafruit_EPD']]],
-  ['color_5fbuffer',['color_buffer',['../class_adafruit___e_p_d.html#aa7e3661bd364e9b69cd80eb306f3441a',1,'Adafruit_EPD']]],
-  ['colorbuffer_5faddr',['colorbuffer_addr',['../class_adafruit___e_p_d.html#a152e7ac6694a9cfdb3e05739fef3ca7a',1,'Adafruit_EPD']]],
-  ['colorinverted',['colorInverted',['../class_adafruit___e_p_d.html#abce115be88d3effdeab2976516bcdffd',1,'Adafruit_EPD']]],
-  ['cshigh',['csHigh',['../class_adafruit___e_p_d.html#a25d587d29510953c56864eb01188950f',1,'Adafruit_EPD::csHigh()'],['../class_adafruit___m_c_p_s_r_a_m.html#a40328f9e119a33731e89d5dd0e62a8a9',1,'Adafruit_MCPSRAM::csHigh()']]],
-  ['cslow',['csLow',['../class_adafruit___e_p_d.html#a9c7a7761b005ec635d9ffbb4a174ba68',1,'Adafruit_EPD::csLow()'],['../class_adafruit___m_c_p_s_r_a_m.html#a53a54fcdc7a5849d4cfcf4674b272931',1,'Adafruit_MCPSRAM::csLow()']]]
+  ['dc',['dc',['../class_adafruit___e_p_d.html#ae819043add0d56ee1207c7f00e2bc180',1,'Adafruit_EPD']]],
+  ['dchigh',['dcHigh',['../class_adafruit___e_p_d.html#a5a28e2ebd1e85f2e49f4e24f27489bf3',1,'Adafruit_EPD']]],
+  ['dclow',['dcLow',['../class_adafruit___e_p_d.html#a33782626ce65fe8bfb12816849c181c2',1,'Adafruit_EPD']]],
+  ['display',['display',['../class_adafruit___i_l0371.html#a831352add96eca1271c748fa674d06d8',1,'Adafruit_IL0371::display()'],['../class_adafruit___i_l0373.html#a78f95282b02b6dcd49d43cacd5d0aae4',1,'Adafruit_IL0373::display()'],['../class_adafruit___i_l0376_f.html#abb7056ba029726cddc994fc7f38ecc31',1,'Adafruit_IL0376F::display()'],['../class_adafruit___i_l0398.html#ac979cf71214c7e68086ae4d30fba01a6',1,'Adafruit_IL0398::display()'],['../class_adafruit___i_l91874.html#af85073d8322b032f65fcf75be63d9e47',1,'Adafruit_IL91874::display()'],['../class_adafruit___s_s_d1608.html#ad67cd9b38bdb3952fac2af827bfaaa91',1,'Adafruit_SSD1608::display()'],['../class_adafruit___s_s_d1675.html#a63b51abd210a18bbcee6fe2272651012',1,'Adafruit_SSD1675::display()']]],
+  ['drawpixel',['drawPixel',['../class_adafruit___i_l0371.html#af0a5306ec16e00ab060bf7116920eb72',1,'Adafruit_IL0371::drawPixel()'],['../class_adafruit___i_l0373.html#a8fd731862e330b3432e3bc50165473d4',1,'Adafruit_IL0373::drawPixel()'],['../class_adafruit___i_l0376_f.html#a5d0271fe0fec8b70b2eccf88b254034e',1,'Adafruit_IL0376F::drawPixel()'],['../class_adafruit___i_l0398.html#a06fcb2e2b23db49bd51f54e91c7c8773',1,'Adafruit_IL0398::drawPixel()'],['../class_adafruit___i_l91874.html#ac2b1323addb7fca7d0f91ab6f3381d81',1,'Adafruit_IL91874::drawPixel()'],['../class_adafruit___s_s_d1608.html#a7713e010c8b7a869986de63ddd6e04ca',1,'Adafruit_SSD1608::drawPixel()'],['../class_adafruit___s_s_d1675.html#abc769ad31cb1cca7bbc97a5ec79547c1',1,'Adafruit_SSD1675::drawPixel()']]]
 ];

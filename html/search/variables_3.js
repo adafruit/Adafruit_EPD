@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hwspi',['hwSPI',['../class_adafruit___e_p_d.html#af6482d9e4e8e638de749039571ca8614',1,'Adafruit_EPD']]]
+  ['hwspi',['hwSPI',['../class_adafruit___e_p_d.html#a871dd80eda535e291b0ef2f522f6148e',1,'Adafruit_EPD']]]
 ];

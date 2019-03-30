@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['singlebytetxns',['singleByteTxns',['../class_adafruit___e_p_d.html#a7b923d0159417b5049b5605ccb4feb4b',1,'Adafruit_EPD']]],
-  ['sram',['sram',['../class_adafruit___e_p_d.html#a1084bb94eef7446e7bd0e5e3d698b281',1,'Adafruit_EPD']]]
+  ['red_5fbufsize',['red_bufsize',['../class_adafruit___e_p_d.html#a6d5020c98b03c21c1163fdc727be9830',1,'Adafruit_EPD']]],
+  ['redinverted',['redInverted',['../class_adafruit___e_p_d.html#aece54c261fc92a13e8a3f8b9b8cf52c2',1,'Adafruit_EPD']]],
+  ['rst',['rst',['../class_adafruit___e_p_d.html#a7e2da21e1c608644e8e247935b3d35e2',1,'Adafruit_EPD']]]
 ];

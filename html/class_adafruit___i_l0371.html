@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Adafruit EPD Library: Adafruit_SSD1675 Class Reference</title>
+<title>Adafruit EPD Library: Adafruit_IL0371 Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -60,61 +60,60 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="class_adafruit___s_s_d1675-members.html">List of all members</a>  </div>
+<a href="class_adafruit___i_l0371-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Adafruit_SSD1675 Class Reference</div>  </div>
+<div class="title">Adafruit_IL0371 Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class for interfacing with SSD1675 EPD drivers.  
- <a href="class_adafruit___s_s_d1675.html#details">More...</a></p>
+<p>Class for interfacing with IL0371 EPD drivers.  
+ <a href="class_adafruit___i_l0371.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_adafruit___s_s_d1675_8h_source.html">Adafruit_SSD1675.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_adafruit___i_l0371_8h_source.html">Adafruit_IL0371.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for Adafruit_SSD1675:</div>
+Inheritance diagram for Adafruit_IL0371:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="class_adafruit___s_s_d1675.png" usemap="#Adafruit_5FSSD1675_map" alt=""/>
-  <map id="Adafruit_5FSSD1675_map" name="Adafruit_5FSSD1675_map">
-<area href="class_adafruit___e_p_d.html" title="Class for interfacing with Adafruit EPD display breakouts. " alt="Adafruit_EPD" shape="rect" coords="0,56,117,80"/>
+  <img src="class_adafruit___i_l0371.png" usemap="#Adafruit_5FIL0371_map" alt=""/>
+  <map id="Adafruit_5FIL0371_map" name="Adafruit_5FIL0371_map">
+<area href="class_adafruit___e_p_d.html" title="Class for interfacing with Adafruit EPD display breakouts. " alt="Adafruit_EPD" shape="rect" coords="0,56,102,80"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa52eea80c686209d8f2fbe906843716b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#aa52eea80c686209d8f2fbe906843716b">Adafruit_SSD1675</a> (int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY=-1)</td></tr>
-<tr class="memdesc:aa52eea80c686209d8f2fbe906843716b"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using external SRAM chip and software SPI  <a href="#aa52eea80c686209d8f2fbe906843716b">More...</a><br /></td></tr>
-<tr class="separator:aa52eea80c686209d8f2fbe906843716b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63c2b744b5f52e23cf60d918a7d4d779"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a63c2b744b5f52e23cf60d918a7d4d779">Adafruit_SSD1675</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1)</td></tr>
-<tr class="memdesc:a63c2b744b5f52e23cf60d918a7d4d779"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#a63c2b744b5f52e23cf60d918a7d4d779">More...</a><br /></td></tr>
-<tr class="separator:a63c2b744b5f52e23cf60d918a7d4d779"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33ac6888418db14f5bdefe4c3ef896eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a33ac6888418db14f5bdefe4c3ef896eb">begin</a> (bool reset=true)</td></tr>
-<tr class="memdesc:a33ac6888418db14f5bdefe4c3ef896eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with and set up the display.  <a href="#a33ac6888418db14f5bdefe4c3ef896eb">More...</a><br /></td></tr>
-<tr class="separator:a33ac6888418db14f5bdefe4c3ef896eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad8de5dc3d0150a95a5e6ad09ce0dd06"><td class="memItemLeft" align="right" valign="top"><a id="aad8de5dc3d0150a95a5e6ad09ce0dd06"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#aad8de5dc3d0150a95a5e6ad09ce0dd06">powerUp</a> ()</td></tr>
-<tr class="memdesc:aad8de5dc3d0150a95a5e6ad09ce0dd06"><td class="mdescLeft">&#160;</td><td class="mdescRight">start up the display <br /></td></tr>
-<tr class="separator:aad8de5dc3d0150a95a5e6ad09ce0dd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc769ad31cb1cca7bbc97a5ec79547c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#abc769ad31cb1cca7bbc97a5ec79547c1">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
-<tr class="memdesc:abc769ad31cb1cca7bbc97a5ec79547c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw a single pixel on the screen  <a href="#abc769ad31cb1cca7bbc97a5ec79547c1">More...</a><br /></td></tr>
-<tr class="separator:abc769ad31cb1cca7bbc97a5ec79547c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63b51abd210a18bbcee6fe2272651012"><td class="memItemLeft" align="right" valign="top"><a id="a63b51abd210a18bbcee6fe2272651012"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a63b51abd210a18bbcee6fe2272651012">display</a> ()</td></tr>
-<tr class="memdesc:a63b51abd210a18bbcee6fe2272651012"><td class="mdescLeft">&#160;</td><td class="mdescRight">show the data stored in the buffer on the display <br /></td></tr>
-<tr class="separator:a63b51abd210a18bbcee6fe2272651012"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ab0cb5054ab740a798e4d8bd27afbb5"><td class="memItemLeft" align="right" valign="top"><a id="a2ab0cb5054ab740a798e4d8bd27afbb5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a2ab0cb5054ab740a798e4d8bd27afbb5">update</a> ()</td></tr>
-<tr class="memdesc:a2ab0cb5054ab740a798e4d8bd27afbb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">signal the display to update <br /></td></tr>
-<tr class="separator:a2ab0cb5054ab740a798e4d8bd27afbb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6954b8a0288623165380b2ce2cb11e8"><td class="memItemLeft" align="right" valign="top"><a id="aa6954b8a0288623165380b2ce2cb11e8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#aa6954b8a0288623165380b2ce2cb11e8">clearBuffer</a> ()</td></tr>
-<tr class="memdesc:aa6954b8a0288623165380b2ce2cb11e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear all data buffers <br /></td></tr>
-<tr class="separator:aa6954b8a0288623165380b2ce2cb11e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45d2c38ad306db740990791585e71f3a"><td class="memItemLeft" align="right" valign="top"><a id="a45d2c38ad306db740990791585e71f3a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a45d2c38ad306db740990791585e71f3a">clearDisplay</a> ()</td></tr>
-<tr class="memdesc:a45d2c38ad306db740990791585e71f3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the display twice to remove any spooky ghost images <br /></td></tr>
-<tr class="separator:a45d2c38ad306db740990791585e71f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3680c03cdcec3f2e7d11309791b96ae8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#a3680c03cdcec3f2e7d11309791b96ae8">Adafruit_IL0371</a> (int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY=-1)</td></tr>
+<tr class="memdesc:a3680c03cdcec3f2e7d11309791b96ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using external SRAM chip and software SPI  <a href="#a3680c03cdcec3f2e7d11309791b96ae8">More...</a><br /></td></tr>
+<tr class="separator:a3680c03cdcec3f2e7d11309791b96ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e27fd2592b07125bd4e5ada3825cf33"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#a4e27fd2592b07125bd4e5ada3825cf33">Adafruit_IL0371</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1)</td></tr>
+<tr class="memdesc:a4e27fd2592b07125bd4e5ada3825cf33"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#a4e27fd2592b07125bd4e5ada3825cf33">More...</a><br /></td></tr>
+<tr class="separator:a4e27fd2592b07125bd4e5ada3825cf33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a59895d0f85207046e32bc2c0e38f76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#a4a59895d0f85207046e32bc2c0e38f76">begin</a> (bool reset=true)</td></tr>
+<tr class="memdesc:a4a59895d0f85207046e32bc2c0e38f76"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with and set up the display.  <a href="#a4a59895d0f85207046e32bc2c0e38f76">More...</a><br /></td></tr>
+<tr class="separator:a4a59895d0f85207046e32bc2c0e38f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad370bfd4cd7b83455e1e9f9576d1a55f"><td class="memItemLeft" align="right" valign="top"><a id="ad370bfd4cd7b83455e1e9f9576d1a55f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#ad370bfd4cd7b83455e1e9f9576d1a55f">powerUp</a> ()</td></tr>
+<tr class="memdesc:ad370bfd4cd7b83455e1e9f9576d1a55f"><td class="mdescLeft">&#160;</td><td class="mdescRight">start up the display <br /></td></tr>
+<tr class="separator:ad370bfd4cd7b83455e1e9f9576d1a55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0a5306ec16e00ab060bf7116920eb72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#af0a5306ec16e00ab060bf7116920eb72">drawPixel</a> (int16_t x, int16_t y, uint16_t color)</td></tr>
+<tr class="memdesc:af0a5306ec16e00ab060bf7116920eb72"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw a single pixel on the screen  <a href="#af0a5306ec16e00ab060bf7116920eb72">More...</a><br /></td></tr>
+<tr class="separator:af0a5306ec16e00ab060bf7116920eb72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a831352add96eca1271c748fa674d06d8"><td class="memItemLeft" align="right" valign="top"><a id="a831352add96eca1271c748fa674d06d8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#a831352add96eca1271c748fa674d06d8">display</a> ()</td></tr>
+<tr class="memdesc:a831352add96eca1271c748fa674d06d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">show the data stored in the buffer on the display <br /></td></tr>
+<tr class="separator:a831352add96eca1271c748fa674d06d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a85d9148eb452be6451b47eae80b6f"><td class="memItemLeft" align="right" valign="top"><a id="a60a85d9148eb452be6451b47eae80b6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#a60a85d9148eb452be6451b47eae80b6f">update</a> ()</td></tr>
+<tr class="memdesc:a60a85d9148eb452be6451b47eae80b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">update the display <br /></td></tr>
+<tr class="separator:a60a85d9148eb452be6451b47eae80b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acffef87ff8f52d1c77c0e188f336322c"><td class="memItemLeft" align="right" valign="top"><a id="acffef87ff8f52d1c77c0e188f336322c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#acffef87ff8f52d1c77c0e188f336322c">clearBuffer</a> ()</td></tr>
+<tr class="memdesc:acffef87ff8f52d1c77c0e188f336322c"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear all data buffers <br /></td></tr>
+<tr class="separator:acffef87ff8f52d1c77c0e188f336322c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa13c6eb2e2dfa13c219401f35e885a8"><td class="memItemLeft" align="right" valign="top"><a id="aaa13c6eb2e2dfa13c219401f35e885a8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0371.html#aaa13c6eb2e2dfa13c219401f35e885a8">clearDisplay</a> ()</td></tr>
+<tr class="memdesc:aaa13c6eb2e2dfa13c219401f35e885a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the display twice to remove any spooky ghost images <br /></td></tr>
+<tr class="separator:aaa13c6eb2e2dfa13c219401f35e885a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_adafruit___e_p_d"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_adafruit___e_p_d')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_adafruit___e_p_d.html">Adafruit_EPD</a></td></tr>
 <tr class="memitem:abf054d75cb08a1b9177923df5d355534 inherit pub_methods_class_adafruit___e_p_d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#abf054d75cb08a1b9177923df5d355534">Adafruit_EPD</a> (int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY=-1)</td></tr>
 <tr class="memdesc:abf054d75cb08a1b9177923df5d355534 inherit pub_methods_class_adafruit___e_p_d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using external SRAM chip and software SPI  <a href="class_adafruit___e_p_d.html#abf054d75cb08a1b9177923df5d355534">More...</a><br /></td></tr>
@@ -133,12 +132,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a74d1e351e43efd4e31ad1a4d59202401 inherit pub_methods_class_adafruit___e_p_d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the data for the first or second is inverted or not.  <a href="class_adafruit___e_p_d.html#a74d1e351e43efd4e31ad1a4d59202401">More...</a><br /></td></tr>
 <tr class="separator:a74d1e351e43efd4e31ad1a4d59202401 inherit pub_methods_class_adafruit___e_p_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a53b9cb77266e0de776838654ed70040f"><td class="memItemLeft" align="right" valign="top"><a id="a53b9cb77266e0de776838654ed70040f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___s_s_d1675.html#a53b9cb77266e0de776838654ed70040f">busy_wait</a> ()</td></tr>
-<tr class="memdesc:a53b9cb77266e0de776838654ed70040f"><td class="mdescLeft">&#160;</td><td class="mdescRight">wait for busy signal to end <br /></td></tr>
-<tr class="separator:a53b9cb77266e0de776838654ed70040f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_adafruit___e_p_d"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_adafruit___e_p_d')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_adafruit___e_p_d.html">Adafruit_EPD</a></td></tr>
 <tr class="memitem:a760d4138f64152a8b2bb139e5ac49370 inherit pro_methods_class_adafruit___e_p_d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a760d4138f64152a8b2bb139e5ac49370">EPD_command</a> (uint8_t c, const uint8_t *buf, uint16_t len)</td></tr>
 <tr class="memdesc:a760d4138f64152a8b2bb139e5ac49370 inherit pro_methods_class_adafruit___e_p_d"><td class="mdescLeft">&#160;</td><td class="mdescRight">send an EPD command followed by data  <a href="class_adafruit___e_p_d.html#a760d4138f64152a8b2bb139e5ac49370">More...</a><br /></td></tr>
@@ -171,9 +166,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a33782626ce65fe8bfb12816849c181c2">dcLow</a> ()</td></tr>
 <tr class="memdesc:a33782626ce65fe8bfb12816849c181c2 inherit pro_methods_class_adafruit___e_p_d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set data/command pin low <br /></td></tr>
 <tr class="separator:a33782626ce65fe8bfb12816849c181c2 inherit pro_methods_class_adafruit___e_p_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___e_p_d"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___e_p_d')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___e_p_d.html">Adafruit_EPD</a></td></tr>
 <tr class="memitem:aed77b43b56049b529850251b1ee3ff56 inherit pro_attribs_class_adafruit___e_p_d"><td class="memItemLeft" align="right" valign="top"><a id="aed77b43b56049b529850251b1ee3ff56"></a>
 int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#aed77b43b56049b529850251b1ee3ff56">sid</a></td></tr>
@@ -229,16 +221,16 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="separator:a871dd80eda535e291b0ef2f522f6148e inherit pro_attribs_class_adafruit___e_p_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class for interfacing with SSD1675 EPD drivers. </p>
+<div class="textblock"><p>Class for interfacing with IL0371 EPD drivers. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa52eea80c686209d8f2fbe906843716b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa52eea80c686209d8f2fbe906843716b">&#9670;&nbsp;</a></span>Adafruit_SSD1675() <span class="overload">[1/2]</span></h2>
+<a id="a3680c03cdcec3f2e7d11309791b96ae8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3680c03cdcec3f2e7d11309791b96ae8">&#9670;&nbsp;</a></span>Adafruit_IL0371() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Adafruit_SSD1675::Adafruit_SSD1675 </td>
+          <td class="memname">Adafruit_IL0371::Adafruit_IL0371 </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>width</em>, </td>
@@ -324,14 +316,14 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="a63c2b744b5f52e23cf60d918a7d4d779"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63c2b744b5f52e23cf60d918a7d4d779">&#9670;&nbsp;</a></span>Adafruit_SSD1675() <span class="overload">[2/2]</span></h2>
+<a id="a4e27fd2592b07125bd4e5ada3825cf33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e27fd2592b07125bd4e5ada3825cf33">&#9670;&nbsp;</a></span>Adafruit_IL0371() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Adafruit_SSD1675::Adafruit_SSD1675 </td>
+          <td class="memname">Adafruit_IL0371::Adafruit_IL0371 </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>width</em>, </td>
@@ -397,14 +389,14 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a33ac6888418db14f5bdefe4c3ef896eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33ac6888418db14f5bdefe4c3ef896eb">&#9670;&nbsp;</a></span>begin()</h2>
+<a id="a4a59895d0f85207046e32bc2c0e38f76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a59895d0f85207046e32bc2c0e38f76">&#9670;&nbsp;</a></span>begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SSD1675::begin </td>
+          <td class="memname">void Adafruit_IL0371::begin </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>reset</em> = <code>true</code></td><td>)</td>
@@ -423,14 +415,14 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 
 </div>
 </div>
-<a id="abc769ad31cb1cca7bbc97a5ec79547c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc769ad31cb1cca7bbc97a5ec79547c1">&#9670;&nbsp;</a></span>drawPixel()</h2>
+<a id="af0a5306ec16e00ab060bf7116920eb72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0a5306ec16e00ab060bf7116920eb72">&#9670;&nbsp;</a></span>drawPixel()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_SSD1675::drawPixel </td>
+          <td class="memname">void Adafruit_IL0371::drawPixel </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>x</em>, </td>
@@ -468,8 +460,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li><a class="el" href="_adafruit___s_s_d1675_8h_source.html">Adafruit_SSD1675.h</a></li>
-<li>Adafruit_SSD1675.cpp</li>
+<li><a class="el" href="_adafruit___i_l0371_8h_source.html">Adafruit_IL0371.h</a></li>
+<li>Adafruit_IL0371.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
