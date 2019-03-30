@@ -26,7 +26,6 @@
  #include "WProgram.h"
 #endif
 
-#define USE_EXTERNAL_SRAM ///< use the external RAM chip on the EPD breakout
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
 #if defined(__SAM3X8E__)
@@ -58,7 +57,7 @@
     @brief available EPD colors
 */
 /**************************************************************************/
-enum{
+enum {
 	EPD_BLACK, ///< black color
 	EPD_WHITE, ///< white color
 	EPD_INVERSE, ///< invert color
@@ -78,38 +77,44 @@ enum{
 class Adafruit_EPD : public Adafruit_GFX {
  public:
 
-#ifdef USE_EXTERNAL_SRAM
   Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
   Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
-#else
-  Adafruit_EPD(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-  Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-#endif
   ~Adafruit_EPD();
 
   void begin(bool reset=true);
-  void invertColorLogic(uint8_t colorLayer, bool invert);
-
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
+  void clearBuffer();
+  void clearDisplay();
+  void setBlackBuffer(int8_t index, bool inverted);
+  void setColorBuffer(int8_t index, bool inverted);
+  void display(void);
+ 
  protected:
-  int8_t sid, ///< sid pin
-   sclk, ///< serial clock pin
-   dc, ///< data/command pin
-   rst, ///< reset pin
-   cs, ///< chip select pin
-   busy; ///< busy pin
+  virtual uint8_t writeRAMCommand(uint8_t index) = 0;
+  virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
+  virtual void powerUp(void) = 0;
+  virtual void update(void) = 0;
 
-  bool blackInverted, ///< is black channel inverted
-   redInverted; ///< is red channel inverted
-  int bw_bufsize, ///< size of the black and white buffer
-   red_bufsize; ///< size of the red buffer
+  int8_t sid, ///< sid pin
+    sclk, ///< serial clock pin
+    dc, ///< data/command pin
+    rst, ///< reset pin
+    cs, ///< chip select pin
+    busy; ///< busy pin
+    
+  bool blackInverted; ///< is black channel inverted
+  bool colorInverted; ///< is red channel inverted
+  int buffer1_size; ///< size of the primary buffer
+  int buffer2_size; ///< size of the secondary buffer
+    
   bool singleByteTxns; ///< if true CS will go high after every data byte transferred
 
-#ifndef USE_EXTERNAL_SRAM
-  uint8_t *bw_buf; ///< the pointer to the black and white buffer if using on-chip ram
-  uint8_t *red_buf; ///< the pointer to the red buffer if using on-chip ram
-#else
+  uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram
+  uint8_t *buffer2; ///< the pointer to the secondary buffer if using on-chip ram
+  uint8_t *color_buffer, *black_buffer;
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
-#endif
+  uint16_t buffer1_addr, buffer2_addr;  // The SRAM address offsets for the two buffers
+  uint16_t colorbuffer_addr, blackbuffer_addr;
   
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end=true);
@@ -118,7 +123,8 @@ class Adafruit_EPD : public Adafruit_GFX {
 
   uint8_t SPItransfer(uint8_t c);
 
-  boolean hwSPI; ///< true if using hardware SPI
+  bool use_sram;
+  bool hwSPI; ///< true if using hardware SPI
 #ifdef HAVE_PORTREG
   PortReg *mosiport, ///< mosi port register
    *clkport, ///< serial clock port register
@@ -135,12 +141,15 @@ class Adafruit_EPD : public Adafruit_GFX {
  void dcLow();
 };
 
+/*
 #include "Adafruit_IL0376F.h"
 #include "Adafruit_IL91874.h"
 #include "Adafruit_IL0398.h"
 #include "Adafruit_IL0371.h"
+*/
 #include "Adafruit_IL0373.h"
+/*
 #include "Adafruit_SSD1675.h"
 #include "Adafruit_SSD1608.h"
-
+*/
 #endif /* _Adafruit_EPD_H_ */

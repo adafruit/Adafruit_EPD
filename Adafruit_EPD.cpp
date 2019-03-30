@@ -52,8 +52,6 @@
 
 //#define DEBUG 1
 
-#ifdef USE_EXTERNAL_SRAM
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -71,34 +69,26 @@
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t spi_miso, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(spi_mosi, spi_miso, spi_clock, SRCS) {
-#else
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and software SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param spi_mosi the SID pin to use
-    @param spi_clock the SCLK pin to use
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
-#endif
   cs = CS;
   rst = RST;
   dc = DC;
   sclk = spi_clock;
   sid = spi_mosi;
   busy = BUSY;
+  if (SRCS >= 0) {
+    use_sram = true;
+  } else {
+    use_sram = false;
+  }
   hwSPI = false;
   singleByteTxns = false;
+  buffer1_size = buffer2_size = 0;
+  buffer1_addr = buffer2_addr = 0;
+  colorbuffer_addr = blackbuffer_addr = 0;
+  buffer1 = buffer2 = color_buffer = black_buffer = NULL;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
-#ifdef USE_EXTERNAL_SRAM
 /**************************************************************************/
 /*!
     @brief constructor if using on-chip RAM and hardware SPI
@@ -113,26 +103,21 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_cl
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_GFX(width, height),
 sram(SRCS) {
-#else
-/**************************************************************************/
-/*!
-    @brief constructor if using on-chip RAM and hardware SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param BUSY the busy pin to use
-*/
-/**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY) : Adafruit_GFX(width, height) {
-#endif
   dc = DC;
   rst = RST;
   cs = CS;
   busy = BUSY;
+  if (SRCS >= 0) {
+    use_sram = true;
+  } else {
+    use_sram = false;
+  }
   hwSPI = true;
   singleByteTxns = false;
+  buffer1_size = buffer2_size = 0;
+  buffer1_addr = buffer2_addr = 0;
+  colorbuffer_addr = blackbuffer_addr = 0;
+  buffer1 = buffer2 = color_buffer = black_buffer = NULL;
 }
 
 /**************************************************************************/
@@ -142,10 +127,14 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t 
 /**************************************************************************/
 Adafruit_EPD::~Adafruit_EPD()
 {
-#ifndef USE_EXTERNAL_SRAM
-  free(bw_buf);
-  free(red_buf);
-#endif
+  if (buffer1 != NULL) {
+    free(buffer1);
+    buffer1 = NULL;
+  }
+  if (buffer2 != NULL) {
+    free(buffer2);
+    buffer2 = NULL;
+  }
 }
 
 /**************************************************************************/
@@ -155,13 +144,13 @@ Adafruit_EPD::~Adafruit_EPD()
 */
 /**************************************************************************/
 void Adafruit_EPD::begin(bool reset) {
-  invertColorLogic(0, true);   // black defaults to inverted
-  invertColorLogic(1, false);  // red defaults to not inverted
+  setBlackBuffer(0, true);   // black defaults to inverted
+  setColorBuffer(1, false);  // red defaults to not inverted
   
-#ifdef USE_EXTERNAL_SRAM
-  sram.begin();
-  sram.write8(0, K640_SEQUENTIAL_MODE, MCPSRAM_WRSR);
-#endif
+  if (use_sram) {
+    sram.begin();
+    sram.write8(0, K640_SEQUENTIAL_MODE, MCPSRAM_WRSR);
+  }
   
   // set pin directions
   pinMode(dc, OUTPUT);
@@ -211,6 +200,262 @@ void Adafruit_EPD::begin(bool reset) {
     pinMode(busy, INPUT);
   }
 }
+
+
+
+/**************************************************************************/
+/*!
+    @brief draw a single pixel on the screen
+	@param x the x axis position
+	@param y the y axis position
+	@param color the color of the pixel
+*/
+/**************************************************************************/
+void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
+  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
+    return;
+	
+  uint8_t *pBuf;
+  
+  // check rotation, move pixel around if necessary
+  switch (getRotation()) {
+  case 1:
+    EPD_swap(x, y);
+    x = WIDTH - x - 1;
+    break;
+  case 2:
+    x = WIDTH - x - 1;
+    y = HEIGHT - y - 1;
+    break;
+  case 3:
+    EPD_swap(x, y);
+    y = HEIGHT - y - 1;
+    break;
+  }
+  uint16_t addr = ( (uint32_t)(WIDTH - 1 - x) * (uint32_t)HEIGHT + y)/8;
+  uint8_t c;
+  if (use_sram) {
+    if ((color == EPD_RED) || (color == EPD_GRAY)) {
+      addr = colorbuffer_addr + addr;
+    } else {
+      addr = blackbuffer_addr + addr;
+    }
+    c = sram.read8(addr);
+    pBuf = &c;
+  } else {
+    if((color == EPD_RED) || (color == EPD_GRAY)) {
+      pBuf = color_buffer + addr;
+    } else {
+      pBuf = black_buffer + addr;
+    }
+  }
+
+  if (((color == EPD_RED || color == EPD_GRAY) && colorInverted) || 
+      ((color == EPD_BLACK) && blackInverted)) {
+    *pBuf &= ~(1 << (7 - y%8));
+  } else if (((color == EPD_RED || color == EPD_GRAY) && !colorInverted) || 
+	     ((color == EPD_BLACK) && !blackInverted)) {
+    *pBuf |= (1 << (7 - y%8));
+  } else if (color == EPD_INVERSE) {
+    *pBuf ^= (1 << (7 - y%8));
+  }
+  
+  if (use_sram) {
+    sram.write8(addr, *pBuf);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief Transfer the data stored in the buffer(s) to the display
+*/
+/**************************************************************************/
+void Adafruit_EPD::display(void)
+{
+  powerUp();
+  uint8_t c;
+  uint8_t b[2];
+   
+  // Set X & Y ram counters
+  setRAMAddress(0, 0);
+
+  if (use_sram) {
+    sram.csLow();
+    // send read command
+    SPItransfer(MCPSRAM_READ);
+    // send address
+    SPItransfer(buffer1_addr >> 8);
+    SPItransfer(buffer1_addr & 0xFF);
+    
+    // first data byte from SRAM will be transfered in at the same time 
+    // as the EPD command is transferred out
+    c = writeRAMCommand(0);
+    
+    dcHigh();
+    for(uint16_t i=0; i<buffer1_size; i++){
+      c = SPItransfer(c);
+      Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+      if (i % 32 == 31) Serial.println();
+    }
+    csHigh();
+    sram.csHigh();
+  } else {
+    //write image
+    writeRAMCommand(0);
+    dcHigh();
+    for(uint16_t i=0; i<buffer1_size; i++) {
+      SPItransfer(buffer1[i]);
+    }
+    csHigh();
+  }
+
+  if (buffer2_size == 0) {
+    update();
+    return;
+  }
+
+  // oh there's another buffer eh?
+  delay(2);
+  
+  // Set X & Y ram counters
+  setRAMAddress(0, 0);
+  
+  if (use_sram) {
+    sram.csLow();
+    // send read command
+    SPItransfer(MCPSRAM_READ);
+    // send address
+    SPItransfer(buffer2_addr >> 8);
+    SPItransfer(buffer2_addr & 0xFF);
+    
+    // first data byte from SRAM will be transfered in at the same time 
+    // as the EPD command is transferred out
+    c = writeRAMCommand(1);
+    
+    dcHigh();
+    for(uint16_t i=0; i<buffer2_size; i++){
+      c = SPItransfer(c);
+    }
+    csHigh();
+    sram.csHigh();
+  } else {
+    writeRAMCommand(1);
+    dcHigh();
+    
+    for(uint16_t i=0; i<buffer2_size; i++){
+      SPItransfer(buffer2[i]);
+    }
+    csHigh();  
+  }
+
+  update();
+}
+
+
+/**************************************************************************/
+/*!
+    @brief Determine whether the black pixel data is the first or second buffer
+    @param index 0 or 1, for primary or secondary value
+    @param inverted Whether to invert the logical value
+*/
+/**************************************************************************/
+ void Adafruit_EPD::setBlackBuffer(int8_t index, bool inverted) {
+   if (index == 0) {
+     if (use_sram) {
+       blackbuffer_addr = buffer1_addr;
+     } else {
+       black_buffer = buffer1;
+     }
+   }
+   if (index == 1) {
+     if (use_sram) {
+       blackbuffer_addr = buffer2_addr;
+     } else {
+       black_buffer = buffer2;
+     }
+   }
+   blackInverted = inverted;
+ }
+
+/**************************************************************************/
+/*!
+    @brief Determine whether the color pixel data is the first or second buffer
+    @param index 0 or 1, for primary or secondary value
+    @param inverted Whether to invert the logical value
+*/
+/**************************************************************************/
+ void Adafruit_EPD::setColorBuffer(int8_t index, bool inverted) {
+   if (index == 0) {
+     if (use_sram) {
+       colorbuffer_addr = buffer1_addr;
+     } else {
+       color_buffer = buffer1;
+     }
+   }
+   if (index == 1) {
+     if (use_sram) {
+       colorbuffer_addr = buffer2_addr;
+     } else {
+       color_buffer = buffer2;
+     }
+   }
+   colorInverted = inverted;
+ }
+
+
+/**************************************************************************/
+/*!
+    @brief clear all data buffers
+*/
+/**************************************************************************/
+void Adafruit_EPD::clearBuffer()
+{
+  if (use_sram) {
+    if (buffer1_size != 0) {
+      if (blackInverted) {
+	sram.erase(buffer1_addr, buffer1_size, 0xFF);
+      } else {
+	sram.erase(buffer1_addr, buffer1_size, 0x00);
+      }
+    }
+    if (buffer2_size != 0) {
+      if (colorInverted) {
+	sram.erase(buffer2_addr, buffer2_size, 0xFF);
+      } else {
+	sram.erase(buffer2_addr, buffer2_size, 0x00);
+      }
+    }
+  } else {
+    if (buffer1) {
+      if (blackInverted) {
+	memset(buffer1, 0xFF, buffer1_size);
+      } else {
+	memset(buffer1, 0x00, buffer1_size);
+      }
+    }
+    if (buffer2) {
+      if (colorInverted) {
+	memset(buffer2, 0xFF, buffer2_size);
+      } else {
+	memset(buffer2, 0x00, buffer2_size);
+      }
+    }
+  }
+}
+
+
+/**************************************************************************/
+/*!
+    @brief clear the display twice to remove any spooky ghost images
+*/
+/**************************************************************************/
+void Adafruit_EPD::clearDisplay() {
+  clearBuffer();
+  display();
+  delay(100);
+  display();
+}
+
 
 /**************************************************************************/
 /*!
@@ -405,18 +650,4 @@ void Adafruit_EPD::dcLow()
 #else
   digitalWrite(dc, LOW);
 #endif
-}
-
-
-/**************************************************************************/
-/*!
-    @brief Determine whether the data for the first or second is inverted or not
-    @param colorLayer 0 for black, 1 for red (or yellow or gray)
-    @param invert Whether to invert the logical value
-*/
-/**************************************************************************/
-void Adafruit_EPD::invertColorLogic(uint8_t colorLayer, bool invert)
-{
-  if (colorLayer == 0) { blackInverted = invert; }
-  if (colorLayer == 1) { redInverted = invert; }
 }
