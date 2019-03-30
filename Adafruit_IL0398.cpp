@@ -173,6 +173,14 @@ void Adafruit_IL0398::powerDown()
 
 
 
+/**************************************************************************/
+/*!
+    @brief Send the specific command to start writing to EPD display RAM
+    @param index The index for which buffer to write (0 or 1 or tri-color displays)
+    Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the command
+*/
+/**************************************************************************/
 uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
   if (index == 0) {
     return EPD_command(EPD_RAM_BW, false);
@@ -182,6 +190,13 @@ uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
   }
 }
 
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
 void Adafruit_IL0398::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
 }

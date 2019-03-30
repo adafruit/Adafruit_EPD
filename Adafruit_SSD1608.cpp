@@ -229,10 +229,25 @@ void Adafruit_SSD1608::powerDown(void) {
   delay(100);
 }
 
+/**************************************************************************/
+/*!
+    @brief Send the specific command to start writing to EPD display RAM
+    @param index The index for which buffer to write (0 or 1 or tri-color displays)
+    Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the command
+*/
+/**************************************************************************/
 uint8_t Adafruit_SSD1608::writeRAMCommand(uint8_t index) {
   return EPD_command(SSD1608_WRITE_RAM, false);
 }
 
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
 void Adafruit_SSD1608::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
