@@ -23,7 +23,7 @@
 //Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.13" tricolor EPD */
-//Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
