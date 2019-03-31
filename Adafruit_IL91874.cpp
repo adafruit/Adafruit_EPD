@@ -252,13 +252,16 @@ void Adafruit_IL91874::powerUp()
 void Adafruit_IL91874::powerDown()
 {
   //power off
-  uint8_t buf[4];
+  uint8_t buf[1];
 
   EPD_command(IL91874_POWER_OFF);
   busy_wait();
   
-  buf[0] = 0xA5;
-  EPD_command(IL91874_DEEP_SLEEP, buf, 1);
+  // Only deep sleep if we can get out of it
+  if (_reset_pin >= 0) {
+    buf[0] = 0xA5;
+    EPD_command(IL91874_DEEP_SLEEP, buf, 1);
+  }
 }
 
 /**************************************************************************/
