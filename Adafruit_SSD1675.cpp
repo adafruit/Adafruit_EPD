@@ -241,12 +241,17 @@ void Adafruit_SSD1675::powerUp()
 /**************************************************************************/
 void Adafruit_SSD1675::powerDown()
 {
-  uint8_t buf[5];
-
-  // deep sleep
-  buf[0] = 0x01;
-  EPD_command(SSD1675_DEEP_SLEEP, buf, 1);
-  delay(100);
+  uint8_t buf[1];
+  // Only deep sleep if we can get out of it
+  if (_reset_pin >= 0) {
+    // deep sleep
+    buf[0] = 0x01;
+    EPD_command(SSD1675_DEEP_SLEEP, buf, 1);
+    delay(100);
+  } else {
+    EPD_command(SSD1675_SW_RESET);
+    busy_wait();
+  }
 }
 
 /**************************************************************************/
