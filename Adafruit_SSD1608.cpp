@@ -29,10 +29,10 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height,
 				   int8_t SRCS, int8_t MISO, int8_t BUSY)
   : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
-  if ((height % 8) != 0) {
-    height += 8 - (height % 8);
+  if ((width % 8) != 0) {
+    width += 8 - (width % 8);
   }
-  buffer1_size = width * height / 8;
+  buffer1_size = (uint16_t)width * (uint16_t)height / 8;
   buffer2_size = 0;
 
   if (SRCS >= 0) {
@@ -40,11 +40,9 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(width * height / 8);
+    buffer1 = (uint8_t *)malloc(buffer1_size);
     buffer2 = NULL;
   }
-
-  setRotation(3);
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
@@ -67,7 +65,7 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST,
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
-  buffer1_size = width * height / 8;
+  buffer1_size = (uint16_t)width * (uint16_t)height / 8;
   buffer2_size = 0;
 
   if (SRCS >= 0) {
@@ -75,11 +73,9 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(width * height / 8);
+    buffer1 = (uint8_t *)malloc(buffer1_size);
     buffer2 = buffer1;
   }
-
-  setRotation(3);
 }
 
 /**************************************************************************/
@@ -221,6 +217,7 @@ void Adafruit_SSD1608::powerUp()
     @brief wind down the display
 */
 /**************************************************************************/
+
 void Adafruit_SSD1608::powerDown(void) {
   uint8_t buf[2];
   // deep sleep

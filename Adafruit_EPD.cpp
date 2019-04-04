@@ -50,7 +50,6 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_EPD.h"
 
-//#define DEBUG 1
 
 /**************************************************************************/
 /*!
@@ -503,7 +502,7 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
   csLow();
   
   uint8_t data = SPItransfer(c);
-#ifdef DEBUG
+#ifdef EPD_DEBUG
   Serial.print("\nCommand: 0x"); Serial.print(c, HEX);
   Serial.print(" - ");
 #endif
@@ -529,16 +528,16 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
   dcHigh();
   
 
-#ifdef DEBUG
+#ifdef EPD_DEBUG
   Serial.print("Data: ");
 #endif
   for (uint16_t i=0; i<len; i++) {
     SPItransfer(buf[i]);
-#ifdef DEBUG
+#ifdef EPD_DEBUG
     Serial.print("0x"); Serial.print(buf[i], HEX); Serial.print(", ");
 #endif
   }
-#ifdef DEBUG
+#ifdef EPD_DEBUG
   Serial.println();
 #endif
   csHigh();
@@ -578,6 +577,8 @@ void Adafruit_EPD::EPD_data(uint8_t data)
 */
 /**************************************************************************/
 uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
+  //Serial.print("-> 0x"); Serial.println((byte)d, HEX);
+
   if (hwSPI) {
     if (singleByteTxns){
       uint8_t b;

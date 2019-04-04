@@ -26,6 +26,8 @@
  #include "WProgram.h"
 #endif
 
+//#define EPD_DEBUG
+
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
 #if defined(__SAM3X8E__)
@@ -143,8 +145,8 @@ class Adafruit_EPD : public Adafruit_GFX {
     
   bool blackInverted; ///< is black channel inverted
   bool colorInverted; ///< is red channel inverted
-  int buffer1_size; ///< size of the primary buffer
-  int buffer2_size; ///< size of the secondary buffer
+  uint16_t buffer1_size; ///< size of the primary buffer
+  uint16_t buffer2_size; ///< size of the secondary buffer
   uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram
   uint8_t *buffer2; ///< the pointer to the secondary buffer if using on-chip ram
   uint8_t *color_buffer;  ///< the pointer to the color buffer if using on-chip ram
