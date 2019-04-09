@@ -54,7 +54,7 @@
 /* Uncomment the following line if you are using 2.13" tricolor EPD */
 Adafruit_IL0373 epd(212, 104 ,EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
-//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Adafruit_SSD1675 epd(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 
 bool drawBitmap = false;
