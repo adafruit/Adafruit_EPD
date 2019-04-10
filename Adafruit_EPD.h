@@ -90,7 +90,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   void setBlackBuffer(int8_t index, bool inverted);
   void setColorBuffer(int8_t index, bool inverted);
   void display(void);
- 
+
  protected:
   /**************************************************************************/
   /*!
@@ -139,10 +139,10 @@ class Adafruit_EPD : public Adafruit_GFX {
     _reset_pin, ///< reset pin
     _cs_pin, ///< chip select pin
     _busy_pin; ///< busy pin
-
+  static bool _isInTransaction; ///< true if SPI bus is in trasnfer state
   bool singleByteTxns; ///< if true CS will go high after every data byte transferred
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
-    
+
   bool blackInverted; ///< is black channel inverted
   bool colorInverted; ///< is red channel inverted
   uint16_t buffer1_size; ///< size of the primary buffer
@@ -155,7 +155,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   uint16_t buffer2_addr;  ///< The SRAM address offsets for the secondary buffer
   uint16_t colorbuffer_addr;  ///< The SRAM address offsets for the color buffer
   uint16_t blackbuffer_addr;  ///< The SRAM address offsets for the black buffer
-  
+
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end=true);
   void EPD_data(const uint8_t *buf, uint16_t len);
