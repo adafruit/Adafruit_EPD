@@ -173,8 +173,8 @@ void Adafruit_SSD1675B::powerUp()
   EPD_command(SSD1675B_SET_DIGITALBLOCK, buf, 1);
 
   // driver output control
-  buf[0] = WIDTH-1;
-  buf[1] = (WIDTH-1)>>8;
+  buf[0] = 0xF9;
+  buf[1] = 0x00;
   buf[2] = 0x00;
   EPD_command(SSD1675B_DRIVER_CONTROL, buf, 3);
 
@@ -184,14 +184,14 @@ void Adafruit_SSD1675B::powerUp()
 
   // Set ram X start/end postion
   buf[0] = 0x00;
-  buf[1] = HEIGHT / 8;
+  buf[1] = 0x0F;
   EPD_command(SSD1675B_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
   buf[0] = 0x00;
   buf[1] = 0x00;
-  buf[2] = WIDTH-1;
-  buf[3] = (WIDTH-1) >> 8;
+  buf[2] = 0xF9;
+  buf[3] = 0x00;
   EPD_command(SSD1675B_SET_RAMYPOS, buf, 4);
 
   // border color
@@ -227,8 +227,8 @@ void Adafruit_SSD1675B::powerUp()
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count to max   
-  buf[0] = WIDTH-1;
-  buf[1] = (WIDTH-1)>>8;
+  buf[0] = 0xF9;
+  buf[1] = 0x00;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 
   busy_wait();
@@ -288,7 +288,7 @@ void Adafruit_SSD1675B::setRAMAddress(uint16_t x, uint16_t y) {
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
   // Set RAM Y address counter
-  buf[0] = WIDTH-1;
-  buf[1] = (WIDTH-1)>>8;
+  buf[0] = 0xF9;
+  buf[1] = 0x0;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
 }
