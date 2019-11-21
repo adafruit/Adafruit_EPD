@@ -38,7 +38,7 @@ install:
 
 script:
    - build_main_platforms
-   - build_play_platforms
+   - build_cplay_platforms
 
 # Generate and deploy documentation
 after_success:
