@@ -30,7 +30,7 @@ addons:
       - python3-setuptools
 
 before_install:
-   - source <(curl -SLs https://raw.githubusercontent.com/BenoitAnastay/travis-ci-arduino/master/install.sh)
+   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
    - pip3 install --user adafruit-nrfutil
