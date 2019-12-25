@@ -19,8 +19,6 @@ branches:
 env:
   global:
      - PRETTYNAME="Adafruit EPD Library"
-# Optional, will default to "$TRAVIS_BUILD_DIR/Doxyfile"
-#    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
 
 addons:
   apt:
@@ -34,7 +32,6 @@ before_install:
 
 install:
    - pip3 install --user adafruit-nrfutil
-   - arduino --install-library "Adafruit GFX Library"
 
 script:
    - build_main_platforms
