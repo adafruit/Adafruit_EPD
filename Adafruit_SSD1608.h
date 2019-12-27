@@ -23,11 +23,11 @@
 #define SSD1608_MASTER_ACTIVATE 0x20
 #define SSD1608_DISP_CTRL1 0x21
 #define SSD1608_DISP_CTRL2 0x22
-#define SSD1608_WRITE_RAM  0x24
-#define SSD1608_READ_RAM   0x25
-#define SSD1608_VCOM_SENSE   0x28
-#define SSD1608_VCOM_DURATION  0x29
-#define SSD1608_WRITE_VCOM  0x2C
+#define SSD1608_WRITE_RAM 0x24
+#define SSD1608_READ_RAM 0x25
+#define SSD1608_VCOM_SENSE 0x28
+#define SSD1608_VCOM_DURATION 0x29
+#define SSD1608_WRITE_VCOM 0x2C
 #define SSD1608_READ_OTP 0x2D
 #define SSD1608_WRITE_LUT 0x32
 #define SSD1608_WRITE_DUMMY 0x3A
@@ -37,8 +37,7 @@
 #define SSD1608_SET_RAMYPOS 0x45
 #define SSD1608_SET_RAMXCOUNT 0x4E
 #define SSD1608_SET_RAMYCOUNT 0x4F
-#define SSD1608_NOP  0xFF
-
+#define SSD1608_NOP 0xFF
 
 /**************************************************************************/
 /*!
@@ -46,16 +45,18 @@
 */
 /**************************************************************************/
 class Adafruit_SSD1608 : public Adafruit_EPD {
- public:
+public:
+  Adafruit_SSD1608(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                   int8_t BUSY = -1);
+  Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                   int8_t SRCS, int8_t BUSY = -1);
 
-  Adafruit_SSD1608(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
-  Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
-  
-  void begin(bool reset=true);
+  void begin(bool reset = true);
   void powerUp();
   void powerDown();
   void update();
-  
+
 protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);

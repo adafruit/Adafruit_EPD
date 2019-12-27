@@ -5,14 +5,14 @@
 #include <Arduino.h>
 
 #if defined(IL0376F_200_200)
-#define EPD_LCDWIDTH                  200
-#define EPD_LCDHEIGHT                 200
-#define EPD_BUFSIZE				   10000
-#define EPD_REDBUFSIZE				   5000
+#define EPD_LCDWIDTH 200
+#define EPD_LCDHEIGHT 200
+#define EPD_BUFSIZE 10000
+#define EPD_REDBUFSIZE 5000
 #endif
 
-#define EPD_RAM_BW					   0x10
-#define EPD_RAM_RED				   0x13
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
 
 #define IL0376F_PANEL_SETTING 0x00
 #define IL0376F_POWER_SETTING 0x01
@@ -44,28 +44,33 @@
 */
 /**************************************************************************/
 class Adafruit_IL0376F : public Adafruit_EPD {
-	public:
+public:
+#ifdef USE_EXTERNAL_SRAM
+  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                   int8_t BUSY = -1);
+  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                   int8_t SRCS, int8_t BUSY = -1);
+#else
+  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                   int8_t RST, int8_t CS, int8_t BUSY = -1);
+  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                   int8_t BUSY = -1);
+#endif
 
-	#ifdef USE_EXTERNAL_SRAM
-	  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
-	  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
-	#else
-	  Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	  Adafruit_IL0376F(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	#endif
+  void begin(bool reset = true);
+  void powerUp();
 
-	void begin(bool reset=true);
-	void powerUp();
-	
-	void drawPixel(int16_t x, int16_t y, uint16_t color);
-	
-	void display();
-	void update();
-	
-	void clearBuffer();
-	void clearDisplay();
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
+
+  void display();
+  void update();
+
+  void clearBuffer();
+  void clearDisplay();
+
 protected:
-	void busy_wait();
+  void busy_wait();
 };
 
 #endif

@@ -1,24 +1,24 @@
-#include "Adafruit_EPD.h"
 #include "Adafruit_SSD1675.h"
+#include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
 
-const unsigned char LUT_DATA[]= {
-  0x80,0x60,0x40,0x00,0x00,0x00,0x00,             //LUT0: BB:     VS 0 ~7
-  0x10,0x60,0x20,0x00,0x00,0x00,0x00,             //LUT1: BW:     VS 0 ~7
-  0x80,0x60,0x40,0x00,0x00,0x00,0x00,             //LUT2: WB:     VS 0 ~7
-  0x10,0x60,0x20,0x00,0x00,0x00,0x00,             //LUT3: WW:     VS 0 ~7
-  0x00,0x00,0x00,0x00,0x00,0x00,0x00,             //LUT4: VCOM:   VS 0 ~7
-  
-  0x03,0x03,0x00,0x00,0x02,                       // TP0 A~D RP0
-  0x09,0x09,0x00,0x00,0x02,                       // TP1 A~D RP1
-  0x03,0x03,0x00,0x00,0x02,                       // TP2 A~D RP2
-  0x00,0x00,0x00,0x00,0x00,                       // TP3 A~D RP3
-  0x00,0x00,0x00,0x00,0x00,                       // TP4 A~D RP4
-  0x00,0x00,0x00,0x00,0x00,                       // TP5 A~D RP5
-  0x00,0x00,0x00,0x00,0x00,                       // TP6 A~D RP6
-  
-  0x15,0x41,0xA8,0x32,0x30,0x0A,
+const unsigned char LUT_DATA[] = {
+    0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00, // LUT0: BB:     VS 0 ~7
+    0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00, // LUT1: BW:     VS 0 ~7
+    0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00, // LUT2: WB:     VS 0 ~7
+    0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00, // LUT3: WW:     VS 0 ~7
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // LUT4: VCOM:   VS 0 ~7
+
+    0x03, 0x03, 0x00, 0x00, 0x02, // TP0 A~D RP0
+    0x09, 0x09, 0x00, 0x00, 0x02, // TP1 A~D RP1
+    0x03, 0x03, 0x00, 0x00, 0x02, // TP2 A~D RP2
+    0x00, 0x00, 0x00, 0x00, 0x00, // TP3 A~D RP3
+    0x00, 0x00, 0x00, 0x00, 0x00, // TP4 A~D RP4
+    0x00, 0x00, 0x00, 0x00, 0x00, // TP5 A~D RP5
+    0x00, 0x00, 0x00, 0x00, 0x00, // TP6 A~D RP6
+
+    0x15, 0x41, 0xA8, 0x32, 0x30, 0x0A,
 };
 
 /**************************************************************************/
@@ -36,11 +36,11 @@ const unsigned char LUT_DATA[]= {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, 
-				   int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, 
-				   int8_t SRCS, int8_t MISO, int8_t BUSY)
-  : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY)
-{
+Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t SID,
+                                   int8_t SCLK, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t MISO,
+                                   int8_t BUSY)
+    : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -73,8 +73,9 @@ Adafruit_SSD1675::Adafruit_SSD1675(int width, int height,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY)
-  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t BUSY)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -98,10 +99,9 @@ Adafruit_SSD1675::Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_SSD1675::busy_wait(void)
-{
+void Adafruit_SSD1675::busy_wait(void) {
   if (_busy_pin >= 0) {
-    while(digitalRead(_busy_pin)) { //wait for busy low
+    while (digitalRead(_busy_pin)) { // wait for busy low
       delay(10);
     }
   } else {
@@ -115,23 +115,20 @@ void Adafruit_SSD1675::busy_wait(void)
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_SSD1675::begin(bool reset)
-{
+void Adafruit_SSD1675::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true);  // black defaults to inverted
-  setColorBuffer(0, true);  // no secondary buffer, so we'll just reuse index 0
+  setBlackBuffer(0, true); // black defaults to inverted
+  setColorBuffer(0, true); // no secondary buffer, so we'll just reuse index 0
 
   powerDown();
 }
-
 
 /**************************************************************************/
 /*!
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_SSD1675::update()
-{
+void Adafruit_SSD1675::update() {
   uint8_t buf[1];
 
   // display update sequence
@@ -151,8 +148,7 @@ void Adafruit_SSD1675::update()
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_SSD1675::powerUp()
-{
+void Adafruit_SSD1675::powerUp() {
   uint8_t buf[5];
 
   hardwareReset();
@@ -172,7 +168,7 @@ void Adafruit_SSD1675::powerUp()
   EPD_command(SSD1675_SET_DIGITALBLOCK, buf, 1);
 
   // driver output control
-  buf[0] = 0xFA;   // 250-1
+  buf[0] = 0xFA; // 250-1
   buf[1] = 0x01;
   buf[2] = 0x00;
   EPD_command(SSD1675_DRIVER_CONTROL, buf, 3);
@@ -183,11 +179,11 @@ void Adafruit_SSD1675::powerUp()
 
   // Set ram X start/end postion
   buf[0] = 0x00;
-  buf[1] = 0x0F;  // (15+1) * 8 = 128
+  buf[1] = 0x0F; // (15+1) * 8 = 128
   EPD_command(SSD1675_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[0] = 0x00;  // 0xF9-->(249+1)=250
+  buf[0] = 0x00; // 0xF9-->(249+1)=250
   buf[1] = 0x00;
   buf[2] = 0xF9;
   buf[3] = 0x00;
@@ -210,7 +206,7 @@ void Adafruit_SSD1675::powerUp()
   buf[1] = LUT_DATA[72];
   buf[2] = LUT_DATA[73];
   EPD_command(SSD1675_SOURCE_VOLTAGE, buf, 3);
-    
+
   // Set dummy line period
   buf[0] = LUT_DATA[74];
   EPD_command(SSD1675_WRITE_DUMMY, buf, 1);
@@ -225,7 +221,7 @@ void Adafruit_SSD1675::powerUp()
   buf[0] = 0;
   EPD_command(SSD1675_SET_RAMXCOUNT, buf, 1);
 
-  // set RAM y address count to 0X127;   
+  // set RAM y address count to 0X127;
   buf[0] = 0xF9;
   buf[1] = 0;
   EPD_command(SSD1675_SET_RAMYCOUNT, buf, 2);
@@ -233,14 +229,12 @@ void Adafruit_SSD1675::powerUp()
   busy_wait();
 }
 
-
 /**************************************************************************/
 /*!
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_SSD1675::powerDown()
-{
+void Adafruit_SSD1675::powerDown() {
   uint8_t buf[1];
   // Only deep sleep if we can get out of it
   if (_reset_pin >= 0) {
@@ -257,9 +251,10 @@ void Adafruit_SSD1675::powerDown()
 /**************************************************************************/
 /*!
     @brief Send the specific command to start writing to EPD display RAM
-    @param index The index for which buffer to write (0 or 1 or tri-color displays)
-    Ignored for monochrome displays.
-    @returns The byte that is read from SPI at the same time as sending the command
+    @param index The index for which buffer to write (0 or 1 or tri-color
+   displays) Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the
+   command
 */
 /**************************************************************************/
 uint8_t Adafruit_SSD1675::writeRAMCommand(uint8_t index) {
