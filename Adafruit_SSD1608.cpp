@@ -1,13 +1,12 @@
-#include "Adafruit_EPD.h"
 #include "Adafruit_SSD1608.h"
+#include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
 
-const unsigned char LUT_DATA[30]= {
-  0x02, 0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22, 0x66, 0x69, 
-  0x69, 0x59, 0x58, 0x99, 0x99, 0x88, 0x00, 0x00, 0x00, 0x00, 
-  0xF8, 0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00
-};
+const unsigned char LUT_DATA[30] = {
+    0x02, 0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22, 0x66, 0x69,
+    0x69, 0x59, 0x58, 0x99, 0x99, 0x88, 0x00, 0x00, 0x00, 0x00,
+    0xF8, 0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00};
 
 /**************************************************************************/
 /*!
@@ -24,10 +23,11 @@ const unsigned char LUT_DATA[30]= {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, 
-				   int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, 
-				   int8_t SRCS, int8_t MISO, int8_t BUSY)
-  : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
+Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t SID,
+                                   int8_t SCLK, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t MISO,
+                                   int8_t BUSY)
+    : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
@@ -59,8 +59,9 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY)
-  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t BUSY)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
@@ -83,10 +84,9 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_SSD1608::busy_wait(void)
-{
+void Adafruit_SSD1608::busy_wait(void) {
   if (_busy_pin >= 0) {
-    while(digitalRead(_busy_pin)) { //wait for busy low
+    while (digitalRead(_busy_pin)) { // wait for busy low
       delay(10);
     }
   } else {
@@ -100,24 +100,21 @@ void Adafruit_SSD1608::busy_wait(void)
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_SSD1608::begin(bool reset)
-{
+void Adafruit_SSD1608::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true);  // black defaults to inverted
-  setColorBuffer(0, true);  // no secondary buffer, so we'll just reuse index 0
-  
+  setBlackBuffer(0, true); // black defaults to inverted
+  setColorBuffer(0, true); // no secondary buffer, so we'll just reuse index 0
+
   delay(100);
   powerDown();
 }
-
 
 /**************************************************************************/
 /*!
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_SSD1608::update()
-{
+void Adafruit_SSD1608::update() {
   uint8_t buf[1];
 
   // display update sequence
@@ -134,8 +131,7 @@ void Adafruit_SSD1608::update()
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_SSD1608::powerUp()
-{
+void Adafruit_SSD1608::powerUp() {
   uint8_t buf[5];
 
   hardwareReset();
@@ -151,7 +147,7 @@ void Adafruit_SSD1608::powerUp()
   buf[1] = (HEIGHT - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1608_DRIVER_CONTROL, buf, 3);
-    
+
   // Set dummy line period
   buf[0] = 0x1B;
   EPD_command(SSD1608_WRITE_DUMMY, buf, 1);
@@ -166,7 +162,7 @@ void Adafruit_SSD1608::powerUp()
 
   // Set ram X start/end postion
   buf[0] = 0x00;
-  buf[1] = WIDTH/8 - 1;
+  buf[1] = WIDTH / 8 - 1;
   EPD_command(SSD1608_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
@@ -181,7 +177,6 @@ void Adafruit_SSD1608::powerUp()
   EPD_command(SSD1608_WRITE_VCOM, buf, 1);
 
   EPD_command(SSD1608_WRITE_LUT, LUT_DATA, 30);
-
 
   /*
   // border color
@@ -204,7 +199,7 @@ void Adafruit_SSD1608::powerUp()
   buf[0] = 0;
   EPD_command(SSD1608_SET_RAMXCOUNT, buf, 1);
 
-  // set RAM y address count;   
+  // set RAM y address count;
   buf[0] = HEIGHT - 1;
   buf[1] = (HEIGHT - 1) >> 8;
   EPD_command(SSD1608_SET_RAMYCOUNT, buf, 2);
@@ -229,9 +224,10 @@ void Adafruit_SSD1608::powerDown(void) {
 /**************************************************************************/
 /*!
     @brief Send the specific command to start writing to EPD display RAM
-    @param index The index for which buffer to write (0 or 1 or tri-color displays)
-    Ignored for monochrome displays.
-    @returns The byte that is read from SPI at the same time as sending the command
+    @param index The index for which buffer to write (0 or 1 or tri-color
+   displays) Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the
+   command
 */
 /**************************************************************************/
 uint8_t Adafruit_SSD1608::writeRAMCommand(uint8_t index) {

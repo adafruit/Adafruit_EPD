@@ -1,5 +1,5 @@
-#include "Adafruit_EPD.h"
 #include "Adafruit_IL0398.h"
+#include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
 
@@ -18,10 +18,10 @@
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, 
-				 int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, 
-				 int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY) : 
-  Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
+                                 int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+                                 int8_t MISO, int8_t BUSY)
+    : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
@@ -50,10 +50,9 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, 
-				 int8_t DC, int8_t RST, 
-				 int8_t CS, int8_t SRCS, int8_t BUSY) : 
-  Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST,
+                                 int8_t CS, int8_t SRCS, int8_t BUSY)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
 
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
@@ -74,18 +73,16 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_IL0398::busy_wait(void)
-{
+void Adafruit_IL0398::busy_wait(void) {
   if (_busy_pin > -1) {
     do {
       EPD_command(IL0398_GETSTATUS);
       delay(10);
-    } while (digitalRead(_busy_pin)); //wait for busy low
+    } while (digitalRead(_busy_pin)); // wait for busy low
     delay(200);
   } else {
     delay(BUSY_WAIT);
   }
-
 }
 
 /**************************************************************************/
@@ -94,11 +91,10 @@ void Adafruit_IL0398::busy_wait(void)
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_IL0398::begin(bool reset)
-{
+void Adafruit_IL0398::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true);  // black defaults to inverted
-  setColorBuffer(1, true);  // red defaults to inverted  
+  setBlackBuffer(0, true); // black defaults to inverted
+  setColorBuffer(1, true); // red defaults to inverted
 
   setRotation(1);
   powerDown();
@@ -109,8 +105,7 @@ void Adafruit_IL0398::begin(bool reset)
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_IL0398::update()
-{
+void Adafruit_IL0398::update() {
   EPD_command(IL0398_DISPLAY_REFRESH);
   delay(100);
 
@@ -125,8 +120,7 @@ void Adafruit_IL0398::update()
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_IL0398::powerUp()
-{
+void Adafruit_IL0398::powerUp() {
   uint8_t buf[4];
 
   hardwareReset();
@@ -141,13 +135,13 @@ void Adafruit_IL0398::powerUp()
 
   buf[0] = 0x0F;
   EPD_command(IL0398_PANEL_SETTING, buf, 1);
-  
+
   buf[0] = (HEIGHT >> 8) & 0xFF;
   buf[1] = HEIGHT & 0xFF;
   buf[2] = (WIDTH >> 8) & 0xFF;
   buf[3] = WIDTH & 0xFF;
   EPD_command(IL0398_RESOLUTION, buf, 4);
-  
+
   delay(20);
 }
 
@@ -156,8 +150,7 @@ void Adafruit_IL0398::powerUp()
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_IL0398::powerDown()
-{
+void Adafruit_IL0398::powerDown() {
   uint8_t buf[4];
 
   // power off
@@ -170,15 +163,13 @@ void Adafruit_IL0398::powerDown()
   delay(100);
 }
 
-
-
-
 /**************************************************************************/
 /*!
     @brief Send the specific command to start writing to EPD display RAM
-    @param index The index for which buffer to write (0 or 1 or tri-color displays)
-    Ignored for monochrome displays.
-    @returns The byte that is read from SPI at the same time as sending the command
+    @param index The index for which buffer to write (0 or 1 or tri-color
+   displays) Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the
+   command
 */
 /**************************************************************************/
 uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {

@@ -35,18 +35,20 @@
 #define SSD1675B_SET_ANALOGBLOCK 0x74
 #define SSD1675B_SET_DIGITALBLOCK 0x7E
 
-
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with SSD1675 EPD drivers
 */
 /**************************************************************************/
 class Adafruit_SSD1675B : public Adafruit_EPD {
- public:  
-  Adafruit_SSD1675B(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
-  Adafruit_SSD1675B(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
+public:
+  Adafruit_SSD1675B(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                    int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                    int8_t BUSY = -1);
+  Adafruit_SSD1675B(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                    int8_t SRCS, int8_t BUSY = -1);
 
-  void begin(bool reset=true);
+  void begin(bool reset = true);
   void powerUp();
   void update();
   void powerDown();

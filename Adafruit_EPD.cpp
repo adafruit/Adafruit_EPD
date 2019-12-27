@@ -18,9 +18,10 @@
  *
  * @section dependencies Dependencies
  *
- * This library depends on <a href="https://github.com/adafruit/Adafruit-GFX-Library">
- * Adafruit_GFX</a> being present on your system. Please make sure you have
- * installed the latest version before using this library.
+ * This library depends on <a
+ * href="https://github.com/adafruit/Adafruit-GFX-Library"> Adafruit_GFX</a>
+ * being present on your system. Please make sure you have installed the latest
+ * version before using this library.
  *
  * @section author Author
  *
@@ -33,22 +34,24 @@
  */
 
 #ifdef __AVR__
-  #include <avr/pgmspace.h>
+#include <avr/pgmspace.h>
 #elif defined(ESP8266) || defined(ESP32)
- #include <pgmspace.h>
+#include <pgmspace.h>
 #else
- #define pgm_read_byte(addr) (*(const unsigned char *)(addr)) ///< read bytes from program memory
+#define pgm_read_byte(addr)                                                    \
+  (*(const unsigned char *)(addr)) ///< read bytes from program memory
 #endif
 
-#if !defined(__ARM_ARCH) && !defined(ENERGIA) && !defined(ESP8266) && !defined(ESP32) && !defined(__arc__)
- #include <util/delay.h>
+#if !defined(__ARM_ARCH) && !defined(ENERGIA) && !defined(ESP8266) &&          \
+    !defined(ESP32) && !defined(__arc__)
+#include <util/delay.h>
 #endif
 
 #include <stdlib.h>
 
-#include <SPI.h>
-#include "Adafruit_GFX.h"
 #include "Adafruit_EPD.h"
+#include "Adafruit_GFX.h"
+#include <SPI.h>
 
 bool Adafruit_EPD::_isInTransaction = false;
 
@@ -67,8 +70,10 @@ bool Adafruit_EPD::_isInTransaction = false;
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi, int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t spi_miso, int8_t BUSY) : Adafruit_GFX(width, height),
-sram(spi_mosi, spi_miso, spi_clock, SRCS) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
+                           int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS,
+                           int8_t SRCS, int8_t spi_miso, int8_t BUSY)
+    : Adafruit_GFX(width, height), sram(spi_mosi, spi_miso, spi_clock, SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
   _dc_pin = DC;
@@ -101,8 +106,9 @@ sram(spi_mosi, spi_miso, spi_clock, SRCS) {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY) : Adafruit_GFX(width, height),
-sram(SRCS) {
+Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
+                           int8_t CS, int8_t SRCS, int8_t BUSY)
+    : Adafruit_GFX(width, height), sram(SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
   _dc_pin = DC;
@@ -125,8 +131,7 @@ sram(SRCS) {
     @brief default destructor
 */
 /**************************************************************************/
-Adafruit_EPD::~Adafruit_EPD()
-{
+Adafruit_EPD::~Adafruit_EPD() {
   if (buffer1 != NULL) {
     free(buffer1);
     buffer1 = NULL;
@@ -144,8 +149,8 @@ Adafruit_EPD::~Adafruit_EPD()
 */
 /**************************************************************************/
 void Adafruit_EPD::begin(bool reset) {
-  setBlackBuffer(0, true);   // black defaults to inverted
-  setColorBuffer(1, false);  // red defaults to not inverted
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, false); // red defaults to not inverted
 
   if (use_sram) {
     sram.begin();
@@ -156,28 +161,28 @@ void Adafruit_EPD::begin(bool reset) {
   pinMode(_dc_pin, OUTPUT);
   pinMode(_cs_pin, OUTPUT);
 #ifdef HAVE_PORTREG
-  csport      = portOutputRegister(digitalPinToPort(_cs_pin));
-  cspinmask   = digitalPinToBitMask(_cs_pin);
-  dcport      = portOutputRegister(digitalPinToPort(_dc_pin));
-  dcpinmask   = digitalPinToBitMask(_dc_pin);
+  csport = portOutputRegister(digitalPinToPort(_cs_pin));
+  cspinmask = digitalPinToBitMask(_cs_pin);
+  dcport = portOutputRegister(digitalPinToPort(_dc_pin));
+  dcpinmask = digitalPinToBitMask(_dc_pin);
 #endif
 
   csHigh();
 
-  if (!hwSPI){
+  if (!hwSPI) {
     // set pins for software-SPI
     pinMode(_sid_pin, OUTPUT);
     pinMode(_sclk_pin, OUTPUT);
 #ifdef HAVE_PORTREG
-    clkport     = portOutputRegister(digitalPinToPort(_sclk_pin));
-    clkpinmask  = digitalPinToBitMask(_sclk_pin);
-    mosiport    = portOutputRegister(digitalPinToPort(_sid_pin));
+    clkport = portOutputRegister(digitalPinToPort(_sclk_pin));
+    clkpinmask = digitalPinToBitMask(_sclk_pin);
+    mosiport = portOutputRegister(digitalPinToPort(_sid_pin));
     mosipinmask = digitalPinToBitMask(_sid_pin);
 #endif
   } else {
     SPI.begin();
 #ifndef SPI_HAS_TRANSACTION
-    SPI.setClockDivider (4);
+    SPI.setClockDivider(4);
 #endif
   }
 
@@ -215,9 +220,9 @@ void Adafruit_EPD::hardwareReset(void) {
 /**************************************************************************/
 /*!
     @brief draw a single pixel on the screen
-	@param x the x axis position
-	@param y the y axis position
-	@param color the color of the pixel
+        @param x the x axis position
+        @param y the y axis position
+        @param color the color of the pixel
 */
 /**************************************************************************/
 void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -247,7 +252,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     y = _HEIGHT - y - 1;
     break;
   }
-  uint16_t addr = ( (uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y)/8;
+  uint16_t addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
   uint8_t c;
   if (use_sram) {
     if ((color == EPD_RED) || (color == EPD_GRAY)) {
@@ -258,7 +263,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     c = sram.read8(addr);
     pBuf = &c;
   } else {
-    if((color == EPD_RED) || (color == EPD_GRAY)) {
+    if ((color == EPD_RED) || (color == EPD_GRAY)) {
       pBuf = color_buffer + addr;
     } else {
       pBuf = black_buffer + addr;
@@ -267,12 +272,12 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   if (((color == EPD_RED || color == EPD_GRAY) && colorInverted) ||
       ((color == EPD_BLACK) && blackInverted)) {
-    *pBuf &= ~(1 << (7 - y%8));
+    *pBuf &= ~(1 << (7 - y % 8));
   } else if (((color == EPD_RED || color == EPD_GRAY) && !colorInverted) ||
-	     ((color == EPD_BLACK) && !blackInverted)) {
-    *pBuf |= (1 << (7 - y%8));
+             ((color == EPD_BLACK) && !blackInverted)) {
+    *pBuf |= (1 << (7 - y % 8));
   } else if (color == EPD_INVERSE) {
-    *pBuf ^= (1 << (7 - y%8));
+    *pBuf ^= (1 << (7 - y % 8));
   }
 
   if (use_sram) {
@@ -285,8 +290,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     @brief Transfer the data stored in the buffer(s) to the display
 */
 /**************************************************************************/
-void Adafruit_EPD::display(void)
-{
+void Adafruit_EPD::display(void) {
   uint8_t c;
 
   powerUp();
@@ -307,18 +311,18 @@ void Adafruit_EPD::display(void)
     c = writeRAMCommand(0);
 
     dcHigh();
-    for(uint16_t i=0; i<buffer1_size; i++){
+    for (uint16_t i = 0; i < buffer1_size; i++) {
       c = SPItransfer(c);
-      //Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-      //if (i % 32 == 31) Serial.println();
+      // Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+      // if (i % 32 == 31) Serial.println();
     }
     csHigh();
     sram.csHigh();
   } else {
-    //write image
+    // write image
     writeRAMCommand(0);
     dcHigh();
-    for(uint16_t i=0; i<buffer1_size; i++) {
+    for (uint16_t i = 0; i < buffer1_size; i++) {
       SPItransfer(buffer1[i]);
     }
     csHigh();
@@ -348,7 +352,7 @@ void Adafruit_EPD::display(void)
     c = writeRAMCommand(1);
 
     dcHigh();
-    for(uint16_t i=0; i<buffer2_size; i++){
+    for (uint16_t i = 0; i < buffer2_size; i++) {
       c = SPItransfer(c);
     }
     csHigh();
@@ -357,7 +361,7 @@ void Adafruit_EPD::display(void)
     writeRAMCommand(1);
     dcHigh();
 
-    for(uint16_t i=0; i<buffer2_size; i++){
+    for (uint16_t i = 0; i < buffer2_size; i++) {
       SPItransfer(buffer2[i]);
     }
     csHigh();
@@ -368,7 +372,6 @@ void Adafruit_EPD::display(void)
   powerDown();
 }
 
-
 /**************************************************************************/
 /*!
     @brief Determine whether the black pixel data is the first or second buffer
@@ -376,23 +379,23 @@ void Adafruit_EPD::display(void)
     @param inverted Whether to invert the logical value
 */
 /**************************************************************************/
- void Adafruit_EPD::setBlackBuffer(int8_t index, bool inverted) {
-   if (index == 0) {
-     if (use_sram) {
-       blackbuffer_addr = buffer1_addr;
-     } else {
-       black_buffer = buffer1;
-     }
-   }
-   if (index == 1) {
-     if (use_sram) {
-       blackbuffer_addr = buffer2_addr;
-     } else {
-       black_buffer = buffer2;
-     }
-   }
-   blackInverted = inverted;
- }
+void Adafruit_EPD::setBlackBuffer(int8_t index, bool inverted) {
+  if (index == 0) {
+    if (use_sram) {
+      blackbuffer_addr = buffer1_addr;
+    } else {
+      black_buffer = buffer1;
+    }
+  }
+  if (index == 1) {
+    if (use_sram) {
+      blackbuffer_addr = buffer2_addr;
+    } else {
+      black_buffer = buffer2;
+    }
+  }
+  blackInverted = inverted;
+}
 
 /**************************************************************************/
 /*!
@@ -401,65 +404,62 @@ void Adafruit_EPD::display(void)
     @param inverted Whether to invert the logical value
 */
 /**************************************************************************/
- void Adafruit_EPD::setColorBuffer(int8_t index, bool inverted) {
-   if (index == 0) {
-     if (use_sram) {
-       colorbuffer_addr = buffer1_addr;
-     } else {
-       color_buffer = buffer1;
-     }
-   }
-   if (index == 1) {
-     if (use_sram) {
-       colorbuffer_addr = buffer2_addr;
-     } else {
-       color_buffer = buffer2;
-     }
-   }
-   colorInverted = inverted;
- }
-
+void Adafruit_EPD::setColorBuffer(int8_t index, bool inverted) {
+  if (index == 0) {
+    if (use_sram) {
+      colorbuffer_addr = buffer1_addr;
+    } else {
+      color_buffer = buffer1;
+    }
+  }
+  if (index == 1) {
+    if (use_sram) {
+      colorbuffer_addr = buffer2_addr;
+    } else {
+      color_buffer = buffer2;
+    }
+  }
+  colorInverted = inverted;
+}
 
 /**************************************************************************/
 /*!
     @brief clear all data buffers
 */
 /**************************************************************************/
-void Adafruit_EPD::clearBuffer()
-{
+void Adafruit_EPD::clearBuffer() {
   if (use_sram) {
     if (buffer1_size != 0) {
       if (blackInverted) {
-	sram.erase(buffer1_addr, buffer1_size, 0xFF);
+        sram.erase(buffer1_addr, buffer1_size, 0xFF);
       } else {
-	sram.erase(buffer1_addr, buffer1_size, 0x00);
+        sram.erase(buffer1_addr, buffer1_size, 0x00);
       }
     }
     if (buffer2_size != 0) {
       if (colorInverted) {
-	sram.erase(buffer2_addr, buffer2_size, 0xFF);
+        sram.erase(buffer2_addr, buffer2_size, 0xFF);
       } else {
-	sram.erase(buffer2_addr, buffer2_size, 0x00);
+        sram.erase(buffer2_addr, buffer2_size, 0x00);
       }
     }
   } else {
     if (buffer1) {
       if (blackInverted) {
-	memset(buffer1, 0xFF, buffer1_size);
+        memset(buffer1, 0xFF, buffer1_size);
       } else {
-	memset(buffer1, 0x00, buffer1_size);
+        memset(buffer1, 0x00, buffer1_size);
       }
     }
     if (buffer2) {
       if (colorInverted) {
-	memset(buffer2, 0xFF, buffer2_size);
+        memset(buffer2, 0xFF, buffer2_size);
       } else {
-	memset(buffer2, 0x00, buffer2_size);
+        memset(buffer2, 0x00, buffer2_size);
       }
     }
   }
 }
-
 
 /**************************************************************************/
 /*!
@@ -473,7 +473,6 @@ void Adafruit_EPD::clearDisplay() {
   display();
 }
 
-
 /**************************************************************************/
 /*!
     @brief send an EPD command followed by data
@@ -482,8 +481,7 @@ void Adafruit_EPD::clearDisplay() {
     @param len the length of the data buffer
 */
 /**************************************************************************/
-void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)
-{
+void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len) {
   EPD_command(c, false);
   EPD_data(buf, len);
 }
@@ -492,7 +490,8 @@ void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len)
 /*!
     @brief send an EPD command with no data
     @param c the command to send
-    @param end if true the cs pin will be pulled high following the transaction. If false the cs pin will remain low.
+    @param end if true the cs pin will be pulled high following the transaction.
+   If false the cs pin will remain low.
     @returns the data byte read over the SPI bus
 */
 /**************************************************************************/
@@ -504,7 +503,8 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 
   uint8_t data = SPItransfer(c);
 #ifdef EPD_DEBUG
-  Serial.print("\nCommand: 0x"); Serial.print(c, HEX);
+  Serial.print("\nCommand: 0x");
+  Serial.print(c, HEX);
   Serial.print(" - ");
 #endif
 
@@ -515,7 +515,6 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
   return data;
 }
 
-
 /**************************************************************************/
 /*!
     @brief send data to the display
@@ -523,19 +522,19 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
     @param len the length of the data buffer
 */
 /**************************************************************************/
-void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
-{
+void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
   // SPI
   dcHigh();
-
 
 #ifdef EPD_DEBUG
   Serial.print("Data: ");
 #endif
-  for (uint16_t i=0; i<len; i++) {
+  for (uint16_t i = 0; i < len; i++) {
     SPItransfer(buf[i]);
 #ifdef EPD_DEBUG
-    Serial.print("0x"); Serial.print(buf[i], HEX); Serial.print(", ");
+    Serial.print("0x");
+    Serial.print(buf[i], HEX);
+    Serial.print(", ");
 #endif
   }
 #ifdef EPD_DEBUG
@@ -544,31 +543,27 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)
   csHigh();
 }
 
-
-
 /**************************************************************************/
 /*!
     @brief send data to the display
     @param data the data byte to send
 */
 /**************************************************************************/
-void Adafruit_EPD::EPD_data(uint8_t data)
-{
+void Adafruit_EPD::EPD_data(uint8_t data) {
   // SPI
   csHigh();
   dcHigh();
   csLow();
 
-
 #ifdef DEBUG
   Serial.print("Data: ");
-  Serial.print("0x"); Serial.println(data, HEX);
+  Serial.print("0x");
+  Serial.println(data, HEX);
 #endif
   SPItransfer(data);
 
   csHigh();
 }
-
 
 /**************************************************************************/
 /*!
@@ -578,30 +573,33 @@ void Adafruit_EPD::EPD_data(uint8_t data)
 */
 /**************************************************************************/
 uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
-  //Serial.print("-> 0x"); Serial.println((byte)d, HEX);
+  // Serial.print("-> 0x"); Serial.println((byte)d, HEX);
 
   if (hwSPI) {
-    if (singleByteTxns){
+    if (singleByteTxns) {
       uint8_t b;
       csLow();
       b = SPI.transfer(d);
       csHigh();
       return b;
-    }
-    else
+    } else
       return SPI.transfer(d);
   } else {
-    //TODO: return read data for software SPI
-    for(uint8_t bit = 0x80; bit; bit >>= 1) {
+    // TODO: return read data for software SPI
+    for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
       *clkport &= ~clkpinmask;
-      if(d & bit) *mosiport |=  mosipinmask;
-      else        *mosiport &= ~mosipinmask;
-      *clkport |=  clkpinmask;
+      if (d & bit)
+        *mosiport |= mosipinmask;
+      else
+        *mosiport &= ~mosipinmask;
+      *clkport |= clkpinmask;
 #else
       digitalWrite(_sclk_pin, LOW);
-      if(d & bit) digitalWrite(_sid_pin, HIGH);
-      else        digitalWrite(_sid_pin, LOW);
+      if (d & bit)
+        digitalWrite(_sid_pin, HIGH);
+      else
+        digitalWrite(_sid_pin, LOW);
       digitalWrite(_sclk_pin, HIGH);
 #endif
     }
@@ -614,8 +612,7 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
     @brief set chip select pin high
 */
 /**************************************************************************/
-void Adafruit_EPD::csHigh()
-{
+void Adafruit_EPD::csHigh() {
 #ifdef SPI_HAS_TRANSACTION
   SPI.endTransaction();
   _isInTransaction = false;
@@ -632,8 +629,7 @@ void Adafruit_EPD::csHigh()
     @brief set chip select pin low
 */
 /**************************************************************************/
-void Adafruit_EPD::csLow()
-{
+void Adafruit_EPD::csLow() {
 #ifdef SPI_HAS_TRANSACTION
   if (!_isInTransaction) {
     SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
@@ -652,8 +648,7 @@ void Adafruit_EPD::csLow()
     @brief set data/command pin high
 */
 /**************************************************************************/
-void Adafruit_EPD::dcHigh()
-{
+void Adafruit_EPD::dcHigh() {
 #ifdef HAVE_PORTREG
   *dcport |= dcpinmask;
 #else
@@ -666,8 +661,7 @@ void Adafruit_EPD::dcHigh()
     @brief set data/command pin low
 */
 /**************************************************************************/
-void Adafruit_EPD::dcLow()
-{
+void Adafruit_EPD::dcLow() {
 #ifdef HAVE_PORTREG
   *dcport &= ~dcpinmask;
 #else
