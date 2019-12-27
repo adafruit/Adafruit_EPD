@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Adafruit EPD Library: Adafruit_EPD.h File Reference</title>
+<title>Adafruit E-Paper Display Library: Adafruit_EPD.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Adafruit EPD Library
+   <div id="projectname">Adafruit E-Paper Display Library
    </div>
   </td>
  </tr>
@@ -69,11 +69,11 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;WProgram.h&quot;</code><br />
 <code>#include &quot;Adafruit_MCPSRAM.h&quot;</code><br />
-<code>#include &lt;SPI.h&gt;</code><br />
 <code>#include &lt;Adafruit_GFX.h&gt;</code><br />
+<code>#include &lt;SPI.h&gt;</code><br />
+<code>#include &quot;Adafruit_IL0373.h&quot;</code><br />
 <code>#include &quot;Adafruit_IL0398.h&quot;</code><br />
 <code>#include &quot;Adafruit_IL91874.h&quot;</code><br />
-<code>#include &quot;Adafruit_IL0373.h&quot;</code><br />
 <code>#include &quot;Adafruit_SSD1608.h&quot;</code><br />
 <code>#include &quot;Adafruit_SSD1675.h&quot;</code><br />
 <code>#include &quot;Adafruit_SSD1675B.h&quot;</code><br />
@@ -92,9 +92,8 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___e_p_d_8h.html#a1804fc89cda412cbe976824dd97fcefb">RAMBUFSIZE</a>&#160;&#160;&#160;64</td></tr>
 <tr class="memdesc:a1804fc89cda412cbe976824dd97fcefb"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the ram buffer <br /></td></tr>
 <tr class="separator:a1804fc89cda412cbe976824dd97fcefb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55b890555e75cae7230c021b7c9e95a4"><td class="memItemLeft" align="right" valign="top"><a id="a55b890555e75cae7230c021b7c9e95a4"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___e_p_d_8h.html#a55b890555e75cae7230c021b7c9e95a4">EPD_swap</a>(a,  b)&#160;&#160;&#160;{ int16_t t = a; a = b; b = t; }</td></tr>
-<tr class="memdesc:a55b890555e75cae7230c021b7c9e95a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple swap function <br /></td></tr>
+<tr class="memitem:a55b890555e75cae7230c021b7c9e95a4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___e_p_d_8h.html#a55b890555e75cae7230c021b7c9e95a4">EPD_swap</a>(a,  b)</td></tr>
+<tr class="memdesc:a55b890555e75cae7230c021b7c9e95a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple swap function  <a href="#a55b890555e75cae7230c021b7c9e95a4">More...</a><br /></td></tr>
 <tr class="separator:a55b890555e75cae7230c021b7c9e95a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -130,7 +129,38 @@ Enumerations</h2></td></tr>
 <p>Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!</p>
 <p>Written by Dean Miller for Adafruit Industries.</p>
 <p>BSD license, all text here must be included in any redistribution. </p>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a55b890555e75cae7230c021b7c9e95a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b890555e75cae7230c021b7c9e95a4">&#9670;&nbsp;</a></span>EPD_swap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EPD_swap</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">a, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">b&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">{                                                                            \</div><div class="line">    int16_t t = a;                                                             \</div><div class="line">    a = b;                                                                     \</div><div class="line">    b = t;                                                                     \</div><div class="line">  }</div></div><!-- fragment -->
+<p>simple swap function </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a06fc87d81c62e9abb8790b6e5713c55b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a06fc87d81c62e9abb8790b6e5713c55b">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
