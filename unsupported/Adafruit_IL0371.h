@@ -37,25 +37,30 @@
 */
 /**************************************************************************/
 class Adafruit_IL0371 : public Adafruit_EPD {
-	public:
-	#ifdef USE_EXTERNAL_SRAM
-	  Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1);
-	  Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY = -1);
-	#else
-	  Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	  Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t BUSY = -1);
-	#endif
+public:
+#ifdef USE_EXTERNAL_SRAM
+  Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                  int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                  int8_t BUSY = -1);
+  Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                  int8_t SRCS, int8_t BUSY = -1);
+#else
+  Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
+                  int8_t RST, int8_t CS, int8_t BUSY = -1);
+  Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST, int8_t CS,
+                  int8_t BUSY = -1);
+#endif
 
-	void begin(bool reset=true);
-	void powerUp();
-	
-	void drawPixel(int16_t x, int16_t y, uint16_t color);
-	
-	void display();
-	void update();
-	
-	void clearBuffer();
-	void clearDisplay();
+  void begin(bool reset = true);
+  void powerUp();
+
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
+
+  void display();
+  void update();
+
+  void clearBuffer();
+  void clearDisplay();
 };
 
 #endif
