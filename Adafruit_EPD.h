@@ -88,7 +88,7 @@ public:
                int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
                int8_t BUSY = -1);
   Adafruit_EPD(int width, int height, int8_t DC, int8_t RST, int8_t CS,
-               int8_t SRCS, int8_t BUSY = -1);
+               int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
   ~Adafruit_EPD();
 
   void begin(bool reset = true);
@@ -148,6 +148,7 @@ protected:
       _reset_pin,               ///< reset pin
       _cs_pin,                  ///< chip select pin
       _busy_pin;                ///< busy pin
+  SPIClass *_spi = NULL; ///< SPI object
   static bool _isInTransaction; ///< true if SPI bus is in trasnfer state
   bool singleByteTxns;   ///< if true CS will go high after every data byte
                          ///< transferred
