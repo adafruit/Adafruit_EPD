@@ -148,7 +148,7 @@ protected:
       _reset_pin,               ///< reset pin
       _cs_pin,                  ///< chip select pin
       _busy_pin;                ///< busy pin
-  SPIClass *_spi = NULL; ///< SPI object
+  SPIClass *_spi = NULL;        ///< SPI object
   static bool _isInTransaction; ///< true if SPI bus is in trasnfer state
   bool singleByteTxns;   ///< if true CS will go high after every data byte
                          ///< transferred
