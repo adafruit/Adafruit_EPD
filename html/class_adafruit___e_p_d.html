@@ -93,9 +93,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abf054d75cb08a1b9177923df5d355534"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#abf054d75cb08a1b9177923df5d355534">Adafruit_EPD</a> (int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY=-1)</td></tr>
 <tr class="memdesc:abf054d75cb08a1b9177923df5d355534"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using external SRAM chip and software SPI  <a href="#abf054d75cb08a1b9177923df5d355534">More...</a><br /></td></tr>
 <tr class="separator:abf054d75cb08a1b9177923df5d355534"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6efd8e6f0bbfc99172f2cc243dd7375"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ae6efd8e6f0bbfc99172f2cc243dd7375">Adafruit_EPD</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1)</td></tr>
-<tr class="memdesc:ae6efd8e6f0bbfc99172f2cc243dd7375"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#ae6efd8e6f0bbfc99172f2cc243dd7375">More...</a><br /></td></tr>
-<tr class="separator:ae6efd8e6f0bbfc99172f2cc243dd7375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb884b3b7bd5f5aee542af5b03ad95ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#adb884b3b7bd5f5aee542af5b03ad95ae">Adafruit_EPD</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1, SPIClass *spi=&amp;SPI)</td></tr>
+<tr class="memdesc:adb884b3b7bd5f5aee542af5b03ad95ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#adb884b3b7bd5f5aee542af5b03ad95ae">More...</a><br /></td></tr>
+<tr class="separator:adb884b3b7bd5f5aee542af5b03ad95ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2374b337e964d4c1fea37c2e27f43d5"><td class="memItemLeft" align="right" valign="top"><a id="ab2374b337e964d4c1fea37c2e27f43d5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#ab2374b337e964d4c1fea37c2e27f43d5">~Adafruit_EPD</a> ()</td></tr>
 <tr class="memdesc:ab2374b337e964d4c1fea37c2e27f43d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">default destructor <br /></td></tr>
@@ -207,6 +207,10 @@ int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a2dd5b241d38b2129a5fd3e6e3b06ee68">_busy_pin</a></td></tr>
 <tr class="memdesc:a2dd5b241d38b2129a5fd3e6e3b06ee68"><td class="mdescLeft">&#160;</td><td class="mdescRight">busy pin <br /></td></tr>
 <tr class="separator:a2dd5b241d38b2129a5fd3e6e3b06ee68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e41a9a1ff07ca01d070dbc3c69d1967"><td class="memItemLeft" align="right" valign="top"><a id="a8e41a9a1ff07ca01d070dbc3c69d1967"></a>
+SPIClass *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a8e41a9a1ff07ca01d070dbc3c69d1967">_spi</a> = NULL</td></tr>
+<tr class="memdesc:a8e41a9a1ff07ca01d070dbc3c69d1967"><td class="mdescLeft">&#160;</td><td class="mdescRight">SPI object. <br /></td></tr>
+<tr class="separator:a8e41a9a1ff07ca01d070dbc3c69d1967"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b923d0159417b5049b5605ccb4feb4b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___e_p_d.html#a7b923d0159417b5049b5605ccb4feb4b">singleByteTxns</a></td></tr>
 <tr class="separator:a7b923d0159417b5049b5605ccb4feb4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1084bb94eef7446e7bd0e5e3d698b281"><td class="memItemLeft" align="right" valign="top"><a id="a1084bb94eef7446e7bd0e5e3d698b281"></a>
@@ -373,8 +377,8 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a id="ae6efd8e6f0bbfc99172f2cc243dd7375"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6efd8e6f0bbfc99172f2cc243dd7375">&#9670;&nbsp;</a></span>Adafruit_EPD() <span class="overload">[2/2]</span></h2>
+<a id="adb884b3b7bd5f5aee542af5b03ad95ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb884b3b7bd5f5aee542af5b03ad95ae">&#9670;&nbsp;</a></span>Adafruit_EPD() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -419,7 +423,13 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int8_t&#160;</td>
-          <td class="paramname"><em>BUSY</em> = <code>-1</code>&#160;</td>
+          <td class="paramname"><em>BUSY</em> = <code>-1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SPIClass *&#160;</td>
+          <td class="paramname"><em>spi</em> = <code>&amp;SPI</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -439,6 +449,7 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <tr><td class="paramname">CS</td><td>the chip select pin to use </td></tr>
     <tr><td class="paramname">SRCS</td><td>the SRAM chip select pin to use </td></tr>
     <tr><td class="paramname">BUSY</td><td>the busy pin to use </td></tr>
+    <tr><td class="paramname">spi</td><td>the SPI bus to use </td></tr>
   </table>
   </dd>
 </dl>

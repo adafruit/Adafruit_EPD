@@ -6,5 +6,6 @@ var searchData=
   ['_5fisintransaction',['_isInTransaction',['../class_adafruit___e_p_d.html#aecdfd00801652649598de6bfd05a83d4',1,'Adafruit_EPD']]],
   ['_5freset_5fpin',['_reset_pin',['../class_adafruit___e_p_d.html#aaae064664f466dcbb4996f6dd5199b6e',1,'Adafruit_EPD']]],
   ['_5fsclk_5fpin',['_sclk_pin',['../class_adafruit___e_p_d.html#a4f165c405539b3f02af6c87631340e75',1,'Adafruit_EPD']]],
-  ['_5fsid_5fpin',['_sid_pin',['../class_adafruit___e_p_d.html#ab2f5a3c7444c3f00974409d7b6f06a1c',1,'Adafruit_EPD']]]
+  ['_5fsid_5fpin',['_sid_pin',['../class_adafruit___e_p_d.html#ab2f5a3c7444c3f00974409d7b6f06a1c',1,'Adafruit_EPD']]],
+  ['_5fspi',['_spi',['../class_adafruit___e_p_d.html#a8e41a9a1ff07ca01d070dbc3c69d1967',1,'Adafruit_EPD']]]
 ];

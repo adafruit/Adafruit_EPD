@@ -76,9 +76,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4634e5e9d447fddc1ea02ea2ef6f15fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___m_c_p_s_r_a_m.html#a4634e5e9d447fddc1ea02ea2ef6f15fc">Adafruit_MCPSRAM</a> (int8_t mosi, int8_t miso, int8_t sck, int8_t cs)</td></tr>
 <tr class="memdesc:a4634e5e9d447fddc1ea02ea2ef6f15fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor when using software SPI.  <a href="#a4634e5e9d447fddc1ea02ea2ef6f15fc">More...</a><br /></td></tr>
 <tr class="separator:a4634e5e9d447fddc1ea02ea2ef6f15fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace30bb83f0771d7ab7e0e2f9ae6c0a47"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___m_c_p_s_r_a_m.html#ace30bb83f0771d7ab7e0e2f9ae6c0a47">Adafruit_MCPSRAM</a> (int8_t cs)</td></tr>
-<tr class="memdesc:ace30bb83f0771d7ab7e0e2f9ae6c0a47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor when using hardware SPI.  <a href="#ace30bb83f0771d7ab7e0e2f9ae6c0a47">More...</a><br /></td></tr>
-<tr class="separator:ace30bb83f0771d7ab7e0e2f9ae6c0a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9edaaabe53c1d19f5fbfad244f5c749"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___m_c_p_s_r_a_m.html#af9edaaabe53c1d19f5fbfad244f5c749">Adafruit_MCPSRAM</a> (int8_t cs, SPIClass *spi=&amp;SPI)</td></tr>
+<tr class="memdesc:af9edaaabe53c1d19f5fbfad244f5c749"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor when using hardware SPI.  <a href="#af9edaaabe53c1d19f5fbfad244f5c749">More...</a><br /></td></tr>
+<tr class="separator:af9edaaabe53c1d19f5fbfad244f5c749"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81a947fc61663028bf65094c6a7f80f7"><td class="memItemLeft" align="right" valign="top"><a id="a81a947fc61663028bf65094c6a7f80f7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___m_c_p_s_r_a_m.html#a81a947fc61663028bf65094c6a7f80f7">begin</a> ()</td></tr>
 <tr class="memdesc:a81a947fc61663028bf65094c6a7f80f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with the SRAM chip <br /></td></tr>
@@ -167,8 +167,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="ace30bb83f0771d7ab7e0e2f9ae6c0a47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace30bb83f0771d7ab7e0e2f9ae6c0a47">&#9670;&nbsp;</a></span>Adafruit_MCPSRAM() <span class="overload">[2/2]</span></h2>
+<a id="af9edaaabe53c1d19f5fbfad244f5c749"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9edaaabe53c1d19f5fbfad244f5c749">&#9670;&nbsp;</a></span>Adafruit_MCPSRAM() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -177,8 +177,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="memname">Adafruit_MCPSRAM::Adafruit_MCPSRAM </td>
           <td>(</td>
           <td class="paramtype">int8_t&#160;</td>
-          <td class="paramname"><em>cs</em></td><td>)</td>
+          <td class="paramname"><em>cs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">SPIClass *&#160;</td>
+          <td class="paramname"><em>spi</em> = <code>&amp;SPI</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -187,6 +197,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cs</td><td>chip select pin </td></tr>
+    <tr><td class="paramname">spi</td><td>the SPI bus to use </td></tr>
   </table>
   </dd>
 </dl>
