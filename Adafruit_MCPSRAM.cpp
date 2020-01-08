@@ -26,10 +26,12 @@ Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck,
 /*!
     @brief  Class constructor when using hardware SPI
                 @param cs chip select pin
+                @param spi the SPI bus to use
 */
 /**************************************************************************/
-Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t cs) {
+Adafruit_MCPSRAM::Adafruit_MCPSRAM(int8_t cs, SPIClass *spi) {
   _cs = cs;
+  _spi = spi;
   hwSPI = true;
 }
 
@@ -60,9 +62,9 @@ void Adafruit_MCPSRAM::begin() {
 #endif
   }
   if (hwSPI) {
-    SPI.begin();
+    _spi->begin();
 #ifndef SPI_HAS_TRANSACTION
-    SPI.setClockDivider(4);
+    _spi->setClockDivider(4);
 #endif
   }
 
@@ -70,7 +72,7 @@ void Adafruit_MCPSRAM::begin() {
 
   for (int i = 0; i < 3; i++) {
     if (hwSPI) {
-      (void)SPI.transfer(0xFF);
+      (void)_spi->transfer(0xFF);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -119,7 +121,7 @@ void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
-      (void)SPI.transfer(d);
+      (void)_spi->transfer(d);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -149,7 +151,7 @@ void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
     uint8_t d = buf[i];
 
     if (hwSPI) {
-      (void)SPI.transfer(d);
+      (void)_spi->transfer(d);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -197,7 +199,7 @@ void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
-      (void)SPI.transfer(d);
+      (void)_spi->transfer(d);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -225,7 +227,7 @@ void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
   for (int i = 0; i < num; i++) {
 
     if (hwSPI) {
-      buf[i] = SPI.transfer(0x00);
+      buf[i] = _spi->transfer(0x00);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -320,7 +322,7 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val) {
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
-      (void)SPI.transfer(d);
+      (void)_spi->transfer(d);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -348,7 +350,7 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val) {
     uint8_t d = val;
 
     if (hwSPI) {
-      (void)SPI.transfer(d);
+      (void)_spi->transfer(d);
     } else {
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
@@ -380,7 +382,7 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val) {
 /**************************************************************************/
 void Adafruit_MCPSRAM::csHigh() {
 #ifdef SPI_HAS_TRANSACTION
-  SPI.endTransaction();
+  _spi->endTransaction();
 #endif
 #ifdef HAVE_PORTREG
   *csport |= cspinmask;
@@ -396,7 +398,7 @@ void Adafruit_MCPSRAM::csHigh() {
 /**************************************************************************/
 void Adafruit_MCPSRAM::csLow() {
 #ifdef SPI_HAS_TRANSACTION
-  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
+  _spi->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
 #endif
 #ifdef HAVE_PORTREG
   *csport &= ~cspinmask;

@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <SPI.h>
 
 #define MCPSRAM_READ 0x03  ///< read command
 #define MCPSRAM_WRITE 0x02 ///< write command
@@ -15,7 +16,7 @@
 class Adafruit_MCPSRAM {
 public:
   Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t cs);
-  Adafruit_MCPSRAM(int8_t cs);
+  Adafruit_MCPSRAM(int8_t cs, SPIClass *spi = &SPI);
   ~Adafruit_MCPSRAM() {}
 
   void begin();
@@ -42,4 +43,5 @@ private:
   PortMask mosipinmask, clkpinmask, cspinmask, misopinmask;
 #endif
   int8_t _cs, _mosi, _miso, _sck;
+  SPIClass *_spi = NULL;
 };

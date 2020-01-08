@@ -104,15 +104,17 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
     @param CS the chip select pin to use
     @param SRCS the SRAM chip select pin to use
     @param BUSY the busy pin to use
+    @param spi the SPI bus to use
 */
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
-                           int8_t CS, int8_t SRCS, int8_t BUSY)
+                           int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
     : Adafruit_GFX(width, height), sram(SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
   _dc_pin = DC;
   _busy_pin = BUSY;
+  _spi = spi;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
@@ -180,9 +182,9 @@ void Adafruit_EPD::begin(bool reset) {
     mosipinmask = digitalPinToBitMask(_sid_pin);
 #endif
   } else {
-    SPI.begin();
+    _spi->begin();
 #ifndef SPI_HAS_TRANSACTION
-    SPI.setClockDivider(4);
+    _spi->setClockDivider(4);
 #endif
   }
 
@@ -579,11 +581,11 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
     if (singleByteTxns) {
       uint8_t b;
       csLow();
-      b = SPI.transfer(d);
+      b = _spi->transfer(d);
       csHigh();
       return b;
     } else
-      return SPI.transfer(d);
+      return _spi->transfer(d);
   } else {
     // TODO: return read data for software SPI
     for (uint8_t bit = 0x80; bit; bit >>= 1) {
@@ -614,7 +616,7 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
 /**************************************************************************/
 void Adafruit_EPD::csHigh() {
 #ifdef SPI_HAS_TRANSACTION
-  SPI.endTransaction();
+  _spi->endTransaction();
   _isInTransaction = false;
 #endif
 #ifdef HAVE_PORTREG
@@ -632,7 +634,7 @@ void Adafruit_EPD::csHigh() {
 void Adafruit_EPD::csLow() {
 #ifdef SPI_HAS_TRANSACTION
   if (!_isInTransaction) {
-    SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
+    _spi->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
     _isInTransaction = true;
   }
 #endif
