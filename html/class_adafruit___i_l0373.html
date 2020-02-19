@@ -86,9 +86,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afc815c803c1c125114860b47736d6281"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0373.html#afc815c803c1c125114860b47736d6281">Adafruit_IL0373</a> (int width, int height, int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY=-1)</td></tr>
 <tr class="memdesc:afc815c803c1c125114860b47736d6281"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using external SRAM chip and software SPI  <a href="#afc815c803c1c125114860b47736d6281">More...</a><br /></td></tr>
 <tr class="separator:afc815c803c1c125114860b47736d6281"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae08c22039a743248e5473f3a720783d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0373.html#ae08c22039a743248e5473f3a720783d1">Adafruit_IL0373</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1)</td></tr>
-<tr class="memdesc:ae08c22039a743248e5473f3a720783d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#ae08c22039a743248e5473f3a720783d1">More...</a><br /></td></tr>
-<tr class="separator:ae08c22039a743248e5473f3a720783d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42f476d0a90bdd454285d7738f7b2e6c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0373.html#a42f476d0a90bdd454285d7738f7b2e6c">Adafruit_IL0373</a> (int width, int height, int8_t DC, int8_t RST, int8_t CS, int8_t SRCS, int8_t BUSY=-1, SPIClass *spi=&amp;SPI)</td></tr>
+<tr class="memdesc:a42f476d0a90bdd454285d7738f7b2e6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor if using on-chip RAM and hardware SPI  <a href="#a42f476d0a90bdd454285d7738f7b2e6c">More...</a><br /></td></tr>
+<tr class="separator:a42f476d0a90bdd454285d7738f7b2e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a351b1ec3099305a14ab0559f565c2cd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___i_l0373.html#a351b1ec3099305a14ab0559f565c2cd8">begin</a> (bool reset=true)</td></tr>
 <tr class="memdesc:a351b1ec3099305a14ab0559f565c2cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin communication with and set up the display.  <a href="#a351b1ec3099305a14ab0559f565c2cd8">More...</a><br /></td></tr>
 <tr class="separator:a351b1ec3099305a14ab0559f565c2cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -384,8 +384,8 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a id="ae08c22039a743248e5473f3a720783d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae08c22039a743248e5473f3a720783d1">&#9670;&nbsp;</a></span>Adafruit_IL0373() <span class="overload">[2/2]</span></h2>
+<a id="a42f476d0a90bdd454285d7738f7b2e6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42f476d0a90bdd454285d7738f7b2e6c">&#9670;&nbsp;</a></span>Adafruit_IL0373() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -430,7 +430,13 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int8_t&#160;</td>
-          <td class="paramname"><em>BUSY</em> = <code>-1</code>&#160;</td>
+          <td class="paramname"><em>BUSY</em> = <code>-1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SPIClass *&#160;</td>
+          <td class="paramname"><em>spi</em> = <code>&amp;SPI</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -450,6 +456,7 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <tr><td class="paramname">CS</td><td>the chip select pin to use </td></tr>
     <tr><td class="paramname">SRCS</td><td>the SRAM chip select pin to use </td></tr>
     <tr><td class="paramname">BUSY</td><td>the busy pin to use </td></tr>
+    <tr><td class="paramname">spi</td><td>the SPI bus to use </td></tr>
   </table>
   </dd>
 </dl>
