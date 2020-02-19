@@ -285,6 +285,32 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if (use_sram) {
     sram.write8(addr, *pBuf);
   }
+  
+  // Need to clear out the other buffer
+  uint8_t *pOtherBuf;
+  
+  if (use_sram) {
+    addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
+    if ((color == EPD_RED) || (color == EPD_GRAY)) {
+      addr = blackbuffer_addr + addr;
+    } else {
+      addr = colorbuffer_addr + addr;
+    }
+    c = sram.read8(addr);
+    pOtherBuf = &c;
+  } else {
+    if ((color == EPD_RED) || (color == EPD_GRAY)) {
+      pOtherBuf = black_buffer + addr;
+    } else {
+      pOtherBuf = color_buffer + addr;
+    }
+  }
+  
+  *pOtherBuf |= (1 << (7 - y % 8));
+
+  if (use_sram) {
+    sram.write8(addr, *pOtherBuf);
+  }
 }
 
 /**************************************************************************/
