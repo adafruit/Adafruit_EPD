@@ -16,7 +16,16 @@
 #define EPD_RESET   PIN_A3 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
 
-Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// You will need to use Adafruit's CircuitPlayground Express Board Definition
+// for Gizmos rather than the Arduino version since there are additional SPI
+// ports exposed.
+#if (SPI_INTERFACES_COUNT == 1)
+  SPIClass* spi = &SPI;
+#else
+  SPIClass* spi = &SPI1;
+#endif
+
+Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, spi);
 
 float p = 3.1415926;
 

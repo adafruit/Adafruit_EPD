@@ -49,11 +49,13 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
     @param CS the chip select pin to use
     @param SRCS the SRAM chip select pin to use
     @param BUSY the busy pin to use
+    @param spi the SPI bus to use
 */
 /**************************************************************************/
 Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST,
-                                 int8_t CS, int8_t SRCS, int8_t BUSY)
-    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+                                 int8_t CS, int8_t SRCS, int8_t BUSY,
+                                 SPIClass *spi)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
