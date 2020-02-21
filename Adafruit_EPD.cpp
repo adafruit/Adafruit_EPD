@@ -273,10 +273,12 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 
   if (((color == EPD_RED || color == EPD_GRAY) && colorInverted) ||
-      ((color == EPD_BLACK) && blackInverted)) {
+      ((color == EPD_BLACK) && blackInverted) ||
+      ((color == EPD_WHITE) && !blackInverted)) {
     *pBuf &= ~(1 << (7 - y % 8));
   } else if (((color == EPD_RED || color == EPD_GRAY) && !colorInverted) ||
-             ((color == EPD_BLACK) && !blackInverted)) {
+             ((color == EPD_BLACK) && !blackInverted) ||
+             ((color == EPD_WHITE) && blackInverted)) {
     *pBuf |= (1 << (7 - y % 8));
   } else if (color == EPD_INVERSE) {
     *pBuf ^= (1 << (7 - y % 8));
