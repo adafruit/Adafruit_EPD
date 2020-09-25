@@ -93,13 +93,11 @@ Adafruit_SSD1676::Adafruit_SSD1676(int width, int height, int8_t DC, int8_t RST,
 void Adafruit_SSD1676::busy_wait(void) {
   if (_busy_pin >= 0) {
     while (digitalRead(_busy_pin)) { // wait for busy low
-      Serial.print(".");
       delay(10);
     }
   } else {
     delay(BUSY_WAIT);
   }
-  Serial.println();
 }
 
 /**************************************************************************/
@@ -110,10 +108,9 @@ void Adafruit_SSD1676::busy_wait(void) {
 /**************************************************************************/
 void Adafruit_SSD1676::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  //setBlackBuffer(0, true); // black defaults to inverted
-  //setColorBuffer(0, true); // no secondary buffer, so we'll just reuse index 0
-  Serial.println("power down");
-  //powerDown();
+  setBlackBuffer(0, true); // black defaults to inverted
+  setColorBuffer(1, false); // red defaults to un inverted
+  powerDown();
 }
 
 /**************************************************************************/
@@ -267,199 +264,3 @@ void Adafruit_SSD1676::setRAMAddress(uint16_t x, uint16_t y) {
   buf[1] = 0x01;
   EPD_command(SSD1676_SET_RAMYCOUNT, buf, 2);
 }
-
-
-
-/*
- * º¯ÊýÃû£ºEpaper_Write_Command
- * ÃèÊö  £ºÐ´ÃüÁî
- * ÊäÈë  £ºcmd
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Epaper_Write_Command (uint8_t cmd) {
-    csHigh();
-  digitalWrite(EPD_CS, LOW);
-  digitalWrite(EPD_DC, LOW);  // D/C#   0:command  1:data
-
-  delayMicroseconds(5) ;
-  SPItransfer(cmd);
-  delayMicroseconds(5) ;
-  digitalWrite(EPD_CS, HIGH);
-}
-
-/*
- * º¯ÊýÃû£ºEpaper_Write_CommandR
- * ÃèÊö  £º¶ÁÊý¾ÝµÄÐ´ÃüÁî
- * ÊäÈë  £ºcmd
- * Êä³ö  £ºÎÞ
- */ 
-
-void Adafruit_SSD1676::Epaper_Write_CommandR(uint8_t cmd) {
-  digitalWrite(EPD_CS, HIGH);
-  digitalWrite(EPD_CS, LOW);
-  digitalWrite(EPD_DC, LOW);  // D/C#   0:command  1:data
-
-  delayMicroseconds(5);
-  SPItransfer(cmd);
-  delayMicroseconds(5);
-}
-
-/*
- * º¯ÊýÃû£ºEpaper_Write_Data
- * ÃèÊö  £ºÐ´Êý¾Ý
- * ÊäÈë  £ºdata
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Epaper_Write_Data(uint8_t data)
-{
-  digitalWrite(EPD_CS, HIGH);
-  digitalWrite(EPD_CS, LOW);
-  digitalWrite(EPD_DC, HIGH);  // D/C#   0:command  1:data
-  
-  delayMicroseconds(5);
-  SPItransfer(data);
-  delayMicroseconds(5);
-  digitalWrite(EPD_CS, HIGH);
-}
-
-
-
-/*
- * º¯ÊýÃû£ºEpaper_Update_and_Deepsleep
- * ÃèÊö  £º¸üÐÂ&½øÈëÉî¶ÈË¯Ãß
- * ÊäÈë  £ºÎÞ
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Epaper_Update_and_Deepsleep(void) {
-       
-  Epaper_Write_Command(SSD1676_MASTER_ACTIVATE);
-  busy_wait();
-  
-  Epaper_Write_Command(SSD1676_DEEP_SLEEP);
-  Epaper_Write_Data(0x01);   
-  delay(100); 
-}
-
-/*
- * º¯ÊýÃû£ºEpaper_Init
- * ÃèÊö  £ºµç×ÓÖ½³õÊ¼»¯³ÌÐò
- * ÊäÈë  £ºÎÞ          
- * Êä³ö  £ºÎÞ
- */ 
-
-void Adafruit_SSD1676::Epaper_Init(void) {
-    delay(10);
-    digitalWrite(EPD_RESET, LOW);  //EPD Ó²¼þ¸´Î»    Hardware  reset
-    delay(10); 
-    digitalWrite(EPD_RESET, HIGH);      // EPD Ó²¼þ¸´Î»ÊÍ·Å    Hard  reset  release
-    delay(10);   
-    busy_wait();   //¶ÁbusyÐÅºÅ
-    Epaper_Write_Command(0x12);   // Èí¼þ¸´Î»    soft  reset
-    busy_wait();
-}
-
-  
-
-
-/*
- * º¯ÊýÃû£ºDisplay_All_White
- * ÃèÊö  £ºË¢ÐÂÏÔÊ¾È«°×
- * ÊäÈë  £ºÎÞ
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Display_All_White(void)
-{
-  uint32_t i,j; 
-
-    
-
-    Epaper_Write_Command(0x24); 
-  
-    for(i=0;i<296;i++)
-   {
-     for(j=0;j<16;j++)
-     {
-      Epaper_Write_Data(0xFF);
-     }
-   }
-  
-
-  
-
-    Epaper_Write_Command(0x26);   
-    for(i=0;i<296;i++)
-   {
-     for(j=0;j<16;j++)
-     {
-      Epaper_Write_Data(0x00);
-     }
-   }
-} 
-
-/*
- * º¯ÊýÃû£ºDisplay_All_Black
- * ÃèÊö  £ºË¢ÐÂÏÔÊ¾È«ºÚ
- * ÊäÈë  £ºÎÞ
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Display_All_Black(void)
-{
-  uint32_t i,j; 
-  Epaper_Write_Command(0x24);   
-  for(i=0;i<296;i++) {
-    for(j=0;j<16;j++) {
-      Epaper_Write_Data(0x00);
-    }
-  }
-  
-  Epaper_Write_Command(0x26);   
-  for(i=0;i<296;i++) {
-    for(j=0;j<16;j++) {
-      Epaper_Write_Data(0x00);
-    }
-  }
-}
-
-/*
- * º¯ÊýÃû£ºDisplay_All_Red
- * ÃèÊö  £ºË¢ÐÂÏÔÊ¾È«ºì
- * ÊäÈë  £ºÎÞ
- * Êä³ö  £ºÎÞ
- */ 
-void Adafruit_SSD1676::Display_All_Red(void)
-{
-  uint32_t i,j; 
-
-  Epaper_Write_Command(0x4E);     
-  Epaper_Write_Data(0x00);
-
-  Epaper_Write_Command(0x4F);       
-  Epaper_Write_Data(0x27);
-  Epaper_Write_Data(0x01);
-
-
-  busy_wait();
-  Epaper_Write_Command(0x24);   
-  for(i=0;i<296;i++) {
-     for (j=0; j<16;j++) {
-       Epaper_Write_Data(0xFF);
-   }
- }
-   
-  Epaper_Write_Command(0x4E);     
-  Epaper_Write_Data(0x00);
-
-  Epaper_Write_Command(0x4F);       
-  Epaper_Write_Data(0x27);
-  Epaper_Write_Data(0x01);
-
-
-  busy_wait();
-  Epaper_Write_Command(0x26);   
-  for(i=0;i<296;i++) {
-    for(j=0;j<16;j++)  {
-      Epaper_Write_Data(0xFF);
-   }
- }
-}
-
