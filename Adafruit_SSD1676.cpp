@@ -270,40 +270,6 @@ void Adafruit_SSD1676::setRAMAddress(uint16_t x, uint16_t y) {
 
 
 
-  
-void Adafruit_SSD1676::EpaperIO_Init(void)
-{
-  pinMode(EPD_RESET, OUTPUT);
-  digitalWrite(EPD_RESET, LOW);
-  pinMode(EPD_CS, OUTPUT);
-  pinMode(EPD_DC, OUTPUT);
-  pinMode(EPD_BUSY, INPUT);
-  pinMode(SCK, OUTPUT);
-  pinMode(MOSI, OUTPUT);
-}
-
-
-void Adafruit_SSD1676::Epaper_Spi_WriteByte(uint8_t TxData)
-{                
-  uint8_t TempData;
-  uint8_t scnt;
-  TempData=TxData;
-  digitalWrite(SCK, LOW); 
-  for(scnt=0; scnt<8; scnt++) { 
-    if (TempData&0x80)
-      digitalWrite(MOSI, HIGH);
-    else
-      digitalWrite(MOSI, LOW);
-    digitalWrite(SCK, HIGH);
-    delayMicroseconds(5) ; 
-    digitalWrite(SCK, LOW);
-    TempData=TempData<<1;
-    delayMicroseconds(5) ; 
-  }
-}
-
-
-
 /*
  * º¯ÊýÃû£ºEpaper_Write_Command
  * ÃèÊö  £ºÐ´ÃüÁî
@@ -311,12 +277,12 @@ void Adafruit_SSD1676::Epaper_Spi_WriteByte(uint8_t TxData)
  * Êä³ö  £ºÎÞ
  */ 
 void Adafruit_SSD1676::Epaper_Write_Command (uint8_t cmd) {
-  digitalWrite(EPD_CS, HIGH);
+    csHigh();
   digitalWrite(EPD_CS, LOW);
   digitalWrite(EPD_DC, LOW);  // D/C#   0:command  1:data
 
   delayMicroseconds(5) ;
-  Epaper_Spi_WriteByte(cmd);
+  SPItransfer(cmd);
   delayMicroseconds(5) ;
   digitalWrite(EPD_CS, HIGH);
 }
@@ -334,7 +300,7 @@ void Adafruit_SSD1676::Epaper_Write_CommandR(uint8_t cmd) {
   digitalWrite(EPD_DC, LOW);  // D/C#   0:command  1:data
 
   delayMicroseconds(5);
-  Epaper_Spi_WriteByte(cmd);
+  SPItransfer(cmd);
   delayMicroseconds(5);
 }
 
@@ -351,7 +317,7 @@ void Adafruit_SSD1676::Epaper_Write_Data(uint8_t data)
   digitalWrite(EPD_DC, HIGH);  // D/C#   0:command  1:data
   
   delayMicroseconds(5);
-  Epaper_Spi_WriteByte(data);
+  SPItransfer(data);
   delayMicroseconds(5);
   digitalWrite(EPD_CS, HIGH);
 }
