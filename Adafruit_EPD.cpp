@@ -33,23 +33,8 @@
  *
  */
 
-#ifdef __AVR__
-#include <avr/pgmspace.h>
-#elif defined(ESP8266) || defined(ESP32)
-#include <pgmspace.h>
-#else
-#define pgm_read_byte(addr)                                                    \
-  (*(const unsigned char *)(addr)) ///< read bytes from program memory
-#endif
-
-#if !defined(__ARM_ARCH) && !defined(ENERGIA) && !defined(ESP8266) &&          \
-    !defined(ESP32) && !defined(__arc__)
-#include <util/delay.h>
-#endif
-
-#include <stdlib.h>
-
 #include "Adafruit_EPD.h"
+#include <stdlib.h>
 
 bool Adafruit_EPD::_isInTransaction = false;
 
@@ -75,21 +60,18 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
   _cs_pin = CS;
   _reset_pin = RST;
   _dc_pin = DC;
-  _sclk_pin = spi_clock;
-  _sid_pin = spi_mosi;
   _busy_pin = BUSY;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
     use_sram = false;
   }
-  hwSPI = false;
 
   spi_dev = new Adafruit_SPIDevice(CS, spi_clock, spi_miso, spi_mosi,
-                                   1000000,               // frequency
+                                   4000000,               // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
-                                   SPI_MODE0             // data mode
-                                   );
+                                   SPI_MODE0              // data mode
+  );
 
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
@@ -125,13 +107,12 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
   } else {
     use_sram = false;
   }
-  hwSPI = true;
 
   spi_dev = new Adafruit_SPIDevice(CS,
-                                   1000000,               // frequency
+                                   4000000,               // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
-                                   SPI_MODE0             // data mode
-                                   );
+                                   SPI_MODE0,             // data mode
+                                   _spi);
 
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
@@ -577,35 +558,14 @@ void Adafruit_EPD::EPD_data(uint8_t data) {
 uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
   // Serial.print("-> 0x"); Serial.println((byte)d, HEX);
 
-  if (hwSPI) {
-    if (singleByteTxns) {
-      uint8_t b;
-      csLow();
-      b = _spi->transfer(d);
-      csHigh();
-      return b;
-    } else
-      return _spi->transfer(d);
+  if (singleByteTxns) {
+    uint8_t b;
+    csLow();
+    b = spi_dev->transfer(d);
+    csHigh();
+    return b;
   } else {
-    // TODO: return read data for software SPI
-    for (uint8_t bit = 0x80; bit; bit >>= 1) {
-#ifdef HAVE_PORTREG
-      *clkport &= ~clkpinmask;
-      if (d & bit)
-        *mosiport |= mosipinmask;
-      else
-        *mosiport &= ~mosipinmask;
-      *clkport |= clkpinmask;
-#else
-      digitalWrite(_sclk_pin, LOW);
-      if (d & bit)
-        digitalWrite(_sid_pin, HIGH);
-      else
-        digitalWrite(_sid_pin, LOW);
-      digitalWrite(_sclk_pin, HIGH);
-#endif
-    }
-    return 0;
+    return spi_dev->transfer(d);
   }
 }
 
@@ -622,11 +582,8 @@ void Adafruit_EPD::csHigh() {
   digitalWrite(_cs_pin, HIGH);
 #endif
 
-#ifdef SPI_HAS_TRANSACTION
-  _spi->endTransaction();
+  spi_dev->endTransaction();
   _isInTransaction = false;
-#endif
-
 }
 
 /**************************************************************************/
@@ -635,20 +592,14 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
-
-#ifdef SPI_HAS_TRANSACTION
-  if (!_isInTransaction) {
-    _spi->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
-    _isInTransaction = true;
-  }
-#endif
+  spi_dev->beginTransaction();
+  _isInTransaction = true;
 
 #ifdef BUSIO_USE_FAST_PINIO
   *csPort &= ~csPinMask;
 #else
   digitalWrite(_cs_pin, LOW);
 #endif
-
 }
 
 /**************************************************************************/

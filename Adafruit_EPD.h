@@ -24,9 +24,9 @@
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
-#include <Adafruit_SPIDevice.h>
 #include "Adafruit_MCPSRAM.h"
 #include <Adafruit_GFX.h>
+#include <Adafruit_SPIDevice.h>
 
 /**************************************************************************/
 /*!
@@ -115,15 +115,15 @@ protected:
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin,              ///< sid pin
-      _sclk_pin,                ///< serial clock pin
-      _dc_pin,                  ///< data/command pin
-      _reset_pin,               ///< reset pin
-      _cs_pin,                  ///< chip select pin
-      _busy_pin;                ///< busy pin
-  SPIClass *_spi = NULL;        ///< SPI object
-  Adafruit_SPIDevice *spi_dev = NULL;        ///< SPI object
-  static bool _isInTransaction; ///< true if SPI bus is in trasnfer state
+  int8_t _sid_pin,                    ///< sid pin
+      _sclk_pin,                      ///< serial clock pin
+      _dc_pin,                        ///< data/command pin
+      _reset_pin,                     ///< reset pin
+      _cs_pin,                        ///< chip select pin
+      _busy_pin;                      ///< busy pin
+  SPIClass *_spi = NULL;              ///< SPI object
+  Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
+  static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
   bool singleByteTxns;   ///< if true CS will go high after every data byte
                          ///< transferred
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
@@ -153,7 +153,6 @@ protected:
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
   bool hwSPI;    ///< true if using hardware SPI
-
 
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
