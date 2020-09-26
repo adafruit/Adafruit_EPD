@@ -1,4 +1,4 @@
-#include "Adafruit_SSD1676.h"
+#include "Adafruit_SSD1680.h"
 #include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
@@ -18,7 +18,7 @@
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1676::Adafruit_SSD1676(int width, int height, int8_t SID,
+Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t SID,
                                    int8_t SCLK, int8_t DC, int8_t RST,
                                    int8_t CS, int8_t SRCS, int8_t MISO,
                                    int8_t BUSY)
@@ -57,7 +57,7 @@ Adafruit_SSD1676::Adafruit_SSD1676(int width, int height, int8_t SID,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1676::Adafruit_SSD1676(int width, int height, int8_t DC, int8_t RST,
+Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t DC, int8_t RST,
                                    int8_t CS, int8_t SRCS, int8_t BUSY)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
   if ((height % 8) != 0) {
@@ -85,7 +85,7 @@ Adafruit_SSD1676::Adafruit_SSD1676(int width, int height, int8_t DC, int8_t RST,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_SSD1676::busy_wait(void) {
+void Adafruit_SSD1680::busy_wait(void) {
   if (_busy_pin >= 0) {
     while (digitalRead(_busy_pin)) { // wait for busy low
       delay(10);
@@ -101,7 +101,7 @@ void Adafruit_SSD1676::busy_wait(void) {
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_SSD1676::begin(bool reset) {
+void Adafruit_SSD1680::begin(bool reset) {
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true); // black defaults to inverted
   setColorBuffer(1, false); // red defaults to un inverted
@@ -113,14 +113,14 @@ void Adafruit_SSD1676::begin(bool reset) {
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_SSD1676::update() {
+void Adafruit_SSD1680::update() {
   uint8_t buf[1];
 
   // display update sequence
   buf[0] = 0xF4;
-  EPD_command(SSD1676_DISP_CTRL2, buf, 1);
+  EPD_command(SSD1680_DISP_CTRL2, buf, 1);
 
-  EPD_command(SSD1676_MASTER_ACTIVATE);
+  EPD_command(SSD1680_MASTER_ACTIVATE);
   busy_wait();
 
   if (_busy_pin <= -1) {
@@ -133,7 +133,7 @@ void Adafruit_SSD1676::update() {
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_SSD1676::powerUp() {
+void Adafruit_SSD1680::powerUp() {
   uint8_t buf[5];
 
   hardwareReset();
@@ -141,64 +141,64 @@ void Adafruit_SSD1676::powerUp() {
   busy_wait();
 
   // soft reset
-  EPD_command(SSD1676_SW_RESET);
+  EPD_command(SSD1680_SW_RESET);
   busy_wait();
 
   // Set display size and driver output control
   buf[0] = (WIDTH-1);
   buf[1] = (WIDTH-1) >> 8;
   buf[2] = 0x00;
-  EPD_command(SSD1676_DRIVER_CONTROL, buf, 3);
+  EPD_command(SSD1680_DRIVER_CONTROL, buf, 3);
 
   // Ram data entry mode
   buf[0] = 0x03;
-  EPD_command(SSD1676_DATA_MODE, buf, 1);
+  EPD_command(SSD1680_DATA_MODE, buf, 1);
 
   // Set ram X start/end postion
   buf[0] = 0x01;
   buf[1] = HEIGHT / 8;
-  EPD_command(SSD1676_SET_RAMXPOS, buf, 2);
+  EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
   buf[2] = (WIDTH-1);
   buf[3] = (WIDTH-1) >> 8;
   buf[0] = 0x00;
   buf[1] = 0x00;
-  EPD_command(SSD1676_SET_RAMYPOS, buf, 4);
+  EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
   // border color
   buf[0] = 0x05;
-  EPD_command(SSD1676_WRITE_BORDER, buf, 1);
+  EPD_command(SSD1680_WRITE_BORDER, buf, 1);
 
   // Vcom Voltage
   buf[0] = 0x36;
-  EPD_command(SSD1676_WRITE_VCOM, buf, 1);
+  EPD_command(SSD1680_WRITE_VCOM, buf, 1);
 
   // Set gate voltage
   buf[0] = 0x17;
-  EPD_command(SSD1676_GATE_VOLTAGE, buf, 1);
+  EPD_command(SSD1680_GATE_VOLTAGE, buf, 1);
 
   // Set source voltage
   buf[0] = 0x41;
   buf[1] = 0x00;
   buf[2] = 0x32;
-  EPD_command(SSD1676_SOURCE_VOLTAGE, buf, 3);
+  EPD_command(SSD1680_SOURCE_VOLTAGE, buf, 3);
 
   // Set LUT
   /*
   buf[0] = LUT_DATA[74];
-  EPD_command(SSD1676_WRITE_LUT, buf, 1);
-  EPD_command(SSD1676_WRITE_LUT, LUT_DATA, 70);
+  EPD_command(SSD1680_WRITE_LUT, buf, 1);
+  EPD_command(SSD1680_WRITE_LUT, LUT_DATA, 70);
   */
 
   // set RAM x address count
   buf[0] = 1;
-  EPD_command(SSD1676_SET_RAMXCOUNT, buf, 1);
+  EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
   buf[0] = 0 ;
   buf[1] = 0;
-  EPD_command(SSD1676_SET_RAMYCOUNT, buf, 2);
+  EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
 
 }
 
@@ -207,16 +207,16 @@ void Adafruit_SSD1676::powerUp() {
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_SSD1676::powerDown() {
+void Adafruit_SSD1680::powerDown() {
   uint8_t buf[1];
   // Only deep sleep if we can get out of it
   if (_reset_pin >= 0) {
     // deep sleep
     buf[0] = 0x01;
-    EPD_command(SSD1676_DEEP_SLEEP, buf, 1);
+    EPD_command(SSD1680_DEEP_SLEEP, buf, 1);
     delay(100);
   } else {
-    EPD_command(SSD1676_SW_RESET);
+    EPD_command(SSD1680_SW_RESET);
     busy_wait();
   }
 }
@@ -230,12 +230,12 @@ void Adafruit_SSD1676::powerDown() {
    command
 */
 /**************************************************************************/
-uint8_t Adafruit_SSD1676::writeRAMCommand(uint8_t index) {
+uint8_t Adafruit_SSD1680::writeRAMCommand(uint8_t index) {
   if (index == 0) {
-    return EPD_command(SSD1676_WRITE_RAM1, false);
+    return EPD_command(SSD1680_WRITE_RAM1, false);
   }
   if (index == 1) {
-    return EPD_command(SSD1676_WRITE_RAM2, false);
+    return EPD_command(SSD1680_WRITE_RAM2, false);
   }
   return 0;
 }
@@ -247,15 +247,15 @@ uint8_t Adafruit_SSD1676::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_SSD1676::setRAMAddress(uint16_t x, uint16_t y) {
+void Adafruit_SSD1680::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
   // set RAM x address count
   buf[0] = 1;
-  EPD_command(SSD1676_SET_RAMXCOUNT, buf, 1);
+  EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
   buf[0] =0;
   buf[1] = 0;
-  EPD_command(SSD1676_SET_RAMYCOUNT, buf, 2);
+  EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
 }
