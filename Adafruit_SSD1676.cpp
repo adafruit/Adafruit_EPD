@@ -1,11 +1,6 @@
 #include "Adafruit_SSD1676.h"
 #include "Adafruit_EPD.h"
 
-
-#define EPD_CS     10
-#define EPD_DC      9
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    6 // can set to -1 to not use a pin (will wait a fixed delay)
 #define BUSY_WAIT 500
 
 /**************************************************************************/
@@ -122,8 +117,8 @@ void Adafruit_SSD1676::update() {
   uint8_t buf[1];
 
   // display update sequence
-  //buf[0] = 0xC7;
-  //EPD_command(SSD1676_DISP_CTRL2, buf, 1);
+  buf[0] = 0xF4;
+  EPD_command(SSD1676_DISP_CTRL2, buf, 1);
 
   EPD_command(SSD1676_MASTER_ACTIVATE);
   busy_wait();
