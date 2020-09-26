@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pgm_5fread_5fbyte',['pgm_read_byte',['../_adafruit___e_p_d_8cpp.html#a48c60b057902adf805797f183286728d',1,'Adafruit_EPD.cpp']]]
+  ['rambufsize',['RAMBUFSIZE',['../_adafruit___e_p_d_8h.html#a1804fc89cda412cbe976824dd97fcefb',1,'Adafruit_EPD.h']]]
 ];
