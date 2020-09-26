@@ -50,8 +50,6 @@
 #include <stdlib.h>
 
 #include "Adafruit_EPD.h"
-#include "Adafruit_GFX.h"
-#include <SPI.h>
 
 bool Adafruit_EPD::_isInTransaction = false;
 
@@ -86,6 +84,13 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
     use_sram = false;
   }
   hwSPI = false;
+
+  spi_dev = new Adafruit_SPIDevice(CS, spi_clock, spi_miso, spi_mosi,
+                                   1000000,               // frequency
+                                   SPI_BITORDER_MSBFIRST, // bit order
+                                   SPI_MODE0             // data mode
+                                   );
+
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
   buffer1_addr = buffer2_addr = 0;
@@ -121,6 +126,13 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
     use_sram = false;
   }
   hwSPI = true;
+
+  spi_dev = new Adafruit_SPIDevice(CS,
+                                   1000000,               // frequency
+                                   SPI_BITORDER_MSBFIRST, // bit order
+                                   SPI_MODE0             // data mode
+                                   );
+
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
   buffer1_addr = buffer2_addr = 0;
@@ -162,30 +174,18 @@ void Adafruit_EPD::begin(bool reset) {
   // set pin directions
   pinMode(_dc_pin, OUTPUT);
   pinMode(_cs_pin, OUTPUT);
-#ifdef HAVE_PORTREG
-  csport = portOutputRegister(digitalPinToPort(_cs_pin));
-  cspinmask = digitalPinToBitMask(_cs_pin);
-  dcport = portOutputRegister(digitalPinToPort(_dc_pin));
-  dcpinmask = digitalPinToBitMask(_dc_pin);
+
+#if defined(BUSIO_USE_FAST_PINIO)
+  csPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(_cs_pin));
+  csPinMask = digitalPinToBitMask(_cs_pin);
+  dcPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(_dc_pin));
+  dcPinMask = digitalPinToBitMask(_dc_pin);
 #endif
 
   csHigh();
 
-  if (!hwSPI) {
-    // set pins for software-SPI
-    pinMode(_sid_pin, OUTPUT);
-    pinMode(_sclk_pin, OUTPUT);
-#ifdef HAVE_PORTREG
-    clkport = portOutputRegister(digitalPinToPort(_sclk_pin));
-    clkpinmask = digitalPinToBitMask(_sclk_pin);
-    mosiport = portOutputRegister(digitalPinToPort(_sid_pin));
-    mosipinmask = digitalPinToBitMask(_sid_pin);
-#endif
-  } else {
-    _spi->begin();
-#ifndef SPI_HAS_TRANSACTION
-    _spi->setClockDivider(4);
-#endif
+  if (!spi_dev->begin()) {
+    return;
   }
 
   if (reset) {
@@ -615,15 +615,18 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
 */
 /**************************************************************************/
 void Adafruit_EPD::csHigh() {
+
+#ifdef BUSIO_USE_FAST_PINIO
+  *csPort |= csPinMask;
+#else
+  digitalWrite(_cs_pin, HIGH);
+#endif
+
 #ifdef SPI_HAS_TRANSACTION
   _spi->endTransaction();
   _isInTransaction = false;
 #endif
-#ifdef HAVE_PORTREG
-  *csport |= cspinmask;
-#else
-  digitalWrite(_cs_pin, HIGH);
-#endif
+
 }
 
 /**************************************************************************/
@@ -632,17 +635,20 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
+
 #ifdef SPI_HAS_TRANSACTION
   if (!_isInTransaction) {
     _spi->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
     _isInTransaction = true;
   }
 #endif
-#ifdef HAVE_PORTREG
-  *csport &= ~cspinmask;
+
+#ifdef BUSIO_USE_FAST_PINIO
+  *csPort &= ~csPinMask;
 #else
   digitalWrite(_cs_pin, LOW);
 #endif
+
 }
 
 /**************************************************************************/
@@ -651,8 +657,8 @@ void Adafruit_EPD::csLow() {
 */
 /**************************************************************************/
 void Adafruit_EPD::dcHigh() {
-#ifdef HAVE_PORTREG
-  *dcport |= dcpinmask;
+#ifdef BUSIO_USE_FAST_PINIO
+  *dcPort |= dcPinMask;
 #else
   digitalWrite(_dc_pin, HIGH);
 #endif
@@ -664,8 +670,8 @@ void Adafruit_EPD::dcHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::dcLow() {
-#ifdef HAVE_PORTREG
-  *dcport &= ~dcpinmask;
+#ifdef BUSIO_USE_FAST_PINIO
+  *dcPort &= ~dcPinMask;
 #else
   digitalWrite(_dc_pin, LOW);
 #endif
