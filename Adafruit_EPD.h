@@ -26,7 +26,7 @@
 #include "WProgram.h"
 #endif
 
-#define EPD_DEBUG
+//#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
@@ -204,6 +204,6 @@ protected:
 #include "Adafruit_IL91874.h"
 #include "Adafruit_SSD1608.h"
 #include "Adafruit_SSD1675.h"
-#include "Adafruit_SSD1676.h"
 #include "Adafruit_SSD1675B.h"
+#include "Adafruit_SSD1680.h"
 #endif /* _Adafruit_EPD_H_ */

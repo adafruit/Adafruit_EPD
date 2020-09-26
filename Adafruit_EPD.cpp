@@ -173,7 +173,7 @@ void Adafruit_EPD::begin(bool reset) {
   csHigh();
 
   if (!hwSPI) {
-  Serial.println("softserial");
+    Serial.println("softserial");
     // set pins for software-SPI
     pinMode(_sid_pin, OUTPUT);
     pinMode(_sclk_pin, OUTPUT);

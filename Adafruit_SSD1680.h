@@ -34,7 +34,6 @@
 #define SSD1680_SET_RAMXCOUNT 0x4E
 #define SSD1680_SET_RAMYCOUNT 0x4F
 
-
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with SSD1680 EPD drivers
@@ -53,33 +52,19 @@ public:
   void update();
   void powerDown();
 
-void Epaper_Write_Command(uint8_t cmd);
-void Epaper_Write_CommandR(uint8_t cmd);
-void Epaper_Write_Data(uint8_t data);
- void Epaper_Spi_WriteByte(uint8_t TxData);
-void Epaper_Update_and_Deepsleep(void);
-void Epaper_Init(void);
-void Display_All_Red(void);
-void Display_All_Black(void);
-void Display_All_White(void);
- void EpaperIO_Init(void);
-
 protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
 };
 
-
 /*******************************************************************************/
-#define MAX_LINE_BYTES     16
-#define MAX_COLUMN_BYTES   296
-#define ALLSCREEN_BYTES   4736
+#define MAX_LINE_BYTES 16
+#define MAX_COLUMN_BYTES 296
+#define ALLSCREEN_BYTES 4736
 #define SPI_OUT 0
 #define SPI_IN 1
 #define MONO 0
 #define RED 1
 
-
 #endif
-

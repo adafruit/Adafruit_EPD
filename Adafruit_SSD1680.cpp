@@ -103,7 +103,7 @@ void Adafruit_SSD1680::busy_wait(void) {
 /**************************************************************************/
 void Adafruit_SSD1680::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true); // black defaults to inverted
+  setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to un inverted
   powerDown();
 }
@@ -145,8 +145,8 @@ void Adafruit_SSD1680::powerUp() {
   busy_wait();
 
   // Set display size and driver output control
-  buf[0] = (WIDTH-1);
-  buf[1] = (WIDTH-1) >> 8;
+  buf[0] = (WIDTH - 1);
+  buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1680_DRIVER_CONTROL, buf, 3);
 
@@ -160,8 +160,8 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[2] = (WIDTH-1);
-  buf[3] = (WIDTH-1) >> 8;
+  buf[2] = (WIDTH - 1);
+  buf[3] = (WIDTH - 1) >> 8;
   buf[0] = 0x00;
   buf[1] = 0x00;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
@@ -196,10 +196,9 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0 ;
+  buf[0] = 0;
   buf[1] = 0;
   EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
-
 }
 
 /**************************************************************************/
@@ -255,7 +254,7 @@ void Adafruit_SSD1680::setRAMAddress(uint16_t x, uint16_t y) {
   EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] =0;
+  buf[0] = 0;
   buf[1] = 0;
   EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
 }
