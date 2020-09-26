@@ -175,4 +175,5 @@ protected:
 #include "Adafruit_SSD1608.h"
 #include "Adafruit_SSD1675.h"
 #include "Adafruit_SSD1675B.h"
+#include "Adafruit_SSD1680.h"
 #endif /* _Adafruit_EPD_H_ */
