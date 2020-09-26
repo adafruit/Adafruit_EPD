@@ -168,7 +168,6 @@ void Adafruit_EPD::begin(bool reset) {
 
   if (!spi_dev->begin()) {
     return;
-
   }
 
   Serial.println("hard reset");
