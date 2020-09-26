@@ -7,5 +7,6 @@ var searchData=
   ['adafruit_5fmcpsram',['Adafruit_MCPSRAM',['../class_adafruit___m_c_p_s_r_a_m.html',1,'']]],
   ['adafruit_5fssd1608',['Adafruit_SSD1608',['../class_adafruit___s_s_d1608.html',1,'']]],
   ['adafruit_5fssd1675',['Adafruit_SSD1675',['../class_adafruit___s_s_d1675.html',1,'']]],
-  ['adafruit_5fssd1675b',['Adafruit_SSD1675B',['../class_adafruit___s_s_d1675_b.html',1,'']]]
+  ['adafruit_5fssd1675b',['Adafruit_SSD1675B',['../class_adafruit___s_s_d1675_b.html',1,'']]],
+  ['adafruit_5fssd1680',['Adafruit_SSD1680',['../class_adafruit___s_s_d1680.html',1,'']]]
 ];
