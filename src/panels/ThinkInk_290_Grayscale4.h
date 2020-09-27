@@ -17,6 +17,27 @@ const uint8_t gray4_init_code[] {
     0xFE // EOM
 };
 
+const uint8_t partial_init_code[] {
+  IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x03,
+    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+    IL0373_POWER_ON, 0,
+    0xFF, 200,
+    IL0373_PANEL_SETTING, 2, 0xbF, 0x0d,
+    IL0373_PLL, 1, 0x3C,    
+    IL0373_VCM_DC_SETTING, 1, 0x12,
+    IL0373_CDI, 1, 0x47,
+    0xFE // EOM
+};
+
+const uint8_t monofull_init_code[] {
+    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+    IL0373_POWER_ON, 0,
+    0xFF, 200,
+    IL0373_PANEL_SETTING, 2, 0x1f, 0x0d,
+    IL0373_CDI, 1, 0x97,
+    0xFE // EOM
+};
+
 const uint8_t gray4_lut_code[] = {
   //const unsigned char lut_vcom[] =
   0x20, 42,
@@ -92,21 +113,34 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     {
     };
 
-  void begin(bool reset = true) {
-    Adafruit_EPD::begin(reset);
+  void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4_FULL) {
+    Adafruit_EPD::begin(true);
     setBlackBuffer(1, true); // layer 0 uninverted
     setColorBuffer(0, true); // layer 1 uninverted
-    _epd_init_code = gray4_init_code;
-    _epd_fulllut_code = gray4_lut_code;
 
-    layer_colors[EPD_WHITE] = 0b00;
-    layer_colors[EPD_BLACK] = 0b11;
-    layer_colors[EPD_RED] = 0b01;
-    layer_colors[EPD_GRAY] = 0b10;
-    layer_colors[EPD_LIGHT] = 0b01;
-    layer_colors[EPD_DARK] = 0b10;
+    if (mode == THINKINK_GRAYSCALE4_FULL) {
+      _epd_init_code = gray4_init_code;
+      _epd_fulllut_code = gray4_lut_code;
 
-    default_refresh_delay = 800;
+      layer_colors[EPD_WHITE] = 0b00;
+      layer_colors[EPD_BLACK] = 0b11;
+      layer_colors[EPD_RED] = 0b01;
+      layer_colors[EPD_GRAY] = 0b10;
+      layer_colors[EPD_LIGHT] = 0b01;
+      layer_colors[EPD_DARK] = 0b10;
+    } 
+    if (mode == THINKINK_MONO_FULL) {
+      _epd_init_code = monofull_init_code;
+
+      layer_colors[EPD_WHITE] = 0b10;
+      layer_colors[EPD_BLACK] = 0b01;
+      layer_colors[EPD_RED] = 0b01;
+      layer_colors[EPD_GRAY] = 0b01;
+      layer_colors[EPD_LIGHT] = 0b10;
+      layer_colors[EPD_DARK] = 0b01;
+    }
+
+    default_refresh_delay = 1000;
 
     powerDown();
   };
