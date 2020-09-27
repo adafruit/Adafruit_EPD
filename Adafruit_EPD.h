@@ -20,40 +20,13 @@
 #ifndef _Adafruit_EPD_H_
 #define _Adafruit_EPD_H_
 
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
 //#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
-#if defined(__SAM3X8E__)
-typedef volatile RwReg PortReg; ///< a port register for fast access
-typedef uint32_t PortMask;      ///< a port register mask for your pin
-#define HAVE_PORTREG
-#elif defined(ARDUINO_ARCH_SAMD)
-// not supported
-#elif defined(ESP8266) || defined(ESP32) || defined(ARDUINO_STM32_FEATHER) ||  \
-    defined(__arc__)
-typedef volatile uint32_t PortReg; ///< a port register for fast access
-typedef uint32_t PortMask;         ///< a port register mask for your pin
-#elif defined(__AVR__)
-typedef volatile uint8_t PortReg; ///< a port register for fast access
-typedef uint8_t PortMask;         ///< a port register mask for your pin
-#define HAVE_PORTREG
-#else
-// chances are its 32 bit so assume that
-typedef volatile uint32_t PortReg; ///< a port register for fast access
-typedef uint32_t PortMask;         ///< a port register mask for your pin
-#endif
-
 #include "Adafruit_MCPSRAM.h"
-
 #include <Adafruit_GFX.h>
-#include <SPI.h>
+#include <Adafruit_SPIDevice.h>
 
 /**************************************************************************/
 /*!
@@ -142,14 +115,15 @@ protected:
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin,              ///< sid pin
-      _sclk_pin,                ///< serial clock pin
-      _dc_pin,                  ///< data/command pin
-      _reset_pin,               ///< reset pin
-      _cs_pin,                  ///< chip select pin
-      _busy_pin;                ///< busy pin
-  SPIClass *_spi = NULL;        ///< SPI object
-  static bool _isInTransaction; ///< true if SPI bus is in trasnfer state
+  int8_t _sid_pin,                    ///< sid pin
+      _sclk_pin,                      ///< serial clock pin
+      _dc_pin,                        ///< data/command pin
+      _reset_pin,                     ///< reset pin
+      _cs_pin,                        ///< chip select pin
+      _busy_pin;                      ///< busy pin
+  SPIClass *_spi = NULL;              ///< SPI object
+  Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
+  static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
   bool singleByteTxns;   ///< if true CS will go high after every data byte
                          ///< transferred
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
@@ -179,16 +153,12 @@ protected:
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
   bool hwSPI;    ///< true if using hardware SPI
-#ifdef HAVE_PORTREG
-  PortReg *mosiport,    ///< mosi port register
-      *clkport,         ///< serial clock port register
-      *csport,          ///< chip select port register
-      *dcport;          ///< data/command port register
-  PortMask mosipinmask, ///< mosi pin mask
-      clkpinmask,       ///< serial clock pin mask
-      cspinmask,        ///< chip select pin mask
-      dcpinmask;        ///< data / command pin mask
+
+#if defined(BUSIO_USE_FAST_PINIO)
+  BusIO_PortReg *csPort, *dcPort;
+  BusIO_PortMask csPinMask, dcPinMask;
 #endif
+
   void csLow();
   void csHigh();
   void dcHigh();
