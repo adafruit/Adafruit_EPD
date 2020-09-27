@@ -200,18 +200,51 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     uint8_t buf[7];
     uint8_t c;
 
+    // check rotation, move window around if necessary
+    switch (getRotation()) {
+    case 0:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      y1 = WIDTH - y1;
+      y2 = WIDTH - y2;
+      break;
+    case 1:
+      break;
+    case 2:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      x1 = HEIGHT - x1;
+      x2 = HEIGHT - x2;
+      break;
+    case 3:
+      y1 = WIDTH - y1;
+      y2 = WIDTH - y2;
+      x1 = HEIGHT - x1;
+      x2 = HEIGHT - x2;
+    }
+    if (x1 > x2)  EPD_swap(x1, x2);
+    if (y1 > y2)  EPD_swap(y1, y2);
+
+    /*
+    Serial.print("x: ");
+    Serial.print(x1);
+    Serial.print(" -> ");
+    Serial.println(x2);
+    Serial.print("y: ");
+    Serial.print(y1);
+    Serial.print(" -> ");
+    Serial.println(y2);
+    */
+
     // x1 and x2 must be on byte boundaries
     x1 -= x1 % 8; // round down;
     x2 = (x2 + 7) & ~0b111; // round up
 
-    uint16_t part_width = x2 - x1;
-    uint16_t part_height = y2 - y1;
-
     //Serial.println("Partial update!");
 
+    // backup & change init to the partial code
     const uint8_t *init_code_backup = _epd_init_code;
     const uint8_t *lut_code_backup = _epd_fulllut_code;
-    // change init to the partial code
     _epd_init_code = monopart_init_code;
     _epd_fulllut_code = monopart_lut_code;
 
@@ -237,6 +270,7 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
       for (uint16_t x = x1; x < x2; x+=8) {
         uint16_t i = (x / 8) + y * 16;
         SPItransfer(~buffer1[i]);
+        //SPItransfer(0);
       }
     }
     csHigh();
@@ -246,7 +280,7 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     writeRAMCommand(1);
     dcHigh();
     
-    Serial.print("Transfering: ");
+    //Serial.print("Transfering: ");
 
     for (uint16_t y = y1; y < y2; y++) {
       for (uint16_t x = x1; x < x2; x+=8) {
@@ -259,6 +293,7 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
         if (i % 16 == 15) Serial.println();
         */
         SPItransfer(~buffer2[i]);
+        //SPItransfer(0xFF);
       }
     }
     Serial.println();
