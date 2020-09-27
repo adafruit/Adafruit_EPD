@@ -3,7 +3,7 @@
 
 #include "Adafruit_EPD.h"
 
-
+// clang-format off
 
 const uint8_t gray4_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
@@ -14,11 +14,11 @@ const uint8_t gray4_init_code[] {
     IL0373_PLL, 1, 0x3C,    
     IL0373_VCM_DC_SETTING, 1, 0x12,
     IL0373_CDI, 1, 0x97,
-    0xFE};
-
+    0xFE // EOM
+};
 
 const uint8_t gray4_lut_code[] = {
-//const unsigned char lut_vcom[] =
+  //const unsigned char lut_vcom[] =
   0x20, 42,
   0x00, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x60, 0x14, 0x14, 0x00, 0x00, 0x01,
@@ -68,9 +68,10 @@ const uint8_t gray4_lut_code[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
-  0xFE
+  0xFE // EOM
 };
 
+// clang-format on
 
 
 class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
@@ -104,6 +105,8 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     layer_colors[EPD_GRAY] = 0b10;
     layer_colors[EPD_LIGHT] = 0b01;
     layer_colors[EPD_DARK] = 0b10;
+
+    default_refresh_delay = 800;
 
     powerDown();
   };

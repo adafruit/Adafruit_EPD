@@ -129,6 +129,7 @@ protected:
 
   const uint8_t *_epd_init_code = NULL;
   const uint8_t *_epd_fulllut_code = NULL;
+  uint16_t default_refresh_delay = 15000;
 
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 

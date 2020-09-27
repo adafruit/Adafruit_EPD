@@ -137,7 +137,7 @@ void Adafruit_IL0373::update() {
 
   busy_wait();
   if (_busy_pin <= -1) {
-    delay(15000);
+    delay(default_refresh_delay);
   }
 }
 
