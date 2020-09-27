@@ -158,8 +158,8 @@ void Adafruit_IL0373::powerUp(void) {
   }
   EPD_commandList(init_code);
   
-  if (_epd_lut_code) {
-    EPD_commandList(_epd_lut_code);
+  if (_epd_fulllut_code) {
+    EPD_commandList(_epd_fulllut_code);
   }
 
   buf[0] = HEIGHT & 0xFF;

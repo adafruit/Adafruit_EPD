@@ -215,7 +215,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 
-  uint8_t *pBuf;
+  uint8_t *black_pBuf, *color_pBuf;
 
   // deal with non-8-bit heights
   uint16_t _HEIGHT = HEIGHT;
@@ -239,35 +239,66 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   }
   uint16_t addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
-  uint8_t c;
+  uint8_t black_c, color_c;
+
   if (use_sram) {
-    if ((color == EPD_RED) || (color == EPD_GRAY)) {
-      addr = colorbuffer_addr + addr;
-    } else {
-      addr = blackbuffer_addr + addr;
-    }
-    c = sram.read8(addr);
-    pBuf = &c;
+    black_c = sram.read8(blackbuffer_addr + addr);
+    black_pBuf = &black_c;
+    color_c = sram.read8(colorbuffer_addr + addr);
+    color_pBuf = &color_c;
   } else {
-    if ((color == EPD_RED) || (color == EPD_GRAY)) {
-      pBuf = color_buffer + addr;
-    } else {
-      pBuf = black_buffer + addr;
-    }
+      color_pBuf = color_buffer + addr;
+      black_pBuf = black_buffer + addr;
   }
 
-  if (((color == EPD_RED || color == EPD_GRAY) && colorInverted) ||
-      ((color == EPD_BLACK) && blackInverted)) {
-    *pBuf &= ~(1 << (7 - y % 8));
-  } else if (((color == EPD_RED || color == EPD_GRAY) && !colorInverted) ||
-             ((color == EPD_BLACK) && !blackInverted)) {
-    *pBuf |= (1 << (7 - y % 8));
-  } else if (color == EPD_INVERSE) {
-    *pBuf ^= (1 << (7 - y % 8));
+  bool color_bit, black_bit;
+
+  if (color == EPD_RED || color == EPD_GRAY) {
+    // Turn color layer on only
+    color_bit = true;
+    black_bit = false;
+  }
+
+  if (color == EPD_WHITE) {
+    // Turn both layers off!
+    color_bit = false;
+    black_bit = false;
+  }
+
+  if (color == EPD_BLACK) {
+    // Turn black layer on only!
+    color_bit = false;
+    black_bit = true;
+  }
+
+  if (color == EPD_BLACK) {
+    // Turn black layer on only!
+    color_bit = false;
+    black_bit = true;
+  }
+
+  if (color == EPD_BOTH) {
+    // Turn both layers on
+    color_bit = true;
+    black_bit = true;
+  }
+
+
+  if ((color_bit && colorInverted) || (!color_bit && !colorInverted)) {
+    *color_pBuf &= ~(1 << (7 - y % 8));
+  } else {
+    *color_pBuf |= (1 << (7 - y % 8));
+  }
+
+  if ((black_bit && blackInverted) || (!black_bit && !blackInverted)) {
+    *black_pBuf &= ~(1 << (7 - y % 8));
+  } else {
+    *black_pBuf |= (1 << (7 - y % 8));
   }
 
   if (use_sram) {
-    sram.write8(addr, *pBuf);
+    sram.write8(colorbuffer_addr + addr, *color_pBuf);
+    sram.write8(blackbuffer_addr + addr, *black_pBuf);
   }
 }
 
@@ -480,6 +511,7 @@ void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
       Serial.println("ERROR - buf not large enough!");
       while (1) delay(10);
     }
+
     for (int i=0; i<num_args; i++) {
       buf[i] = init_code[0];
       init_code++;

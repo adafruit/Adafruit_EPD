@@ -37,6 +37,7 @@ enum {
   EPD_BLACK,   ///< black color
   EPD_WHITE,   ///< white color
   EPD_INVERSE, ///< invert color
+  EPD_BOTH,    ///< both colors!
   EPD_RED,     ///< red color
   EPD_GRAY,    ///< gray color ('red' on grayscale)
   EPD_DARK,    ///< darker color
@@ -128,7 +129,7 @@ protected:
                          ///< transferred
 
   const uint8_t *_epd_init_code = NULL;
-  const uint8_t *_epd_lut_code = NULL;
+  const uint8_t *_epd_fulllut_code = NULL;
 
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 

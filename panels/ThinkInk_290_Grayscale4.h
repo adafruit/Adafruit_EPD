@@ -1,7 +1,9 @@
-#ifndef _THINKINK_PANELS_H
-#define _THINKINK_PANELS_H
+#ifndef _THINKINK_290_GRAYSCALE4_H
+#define _THINKINK_290_GRAYSCALE4_H
 
 #include "Adafruit_EPD.h"
+
+
 
 const uint8_t gray4_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
@@ -75,6 +77,10 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
  private:
 
  public:
+  static const uint8_t COLOR_WHITE = EPD_WHITE;
+  static const uint8_t COLOR_LGRAY = EPD_BLACK;
+  static const uint8_t COLOR_DGRAY = EPD_GRAY;
+  static const uint8_t COLOR_BLACK = EPD_BOTH;
 
   ThinkInk_290_Grayscale4(int8_t SID, int8_t SCLK, int8_t DC,
                           int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
@@ -91,14 +97,14 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
 
   void begin(bool reset = true) {
     Adafruit_EPD::begin(reset);
-    setBlackBuffer(1, false); // layer 0 uninverted
-    setColorBuffer(0, false); // layer 1 uninverted
+    setBlackBuffer(1, true); // layer 0 uninverted
+    setColorBuffer(0, true); // layer 1 uninverted
     _epd_init_code = gray4_init_code;
-    _epd_lut_code = gray4_lut_code;
+    _epd_fulllut_code = gray4_lut_code;
     powerDown();
   };
 };
 
 
 
-#endif // _THINKINK_PANELS_H
+#endif // _THINKINK_290_GRAYSCALE4_H
