@@ -17,10 +17,10 @@
  *
  */
 
-#ifndef _Adafruit_EPD_H_
-#define _Adafruit_EPD_H_
+#ifndef _ADAFRUIT_EPD_H_
+#define _ADAFRUIT_EPD_H_
 
-//#define EPD_DEBUG
+#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
@@ -93,12 +93,15 @@ protected:
   /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
 
+
+  virtual void busy_wait(void)  = 0;
+
   /**************************************************************************/
   /*!
     @brief start up the display
   */
   /**************************************************************************/
-  virtual void powerUp(void) = 0;
+  virtual void powerUp() = 0;
 
   /**************************************************************************/
   /*!
@@ -115,17 +118,18 @@ protected:
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin,                    ///< sid pin
-      _sclk_pin,                      ///< serial clock pin
-      _dc_pin,                        ///< data/command pin
-      _reset_pin,                     ///< reset pin
-      _cs_pin,                        ///< chip select pin
-      _busy_pin;                      ///< busy pin
-  SPIClass *_spi = NULL;              ///< SPI object
+  int8_t _dc_pin,                        ///< data/command pin
+    _reset_pin,                     ///< reset pin
+    _cs_pin,                        ///< chip select pin
+    _busy_pin;                      ///< busy pin
   Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
   static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
   bool singleByteTxns;   ///< if true CS will go high after every data byte
                          ///< transferred
+
+  const uint8_t *_epd_init_code = NULL;
+  const uint8_t *_epd_lut_code = NULL;
+
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 
   bool blackInverted;    ///< is black channel inverted
@@ -144,6 +148,7 @@ protected:
   uint16_t colorbuffer_addr; ///< The SRAM address offsets for the color buffer
   uint16_t blackbuffer_addr; ///< The SRAM address offsets for the black buffer
 
+    void EPD_commandList(const uint8_t *init_code);
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end = true);
   void EPD_data(const uint8_t *buf, uint16_t len);
@@ -152,7 +157,6 @@ protected:
   uint8_t SPItransfer(uint8_t c);
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
-  bool hwSPI;    ///< true if using hardware SPI
 
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
@@ -165,10 +169,6 @@ protected:
   void dcLow();
 };
 
-/*
-#include "Adafruit_IL0371.h"
-#include "Adafruit_IL0376F.h"
-*/
 #include "Adafruit_IL0373.h"
 #include "Adafruit_IL0398.h"
 #include "Adafruit_IL91874.h"
@@ -176,4 +176,5 @@ protected:
 #include "Adafruit_SSD1675.h"
 #include "Adafruit_SSD1675B.h"
 #include "Adafruit_SSD1680.h"
-#endif /* _Adafruit_EPD_H_ */
+
+#endif /* _ADAFRUIT_EPD_H_ */

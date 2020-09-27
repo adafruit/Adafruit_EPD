@@ -3,6 +3,32 @@
 
 #define BUSY_WAIT 500
 
+const uint8_t il0373_default_init_code[] {
+  IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x09,
+    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+    IL0373_POWER_ON, 0,
+    0xFF, 200,
+    IL0373_PANEL_SETTING, 1, 0xCF,
+    IL0373_CDI, 1, 0x37,
+    IL0373_PLL, 1, 0x29,    
+    IL0373_VCM_DC_SETTING, 1, 0x0A,
+    0xFF, 20,
+    0xFE};
+
+const unsigned char LUTDefault_full[31]{
+    0x32, // command
+    0x02, // C221 25C Full update waveform
+    0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22, 0x66, 0x69, 0x69,
+    0x59, 0x58, 0x99, 0x99, 0x88, 0x00, 0x00, 0x00, 0x00, 0xF8,
+    0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00};
+
+const unsigned char LUTDefault_part[31] = {
+    0x32, // command
+    0x10, // C221 25C partial update waveform
+    0x18, 0x18, 0x08, 0x18, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x13,
+    0x14, 0x44, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -120,44 +146,26 @@ void Adafruit_IL0373::update() {
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_IL0373::powerUp() {
+void Adafruit_IL0373::powerUp(void) {
   uint8_t buf[5];
 
   hardwareReset();
 
-  buf[0] = 0x03;
-  buf[1] = 0x00;
-  buf[2] = 0x2b;
-  buf[3] = 0x2b;
-  buf[4] = 0x09;
-  EPD_command(IL0373_POWER_SETTING, buf, 5);
+  const uint8_t *init_code = il0373_default_init_code;
 
-  buf[0] = 0x17;
-  buf[1] = 0x17;
-  buf[2] = 0x17;
-  EPD_command(IL0373_BOOSTER_SOFT_START, buf, 3);
-
-  EPD_command(IL0373_POWER_ON);
-  busy_wait();
-  delay(200);
-
-  buf[0] = 0xCF;
-  EPD_command(IL0373_PANEL_SETTING, buf, 1);
-
-  buf[0] = 0x37;
-  EPD_command(IL0373_CDI, buf, 1);
-
-  buf[0] = 0x29;
-  EPD_command(IL0373_PLL, buf, 1);
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
+  
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
 
   buf[0] = HEIGHT & 0xFF;
   buf[1] = (WIDTH >> 8) & 0xFF;
   buf[2] = WIDTH & 0xFF;
   EPD_command(IL0373_RESOLUTION, buf, 3);
-
-  buf[0] = 0x0A;
-  EPD_command(IL0373_VCM_DC_SETTING, buf, 1);
-  delay(20);
 }
 
 /**************************************************************************/

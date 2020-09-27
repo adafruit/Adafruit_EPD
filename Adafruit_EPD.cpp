@@ -101,7 +101,6 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
   _reset_pin = RST;
   _dc_pin = DC;
   _busy_pin = BUSY;
-  _spi = spi;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
@@ -112,7 +111,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
                                    4000000,               // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
                                    SPI_MODE0,             // data mode
-                                   _spi);
+                                   spi);
 
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
@@ -458,6 +457,35 @@ void Adafruit_EPD::clearDisplay() {
   display();
   delay(100);
   display();
+}
+
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
+  uint8_t buf[64];
+
+  while (init_code[0] != 0xFE) {
+    char cmd = init_code[0];
+    init_code++;
+    int num_args = init_code[0];
+    init_code++;
+    if (cmd == 0xFF) {
+      busy_wait();
+      delay(num_args);
+      continue;
+    }
+    if (num_args > sizeof(buf)) {
+      Serial.println("ERROR - buf not large enough!");
+      while (1) delay(10);
+    }
+    for (int i=0; i<num_args; i++) {
+      buf[i] = init_code[0];
+      init_code++;
+    }
+    EPD_command(cmd, buf, num_args);
+  }
 }
 
 /**************************************************************************/
