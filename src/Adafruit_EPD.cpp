@@ -289,6 +289,10 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 void Adafruit_EPD::display(void) {
   uint8_t c;
 
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Up");
+#endif
+
   powerUp();
 
   // Set X & Y ram counters
@@ -363,7 +367,14 @@ void Adafruit_EPD::display(void) {
     csHigh();
   }
 
+#ifdef EPD_DEBUG
+  Serial.println("  Update");
+#endif
   update();
+
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Down");
+#endif
 
   powerDown();
 }
@@ -529,9 +540,8 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 
   uint8_t data = SPItransfer(c);
 #ifdef EPD_DEBUG
-  Serial.print("\nCommand: 0x");
-  Serial.print(c, HEX);
-  Serial.print(" - ");
+  Serial.print("\tCommand: 0x");
+  Serial.println(c, HEX);
 #endif
 
   if (end) {
@@ -553,7 +563,7 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
   dcHigh();
 
 #ifdef EPD_DEBUG
-  Serial.print("Data: ");
+  Serial.print("\tData: ");
 #endif
   for (uint16_t i = 0; i < len; i++) {
     SPItransfer(buf[i]);
@@ -563,9 +573,11 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
     Serial.print(", ");
 #endif
   }
+
 #ifdef EPD_DEBUG
-  Serial.println();
+    Serial.println();
 #endif
+
   csHigh();
 }
 
