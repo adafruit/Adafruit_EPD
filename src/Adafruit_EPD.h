@@ -173,12 +173,12 @@ protected:
   void dcLow();
 };
 
-#include "Adafruit_IL0373.h"
-#include "Adafruit_IL0398.h"
-#include "Adafruit_IL91874.h"
-#include "Adafruit_SSD1608.h"
-#include "Adafruit_SSD1675.h"
-#include "Adafruit_SSD1675B.h"
-#include "Adafruit_SSD1680.h"
+#include "drivers/Adafruit_IL0373.h"
+#include "drivers/Adafruit_IL0398.h"
+#include "drivers/Adafruit_IL91874.h"
+#include "drivers/Adafruit_SSD1608.h"
+#include "drivers/Adafruit_SSD1675.h"
+#include "drivers/Adafruit_SSD1675B.h"
+#include "drivers/Adafruit_SSD1680.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */
