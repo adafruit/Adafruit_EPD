@@ -197,7 +197,7 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
   };
 
   void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-    uint8_t buf[6];
+    uint8_t buf[7];
     uint8_t c;
     uint16_t part_width = x2 - x1;
     uint16_t part_height = y2 - y1;
@@ -224,37 +224,36 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     buf[3] = y1 & 0xFF;
     buf[4] = y2 >> 8;
     buf[5] = y2 & 0xFF;
-    EPD_command(IL0373_PARTIAL_WINDOW, buf, 6);
+    buf[6] = 0x28;
+    EPD_command(IL0373_PARTIAL_WINDOW, buf, 7);
 
     // display....
 
-    // Set X & Y ram counters
-    setRAMAddress(0, 0);
-    
     // write image
     writeRAMCommand(0);
     dcHigh();
-    for (uint16_t i = 0; i < buffer1_size; i++) {
-      SPItransfer(buffer1[i]);
+    for (uint16_t y = 0; y < part_height; y+=8) {
+      for (uint16_t x = 0; x < part_width; x++) {
+        //for (uint16_t i = 0; i < (part_width * part_height) / 8; i++) {
+        SPItransfer(0x00);
+      }
     }
     csHigh();
     
-    if (buffer2_size != 0) {
-      // oh there's another buffer eh?
-      delay(2);
-      
-      // Set X & Y ram counters
-      setRAMAddress(0, 0);
-      
-      writeRAMCommand(1);
-      dcHigh();
+    delay(2);
     
-      for (uint16_t i = 0; i < buffer2_size; i++) {
-        SPItransfer(buffer2[i]);
+    writeRAMCommand(1);
+    dcHigh();
+    
+    //for (uint16_t i = 0; i < (part_width * part_height) / 8; i++) {
+    for (uint16_t y = 0; y < part_height; y+=8) {
+      for (uint16_t x = 0; x < part_width; x++) {
+        uint16_t i = x + (y / 8) * 128;
+        SPItransfer(~buffer1[i]);
       }
-      csHigh();
     }
-      
+    csHigh();
+    
 #ifdef EPD_DEBUG
       Serial.println("  Update");
 #endif
