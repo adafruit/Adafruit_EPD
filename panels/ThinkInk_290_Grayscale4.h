@@ -77,10 +77,6 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
  private:
 
  public:
-  static const uint8_t COLOR_WHITE = EPD_WHITE;
-  static const uint8_t COLOR_LGRAY = EPD_BLACK;
-  static const uint8_t COLOR_DGRAY = EPD_GRAY;
-  static const uint8_t COLOR_BLACK = EPD_BOTH;
 
   ThinkInk_290_Grayscale4(int8_t SID, int8_t SCLK, int8_t DC,
                           int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
@@ -101,6 +97,14 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     setColorBuffer(0, true); // layer 1 uninverted
     _epd_init_code = gray4_init_code;
     _epd_fulllut_code = gray4_lut_code;
+
+    layer_colors[EPD_WHITE] = 0b00;
+    layer_colors[EPD_BLACK] = 0b11;
+    layer_colors[EPD_RED] = 0b01;
+    layer_colors[EPD_GRAY] = 0b10;
+    layer_colors[EPD_LIGHT] = 0b01;
+    layer_colors[EPD_DARK] = 0b10;
+
     powerDown();
   };
 };

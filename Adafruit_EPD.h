@@ -34,14 +34,13 @@
 */
 /**************************************************************************/
 enum {
-  EPD_BLACK,   ///< black color
   EPD_WHITE,   ///< white color
-  EPD_INVERSE, ///< invert color
-  EPD_BOTH,    ///< both colors!
+  EPD_BLACK,   ///< black color
   EPD_RED,     ///< red color
   EPD_GRAY,    ///< gray color ('red' on grayscale)
   EPD_DARK,    ///< darker color
   EPD_LIGHT,   ///< lighter color
+  EPD_NUM_COLORS
 };
 
 #define EPD_swap(a, b)                                                         \
@@ -135,6 +134,9 @@ protected:
 
   bool blackInverted;    ///< is black channel inverted
   bool colorInverted;    ///< is red channel inverted
+
+  uint8_t layer_colors[EPD_NUM_COLORS];
+
   uint16_t buffer1_size; ///< size of the primary buffer
   uint16_t buffer2_size; ///< size of the secondary buffer
   uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram

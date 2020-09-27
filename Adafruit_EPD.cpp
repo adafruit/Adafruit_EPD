@@ -146,6 +146,13 @@ void Adafruit_EPD::begin(bool reset) {
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to not inverted
 
+  layer_colors[EPD_WHITE] = 0b00;
+  layer_colors[EPD_BLACK] = 0b01;
+  layer_colors[EPD_RED] = 0b10;
+  layer_colors[EPD_GRAY] = 0b10;
+  layer_colors[EPD_DARK] = 0b01;
+  layer_colors[EPD_LIGHT] = 0b10;
+
   if (use_sram) {
     sram.begin();
     sram.write8(0, K640_SEQUENTIAL_MODE, MCPSRAM_WRSR);
@@ -253,36 +260,8 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   bool color_bit, black_bit;
 
-  if (color == EPD_RED || color == EPD_GRAY) {
-    // Turn color layer on only
-    color_bit = true;
-    black_bit = false;
-  }
-
-  if (color == EPD_WHITE) {
-    // Turn both layers off!
-    color_bit = false;
-    black_bit = false;
-  }
-
-  if (color == EPD_BLACK) {
-    // Turn black layer on only!
-    color_bit = false;
-    black_bit = true;
-  }
-
-  if (color == EPD_BLACK) {
-    // Turn black layer on only!
-    color_bit = false;
-    black_bit = true;
-  }
-
-  if (color == EPD_BOTH) {
-    // Turn both layers on
-    color_bit = true;
-    black_bit = true;
-  }
-
+  black_bit = layer_colors[color] & 0x1;
+  color_bit = layer_colors[color] & 0x2;
 
   if ((color_bit && colorInverted) || (!color_bit && !colorInverted)) {
     *color_pBuf &= ~(1 << (7 - y % 8));
