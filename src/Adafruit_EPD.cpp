@@ -254,8 +254,8 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     color_c = sram.read8(colorbuffer_addr + addr);
     color_pBuf = &color_c;
   } else {
-      color_pBuf = color_buffer + addr;
-      black_pBuf = black_buffer + addr;
+    color_pBuf = color_buffer + addr;
+    black_pBuf = black_buffer + addr;
   }
 
   bool color_bit, black_bit;
@@ -482,7 +482,7 @@ void Adafruit_EPD::clearDisplay() {
 
 /**************************************************************************/
 /*!
-*/
+ */
 /**************************************************************************/
 void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
   uint8_t buf[64];
@@ -499,10 +499,11 @@ void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
     }
     if (num_args > sizeof(buf)) {
       Serial.println("ERROR - buf not large enough!");
-      while (1) delay(10);
+      while (1)
+        delay(10);
     }
 
-    for (int i=0; i<num_args; i++) {
+    for (int i = 0; i < num_args; i++) {
       buf[i] = init_code[0];
       init_code++;
     }
@@ -575,7 +576,7 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
   }
 
 #ifdef EPD_DEBUG
-    Serial.println();
+  Serial.println();
 #endif
 
   csHigh();

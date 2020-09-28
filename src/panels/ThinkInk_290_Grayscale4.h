@@ -145,24 +145,16 @@ const uint8_t gray4_lut_code[] = {
 
 // clang-format on
 
-
 class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
- private:
+private:
+public:
+  ThinkInk_290_Grayscale4(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
+                          int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1)
+      : Adafruit_IL0373(296, 128, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
- public:
-
-  ThinkInk_290_Grayscale4(int8_t SID, int8_t SCLK, int8_t DC,
-                          int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
-                          int8_t BUSY = -1) 
-    : Adafruit_IL0373(296, 128, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY)
-    {
-    };
-
-  ThinkInk_290_Grayscale4(int8_t DC, int8_t RST, int8_t CS,
-                          int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI)
-    : Adafruit_IL0373(296, 128, DC, RST, CS, SRCS, BUSY, spi) 
-    {
-    };
+  ThinkInk_290_Grayscale4(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+                          int8_t BUSY = -1, SPIClass *spi = &SPI)
+      : Adafruit_IL0373(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
     Adafruit_EPD::begin(true);
@@ -179,7 +171,7 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
       layer_colors[EPD_GRAY] = 0b10;
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
-    } 
+    }
     if (mode == THINKINK_MONO) {
       _epd_init_code = monofull_init_code;
       _epd_partial_init_code = monopart_init_code;
@@ -197,9 +189,6 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
 
     powerDown();
   };
-
 };
-
-
 
 #endif // _THINKINK_290_GRAYSCALE4_H

@@ -34,12 +34,12 @@
 */
 /**************************************************************************/
 enum {
-  EPD_WHITE,   ///< white color
-  EPD_BLACK,   ///< black color
-  EPD_RED,     ///< red color
-  EPD_GRAY,    ///< gray color ('red' on grayscale)
-  EPD_DARK,    ///< darker color
-  EPD_LIGHT,   ///< lighter color
+  EPD_WHITE, ///< white color
+  EPD_BLACK, ///< black color
+  EPD_RED,   ///< red color
+  EPD_GRAY,  ///< gray color ('red' on grayscale)
+  EPD_DARK,  ///< darker color
+  EPD_LIGHT, ///< lighter color
   EPD_NUM_COLORS
 };
 
@@ -93,8 +93,7 @@ protected:
   /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
 
-
-  virtual void busy_wait(void)  = 0;
+  virtual void busy_wait(void) = 0;
 
   /**************************************************************************/
   /*!
@@ -118,14 +117,14 @@ protected:
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _dc_pin,                        ///< data/command pin
-    _reset_pin,                     ///< reset pin
-    _cs_pin,                        ///< chip select pin
-    _busy_pin;                      ///< busy pin
+  int8_t _dc_pin,                     ///< data/command pin
+      _reset_pin,                     ///< reset pin
+      _cs_pin,                        ///< chip select pin
+      _busy_pin;                      ///< busy pin
   Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
   static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
-  bool singleByteTxns;   ///< if true CS will go high after every data byte
-                         ///< transferred
+  bool singleByteTxns; ///< if true CS will go high after every data byte
+                       ///< transferred
 
   const uint8_t *_epd_init_code = NULL;
   const uint8_t *_epd_lut_code = NULL;
@@ -136,8 +135,8 @@ protected:
 
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 
-  bool blackInverted;    ///< is black channel inverted
-  bool colorInverted;    ///< is red channel inverted
+  bool blackInverted; ///< is black channel inverted
+  bool colorInverted; ///< is red channel inverted
 
   uint8_t layer_colors[EPD_NUM_COLORS];
 
@@ -155,7 +154,7 @@ protected:
   uint16_t colorbuffer_addr; ///< The SRAM address offsets for the color buffer
   uint16_t blackbuffer_addr; ///< The SRAM address offsets for the black buffer
 
-    void EPD_commandList(const uint8_t *init_code);
+  void EPD_commandList(const uint8_t *init_code);
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end = true);
   void EPD_data(const uint8_t *buf, uint16_t len);

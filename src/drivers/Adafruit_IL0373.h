@@ -4,7 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-
 #define IL0373_PANEL_SETTING 0x00
 #define IL0373_POWER_SETTING 0x01
 #define IL0373_POWER_OFF 0x02
@@ -33,10 +32,8 @@
 #define IL0373_PARTIAL_ENTER 0x91
 #define IL0373_PARTIAL_EXIT 0x92
 
-
-#define EPD_RAM_BW  IL0373_DTM1
+#define EPD_RAM_BW IL0373_DTM1
 #define EPD_RAM_RED IL0373_DTM2
-
 
 /**************************************************************************/
 /*!
@@ -44,8 +41,7 @@
 */
 /**************************************************************************/
 class Adafruit_IL0373 : public Adafruit_EPD {
- private:
-
+private:
 public:
   Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
