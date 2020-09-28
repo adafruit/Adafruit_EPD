@@ -3,6 +3,8 @@
 
 #define BUSY_WAIT 500
 
+// clang-format off
+
 const uint8_t il0373_default_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x09,
     IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
@@ -15,19 +17,7 @@ const uint8_t il0373_default_init_code[] {
     0xFF, 20,
     0xFE};
 
-const unsigned char LUTDefault_full[31]{
-    0x32, // command
-    0x02, // C221 25C Full update waveform
-    0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22, 0x66, 0x69, 0x69,
-    0x59, 0x58, 0x99, 0x99, 0x88, 0x00, 0x00, 0x00, 0x00, 0xF8,
-    0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00};
-
-const unsigned char LUTDefault_part[31] = {
-    0x32, // command
-    0x10, // C221 25C partial update waveform
-    0x18, 0x18, 0x08, 0x18, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x13,
-    0x14, 0x44, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+// clang-format on
 
 /**************************************************************************/
 /*!
@@ -158,8 +148,8 @@ void Adafruit_IL0373::powerUp(void) {
   }
   EPD_commandList(init_code);
   
-  if (_epd_fulllut_code) {
-    EPD_commandList(_epd_fulllut_code);
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
   }
 
   buf[0] = HEIGHT & 0xFF;
@@ -215,3 +205,124 @@ uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
 void Adafruit_IL0373::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
 }
+
+  void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+    uint8_t buf[7];
+    uint8_t c;
+
+    // check rotation, move window around if necessary
+    switch (getRotation()) {
+    case 0:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      y1 = WIDTH - y1;
+      y2 = WIDTH - y2;
+      break;
+    case 1:
+      break;
+    case 2:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      x1 = HEIGHT - x1;
+      x2 = HEIGHT - x2;
+      break;
+    case 3:
+      y1 = WIDTH - y1;
+      y2 = WIDTH - y2;
+      x1 = HEIGHT - x1;
+      x2 = HEIGHT - x2;
+    }
+    if (x1 > x2)  EPD_swap(x1, x2);
+    if (y1 > y2)  EPD_swap(y1, y2);
+
+    /*
+    Serial.print("x: ");
+    Serial.print(x1);
+    Serial.print(" -> ");
+    Serial.println(x2);
+    Serial.print("y: ");
+    Serial.print(y1);
+    Serial.print(" -> ");
+    Serial.println(y2);
+    */
+
+    // x1 and x2 must be on byte boundaries
+    x1 -= x1 % 8; // round down;
+    x2 = (x2 + 7) & ~0b111; // round up
+
+    //Serial.println("Partial update!");
+
+    // backup & change init to the partial code
+    const uint8_t *init_code_backup = _epd_init_code;
+    const uint8_t *lut_code_backup = _epd_lut_code;
+    _epd_init_code = _epd_partial_init_code;
+    _epd_lut_code = _epd_partial_lut_code;
+
+    // perform standard power up
+    powerUp();
+
+    EPD_command(IL0373_PARTIAL_ENTER);
+    buf[0] = x1;
+    buf[1] = x2-1;
+    buf[2] = y1 >> 8;
+    buf[3] = y1 & 0xFF;
+    buf[4] = (y2-1) >> 8;
+    buf[5] = (y2-1) & 0xFF;
+    buf[6] = 0x28;
+    EPD_command(IL0373_PARTIAL_WINDOW, buf, 7);
+
+    // display....
+
+    // write image
+    writeRAMCommand(0);
+    dcHigh();
+    for (uint16_t y = y1; y < y2; y++) {
+      for (uint16_t x = x1; x < x2; x+=8) {
+        uint16_t i = (x / 8) + y * 16;
+        SPItransfer(black_buffer[i]);
+        //SPItransfer(0);
+      }
+    }
+    csHigh();
+    
+    delay(2);
+    
+    writeRAMCommand(1);
+    dcHigh();
+    
+    //Serial.print("Transfering: ");
+
+    for (uint16_t y = y1; y < y2; y++) {
+      for (uint16_t x = x1; x < x2; x+=8) {
+        uint16_t i = (x / 8) + y * 16;
+        /*
+        Serial.print(i); 
+        Serial.print(" (0x"); 
+        Serial.print(buffer2[i]);
+        Serial.print("), ");
+        if (i % 16 == 15) Serial.println();
+        */
+        SPItransfer(~black_buffer[i]);
+        //SPItransfer(0xFF);
+      }
+    }
+    Serial.println();
+    csHigh();
+    
+#ifdef EPD_DEBUG
+      Serial.println("  Update");
+#endif
+
+    update();
+
+    EPD_command(IL0373_PARTIAL_EXIT);
+
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Down");
+#endif
+
+    powerDown();
+    // change init back
+    _epd_lut_code = lut_code_backup;
+    _epd_init_code = init_code_backup;
+  }

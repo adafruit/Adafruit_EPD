@@ -164,14 +164,14 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     {
     };
 
-  void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4_FULL) {
+  void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
     Adafruit_EPD::begin(true);
-    setBlackBuffer(1, true); // layer 0 uninverted
-    setColorBuffer(0, true); // layer 1 uninverted
+    setColorBuffer(0, true); // layer 0 uninverted
+    setBlackBuffer(1, true); // layer 1 uninverted
 
-    if (mode == THINKINK_GRAYSCALE4_FULL) {
+    if (mode == THINKINK_GRAYSCALE4) {
       _epd_init_code = gray4_init_code;
-      _epd_fulllut_code = gray4_lut_code;
+      _epd_lut_code = gray4_lut_code;
 
       layer_colors[EPD_WHITE] = 0b00;
       layer_colors[EPD_BLACK] = 0b11;
@@ -180,10 +180,12 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
     } 
-    if (mode == THINKINK_MONO_FULL) {
+    if (mode == THINKINK_MONO) {
       _epd_init_code = monofull_init_code;
+      _epd_partial_init_code = monopart_init_code;
+      _epd_partial_lut_code = monopart_lut_code;
 
-      layer_colors[EPD_WHITE] = 0b10;
+      layer_colors[EPD_WHITE] = 0b11;
       layer_colors[EPD_BLACK] = 0b01;
       layer_colors[EPD_RED] = 0b01;
       layer_colors[EPD_GRAY] = 0b01;
@@ -196,128 +198,6 @@ class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
     powerDown();
   };
 
-  void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-    uint8_t buf[7];
-    uint8_t c;
-
-    // check rotation, move window around if necessary
-    switch (getRotation()) {
-    case 0:
-      EPD_swap(x1, y1);
-      EPD_swap(x2, y2);
-      y1 = WIDTH - y1;
-      y2 = WIDTH - y2;
-      break;
-    case 1:
-      break;
-    case 2:
-      EPD_swap(x1, y1);
-      EPD_swap(x2, y2);
-      x1 = HEIGHT - x1;
-      x2 = HEIGHT - x2;
-      break;
-    case 3:
-      y1 = WIDTH - y1;
-      y2 = WIDTH - y2;
-      x1 = HEIGHT - x1;
-      x2 = HEIGHT - x2;
-    }
-    if (x1 > x2)  EPD_swap(x1, x2);
-    if (y1 > y2)  EPD_swap(y1, y2);
-
-    /*
-    Serial.print("x: ");
-    Serial.print(x1);
-    Serial.print(" -> ");
-    Serial.println(x2);
-    Serial.print("y: ");
-    Serial.print(y1);
-    Serial.print(" -> ");
-    Serial.println(y2);
-    */
-
-    // x1 and x2 must be on byte boundaries
-    x1 -= x1 % 8; // round down;
-    x2 = (x2 + 7) & ~0b111; // round up
-
-    //Serial.println("Partial update!");
-
-    // backup & change init to the partial code
-    const uint8_t *init_code_backup = _epd_init_code;
-    const uint8_t *lut_code_backup = _epd_fulllut_code;
-    _epd_init_code = monopart_init_code;
-    _epd_fulllut_code = monopart_lut_code;
-
-    // perform standard power up
-    powerUp();
-
-    EPD_command(IL0373_PARTIAL_ENTER);
-    buf[0] = x1;
-    buf[1] = x2-1;
-    buf[2] = y1 >> 8;
-    buf[3] = y1 & 0xFF;
-    buf[4] = (y2-1) >> 8;
-    buf[5] = (y2-1) & 0xFF;
-    buf[6] = 0x28;
-    EPD_command(IL0373_PARTIAL_WINDOW, buf, 7);
-
-    // display....
-
-    // write image
-    writeRAMCommand(0);
-    dcHigh();
-    for (uint16_t y = y1; y < y2; y++) {
-      for (uint16_t x = x1; x < x2; x+=8) {
-        uint16_t i = (x / 8) + y * 16;
-        SPItransfer(~buffer1[i]);
-        //SPItransfer(0);
-      }
-    }
-    csHigh();
-    
-    delay(2);
-    
-    writeRAMCommand(1);
-    dcHigh();
-    
-    //Serial.print("Transfering: ");
-
-    for (uint16_t y = y1; y < y2; y++) {
-      for (uint16_t x = x1; x < x2; x+=8) {
-        uint16_t i = (x / 8) + y * 16;
-        /*
-        Serial.print(i); 
-        Serial.print(" (0x"); 
-        Serial.print(buffer2[i]);
-        Serial.print("), ");
-        if (i % 16 == 15) Serial.println();
-        */
-        SPItransfer(~buffer2[i]);
-        //SPItransfer(0xFF);
-      }
-    }
-    Serial.println();
-    csHigh();
-    
-#ifdef EPD_DEBUG
-      Serial.println("  Update");
-#endif
-
-    update();
-
-    EPD_command(IL0373_PARTIAL_EXIT);
-
-#ifdef EPD_DEBUG
-  Serial.println("  Powering Down");
-#endif
-
-    powerDown();
-    // change init back
-    _epd_fulllut_code = lut_code_backup;
-    _epd_init_code = init_code_backup;
-  }
-
-  
 };
 
 
