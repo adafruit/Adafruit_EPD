@@ -22,9 +22,9 @@ public:
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b10;
     layer_colors[EPD_RED] = 0b01;
-    layer_colors[EPD_GRAY] = 0b10;
+    layer_colors[EPD_GRAY] = 0b01;
     layer_colors[EPD_LIGHT] = 0b00;
-    layer_colors[EPD_DARK] = 0b01;
+    layer_colors[EPD_DARK] = 0b10;
 
     default_refresh_delay = 13000;
 
