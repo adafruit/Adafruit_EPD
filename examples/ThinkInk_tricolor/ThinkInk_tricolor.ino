@@ -15,7 +15,9 @@
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    6 // can set to -1 to not use a pin (will wait a fixed delay)
 
-ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 void setup() {
   Serial.begin(115200);
@@ -27,7 +29,7 @@ void setup() {
 void loop() {
   display.clearBuffer();
   display.setTextSize(3);
-  display.setCursor(20, 40);
+  display.setCursor((display.width() - 144)/2, (display.height() - 24)/2);
   display.setTextColor(EPD_BLACK);
   display.print("Tri");  
   display.setTextColor(EPD_RED);
