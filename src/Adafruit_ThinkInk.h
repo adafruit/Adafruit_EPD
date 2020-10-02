@@ -5,3 +5,4 @@ typedef enum {
 } thinkinkmode_t;
 
 #include "panels/ThinkInk_290_Grayscale4.h"
+#include "panels/ThinkInk_290_Tricolor_Z10.h"
