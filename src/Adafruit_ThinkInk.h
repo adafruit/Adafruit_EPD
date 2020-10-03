@@ -9,4 +9,5 @@ typedef enum {
 #include "panels/ThinkInk_213_Tricolor_Z16.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
 
-#include "panels/ThinkInk_290_Grayscale4.h"
+#include "panels/ThinkInk_290_Grayscale4_T5.h"
+#include "panels/ThinkInk_213_Grayscale4_T5.h"

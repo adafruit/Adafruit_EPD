@@ -1,11 +1,11 @@
-#ifndef _THINKINK_290_GRAYSCALE4_H
-#define _THINKINK_290_GRAYSCALE4_H
+#ifndef _THINKINK_213_GRAYSCALE4_T5_H
+#define _THINKINK_213_GRAYSCALE4_T5_H
 
 #include "Adafruit_EPD.h"
 
 // clang-format off
 
-const uint8_t gray4_init_code[] {
+static const uint8_t ti_213t5_gray4_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
     IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
     IL0373_POWER_ON, 0,
@@ -17,7 +17,7 @@ const uint8_t gray4_init_code[] {
     0xFE // EOM
 };
 
-const uint8_t monopart_init_code[] {
+static const uint8_t ti_213t5_monopart_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x03,
     IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
     IL0373_POWER_ON, 0,
@@ -29,7 +29,7 @@ const uint8_t monopart_init_code[] {
     0xFE // EOM
 };
 
-const uint8_t monofull_init_code[] {
+static const uint8_t ti_213t5_monofull_init_code[] {
     IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
     IL0373_POWER_ON, 0,
     0xFF, 200,
@@ -38,7 +38,7 @@ const uint8_t monofull_init_code[] {
     0xFE // EOM
 };
 
-const uint8_t monopart_lut_code[] = {
+static const uint8_t ti_213t5_monopart_lut_code[] = {
   // const unsigned char lut_vcom1[]
   0x20, 44,
   0x00, 0x01, 0x0E, 0x00, 0x00, 0x01,	
@@ -89,7 +89,7 @@ const uint8_t monopart_lut_code[] = {
   0xFE // EOM
 };
 
-const uint8_t gray4_lut_code[] = {
+static const uint8_t ti_213t5_gray4_lut_code[] = {
   //const unsigned char lut_vcom[] =
   0x20, 42,
   0x00, 0x0A, 0x00, 0x00, 0x00, 0x01,
@@ -145,16 +145,16 @@ const uint8_t gray4_lut_code[] = {
 
 // clang-format on
 
-class ThinkInk_290_Grayscale4 : public Adafruit_IL0373 {
+class ThinkInk_213_Grayscale4_T5 : public Adafruit_IL0373 {
 private:
 public:
-  ThinkInk_290_Grayscale4(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
+  ThinkInk_213_Grayscale4_T5(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                           int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1)
-      : Adafruit_IL0373(296, 128, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_IL0373(212, 104, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_290_Grayscale4(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+  ThinkInk_213_Grayscale4_T5(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
                           int8_t BUSY = -1, SPIClass *spi = &SPI)
-      : Adafruit_IL0373(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_IL0373(212, 104, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
     Adafruit_EPD::begin(true);
@@ -162,8 +162,8 @@ public:
     setBlackBuffer(1, true); // layer 1 uninverted
 
     if (mode == THINKINK_GRAYSCALE4) {
-      _epd_init_code = gray4_init_code;
-      _epd_lut_code = gray4_lut_code;
+      _epd_init_code = ti_213t5_gray4_init_code;
+      _epd_lut_code = ti_213t5_gray4_lut_code;
 
       layer_colors[EPD_WHITE] = 0b00;
       layer_colors[EPD_BLACK] = 0b11;
@@ -173,9 +173,9 @@ public:
       layer_colors[EPD_DARK] = 0b10;
     }
     if (mode == THINKINK_MONO) {
-      _epd_init_code = monofull_init_code;
-      _epd_partial_init_code = monopart_init_code;
-      _epd_partial_lut_code = monopart_lut_code;
+      _epd_init_code = ti_213t5_monofull_init_code;
+      _epd_partial_init_code = ti_213t5_monopart_init_code;
+      _epd_partial_lut_code = ti_213t5_monopart_lut_code;
 
       layer_colors[EPD_WHITE] = 0b11;
       layer_colors[EPD_BLACK] = 0b01;
@@ -191,4 +191,4 @@ public:
   };
 };
 
-#endif // _THINKINK_290_GRAYSCALE4_H
+#endif // _THINKINK_213_GRAYSCALE4_T5_H
