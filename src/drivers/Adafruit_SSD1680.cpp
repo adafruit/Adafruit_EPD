@@ -3,6 +3,26 @@
 
 #define BUSY_WAIT 500
 
+
+// clang-format off
+
+const uint8_t ssd1680_default_init_code[] {
+  SSD1680_SW_RESET, 0, // soft reset
+    0xFF, 20,          // busy wait
+    SSD1680_DATA_MODE, 1, 0x03, // Ram data entry mode
+    SSD1680_WRITE_BORDER, 1, 0x05, // border color
+
+    SSD1680_WRITE_VCOM, 1, 0x36,   // Vcom Voltage
+    SSD1680_GATE_VOLTAGE, 1, 0x17, // Set gate voltage 
+    SSD1680_SOURCE_VOLTAGE, 3, 0x41, 0x00, 0x32,   // Set source voltage
+
+    SSD1680_SET_RAMXCOUNT, 1, 1,
+    SSD1680_SET_RAMYCOUNT, 2, 0, 0,
+    0xFE};
+
+// clang-format on
+
+
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -58,8 +78,8 @@ Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY)
-    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+                                   int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
+  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -140,23 +160,21 @@ void Adafruit_SSD1680::powerUp() {
   delay(100);
   busy_wait();
 
-  // soft reset
-  EPD_command(SSD1680_SW_RESET);
-  busy_wait();
+  const uint8_t *init_code = ssd1680_default_init_code;
 
-  // Set display size and driver output control
-  buf[0] = (WIDTH - 1);
-  buf[1] = (WIDTH - 1) >> 8;
-  buf[2] = 0x00;
-  EPD_command(SSD1680_DRIVER_CONTROL, buf, 3);
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
 
-  // Ram data entry mode
-  buf[0] = 0x03;
-  EPD_command(SSD1680_DATA_MODE, buf, 1);
+  uint8_t height = HEIGHT;
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
 
   // Set ram X start/end postion
   buf[0] = 0x01;
-  buf[1] = HEIGHT / 8;
+  buf[1] = height / 8;
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
@@ -166,23 +184,6 @@ void Adafruit_SSD1680::powerUp() {
   buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
-  // border color
-  buf[0] = 0x05;
-  EPD_command(SSD1680_WRITE_BORDER, buf, 1);
-
-  // Vcom Voltage
-  buf[0] = 0x36;
-  EPD_command(SSD1680_WRITE_VCOM, buf, 1);
-
-  // Set gate voltage
-  buf[0] = 0x17;
-  EPD_command(SSD1680_GATE_VOLTAGE, buf, 1);
-
-  // Set source voltage
-  buf[0] = 0x41;
-  buf[1] = 0x00;
-  buf[2] = 0x32;
-  EPD_command(SSD1680_SOURCE_VOLTAGE, buf, 3);
 
   // Set LUT
   /*
@@ -191,14 +192,13 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_WRITE_LUT, LUT_DATA, 70);
   */
 
-  // set RAM x address count
-  buf[0] = 1;
-  EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
-  // set RAM y address count
-  buf[0] = 0;
-  buf[1] = 0;
-  EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
+  // Set display size and driver output control
+  buf[0] = (WIDTH - 1);
+  buf[1] = (WIDTH - 1) >> 8;
+  buf[2] = 0x00;
+  EPD_command(SSD1680_DRIVER_CONTROL, buf, 3);
+
 }
 
 /**************************************************************************/
