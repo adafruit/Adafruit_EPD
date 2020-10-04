@@ -12,11 +12,7 @@ const uint8_t ssd1619_default_init_code[] {
     SSD1619_SET_ANALOGBLOCK, 1, 0x54,  // set analog block control
     SSD1619_SET_DIGITALBLOCK, 1, 0x3B, // set digital block control
 
-    SSD1608_DRIVER_CONTROL, 3, 0x2B, 0x01, 0x00,    
-    SSD1619_DATA_MODE, 1, 0x01, // Ram data entry mode
-
-    SSD1608_SET_RAMXPOS, 2, 0x0, 0x31,
-    SSD1608_SET_RAMYPOS, 4, 0x2B, 0x1, 0x00, 0x00,
+    SSD1619_DATA_MODE, 1, 0x03, // Ram data entry mode
 
     SSD1619_WRITE_BORDER, 1, 0x01, // border color
     SSD1619_TEMP_CONTROL, 1, 0x80, // Temp control
@@ -178,16 +174,13 @@ void Adafruit_SSD1619::powerUp() {
   }
   EPD_commandList(init_code);
 
-  /*
   // Set display size and driver output control
   buf[0] = (WIDTH - 1);
   buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1619_DRIVER_CONTROL, buf, 3);
 
-
-  setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
-  */
+  setRAMWindow(0, 0, HEIGHT-1, WIDTH-1);
 }
 
 /**************************************************************************/
@@ -243,8 +236,8 @@ void Adafruit_SSD1619::setRAMAddress(uint16_t x, uint16_t y) {
   EPD_command(SSD1619_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0x2B;
-  buf[1] = 0x01;
+  buf[0] = 0x0;
+  buf[1] = 0x0;
   EPD_command(SSD1619_SET_RAMYCOUNT, buf, 2);
 }
 

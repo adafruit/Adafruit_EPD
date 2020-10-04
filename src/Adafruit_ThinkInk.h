@@ -19,3 +19,4 @@ typedef enum {
 #include "panels/ThinkInk_213_Mono_B72.h"
 #include "panels/ThinkInk_213_Mono_B73.h"
 #include "panels/ThinkInk_213_Mono_BN.h"
+#include "panels/ThinkInk_420_Mono_BN.h"
