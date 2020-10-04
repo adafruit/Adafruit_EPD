@@ -3,6 +3,21 @@
 
 #define BUSY_WAIT 500
 
+// clang-format off
+
+const uint8_t ssd1681_default_init_code[] {
+  SSD1681_SW_RESET, 0, // soft reset
+    0xFF, 20,          // busy wait
+    SSD1681_DATA_MODE, 1, 0x03, // Ram data entry mode
+    SSD1681_WRITE_BORDER, 1, 0x05, // border color
+    SSD1681_TEMP_CONTROL, 1, 0x80, // Temp control
+    SSD1681_SET_RAMXCOUNT, 1, 0,
+    SSD1681_SET_RAMYCOUNT, 2, 0, 0,
+    0xFE};
+
+// clang-format on
+
+
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -141,19 +156,18 @@ void Adafruit_SSD1681::powerUp() {
   delay(100);
   busy_wait();
 
-  // soft reset
-  EPD_command(SSD1681_SW_RESET);
-  busy_wait();
+  const uint8_t *init_code = ssd1681_default_init_code;
+
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
 
   // Set display size and driver output control
   buf[0] = (WIDTH - 1);
   buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1681_DRIVER_CONTROL, buf, 3);
-
-  // Ram data entry mode
-  buf[0] = 0x03;
-  EPD_command(SSD1681_DATA_MODE, buf, 1);
 
   // Set ram X start/end postion
   buf[0] = ((HEIGHT / 8) - 1) >> 8;
@@ -166,24 +180,6 @@ void Adafruit_SSD1681::powerUp() {
   buf[2] = (WIDTH - 1);
   buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1681_SET_RAMYPOS, buf, 4);
-
-  // border color
-  buf[0] = 0x05;
-  EPD_command(SSD1681_WRITE_BORDER, buf, 1);
-
-  // Temp control
-  buf[0] = 0x80;
-  EPD_command(SSD1681_TEMP_CONTROL, buf, 1);
-
-  // set RAM x address count
-  buf[0] = 0;
-  EPD_command(SSD1681_SET_RAMXCOUNT, buf, 1);
-
-  // set RAM y address count
-  buf[0] = 0;
-  buf[1] = 0;
-  EPD_command(SSD1681_SET_RAMYCOUNT, buf, 2);
-
 }
 
 /**************************************************************************/
