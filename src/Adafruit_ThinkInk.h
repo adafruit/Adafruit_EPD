@@ -4,10 +4,12 @@ typedef enum {
   THINKINK_GRAYSCALE4,
 } thinkinkmode_t;
 
-#include "panels/ThinkInk_270_Tricolor_C44.h"
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_213_Tricolor_Z16.h"
+#include "panels/ThinkInk_270_Tricolor_C44.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
 
 #include "panels/ThinkInk_290_Grayscale4_T5.h"
 #include "panels/ThinkInk_213_Grayscale4_T5.h"
+
+#include "panels/ThinkInk_154_Mono_D27.h"
