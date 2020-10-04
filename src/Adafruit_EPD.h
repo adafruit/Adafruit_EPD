@@ -179,6 +179,7 @@ protected:
 #include "drivers/Adafruit_IL0398.h"
 #include "drivers/Adafruit_IL91874.h"
 #include "drivers/Adafruit_SSD1608.h"
+#include "drivers/Adafruit_SSD1619.h"
 #include "drivers/Adafruit_SSD1675.h"
 #include "drivers/Adafruit_SSD1675B.h"
 #include "drivers/Adafruit_SSD1680.h"

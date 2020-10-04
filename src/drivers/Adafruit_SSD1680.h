@@ -58,13 +58,4 @@ protected:
   void busy_wait();
 };
 
-/*******************************************************************************/
-#define MAX_LINE_BYTES 16
-#define MAX_COLUMN_BYTES 296
-#define ALLSCREEN_BYTES 4736
-#define SPI_OUT 0
-#define SPI_IN 1
-#define MONO 0
-#define RED 1
-
 #endif
