@@ -286,7 +286,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     @brief Transfer the data stored in the buffer(s) to the display
 */
 /**************************************************************************/
-void Adafruit_EPD::display(void) {
+void Adafruit_EPD::display(bool sleep) {
   uint8_t c;
 
 #ifdef EPD_DEBUG
@@ -372,11 +372,12 @@ void Adafruit_EPD::display(void) {
 #endif
   update();
 
+  if (sleep) {
 #ifdef EPD_DEBUG
-  Serial.println("  Powering Down");
+    Serial.println("  Powering Down");
 #endif
-
-  powerDown();
+    powerDown();
+  }
 }
 
 /**************************************************************************/

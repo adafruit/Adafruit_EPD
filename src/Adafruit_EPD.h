@@ -70,7 +70,7 @@ public:
   void clearDisplay();
   void setBlackBuffer(int8_t index, bool inverted);
   void setColorBuffer(int8_t index, bool inverted);
-  void display(void);
+  void display(bool sleep = false);
 
 protected:
   /**************************************************************************/

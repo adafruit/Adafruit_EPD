@@ -49,12 +49,15 @@ public:
 
   void begin(bool reset = true);
   void powerUp();
-  void update();
+  void update(void);
+  void updatePartial(void);
   void powerDown();
+  void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
+  void setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
   void busy_wait();
 };
 

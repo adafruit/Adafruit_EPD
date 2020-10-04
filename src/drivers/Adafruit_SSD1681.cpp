@@ -146,6 +146,115 @@ void Adafruit_SSD1681::update() {
 
 /**************************************************************************/
 /*!
+    @brief signal the display to update
+*/
+/**************************************************************************/
+void Adafruit_SSD1681::updatePartial(void) {
+  uint8_t buf[1];
+
+  // display update sequence
+  buf[0] = 0xFF;
+  EPD_command(SSD1681_DISP_CTRL2, buf, 1);
+
+  EPD_command(SSD1681_MASTER_ACTIVATE);
+  busy_wait();
+
+  if (_busy_pin <= -1) {
+    delay(1000);
+  }
+}
+
+
+
+
+void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
+                                     uint16_t y2) {
+  uint8_t buf[7];
+  uint8_t c;
+
+  // check rotation, move window around if necessary
+  switch (getRotation()) {
+  case 0:
+    EPD_swap(x1, y1);
+    EPD_swap(x2, y2);
+    y1 = WIDTH - y1;
+    y2 = WIDTH - y2;
+    break;
+  case 1:
+    break;
+  case 2:
+    EPD_swap(x1, y1);
+    EPD_swap(x2, y2);
+    x1 = HEIGHT - x1;
+    x2 = HEIGHT - x2;
+    break;
+  case 3:
+    y1 = WIDTH - y1;
+    y2 = WIDTH - y2;
+    x1 = HEIGHT - x1;
+    x2 = HEIGHT - x2;
+  }
+  if (x1 > x2)
+    EPD_swap(x1, x2);
+  if (y1 > y2)
+    EPD_swap(y1, y2);
+
+  /*
+  Serial.print("x: ");
+  Serial.print(x1);
+  Serial.print(" -> ");
+  Serial.println(x2);
+  Serial.print("y: ");
+  Serial.print(y1);
+  Serial.print(" -> ");
+  Serial.println(y2);
+  */
+
+  // x1 and x2 must be on byte boundaries
+  x1 -= x1 % 8;           // round down;
+  x2 = (x2 + 7) & ~0b111; // round up
+
+  Serial.println("---------------partial=============");
+  // perform standard power up
+  powerUp();
+
+  // display....
+  //setRAMWindow(0, 0, 16/8, 16);
+  setRAMWindow(x1/8, y1, x2/8, y2);
+  setRAMAddress(x1/8, y1);
+
+  // write image
+  writeRAMCommand(0);
+
+  Serial.print("Transfering: ");
+
+  dcHigh();
+  for (uint16_t y = y1; y < y2; y++) {
+    for (uint16_t x = x1; x < x2; x += 8) {
+      uint16_t i = (x / 8) + y * 25;
+      SPItransfer(black_buffer[i]);
+      //SPItransfer(0xAA);
+    }
+  }
+  csHigh();
+
+#ifdef EPD_DEBUG
+  Serial.println("  UpdatePartial");
+#endif
+
+  updatePartial();
+
+#ifdef EPD_DEBUG
+  Serial.println("  partial Powering Down");
+#endif
+
+  powerDown();
+
+}
+
+
+/**************************************************************************/
+/*!
     @brief start up the display
 */
 /**************************************************************************/
@@ -169,17 +278,8 @@ void Adafruit_SSD1681::powerUp() {
   buf[2] = 0x00;
   EPD_command(SSD1681_DRIVER_CONTROL, buf, 3);
 
-  // Set ram X start/end postion
-  buf[0] = ((HEIGHT / 8) - 1) >> 8;
-  buf[1] = (HEIGHT / 8) - 1;
-  EPD_command(SSD1681_SET_RAMXPOS, buf, 2);
 
-  // Set ram Y start/end postion
-  buf[0] = 0x00;
-  buf[1] = 0x00;
-  buf[2] = (WIDTH - 1);
-  buf[3] = (WIDTH - 1) >> 8;
-  EPD_command(SSD1681_SET_RAMYPOS, buf, 4);
+  setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
 }
 
 /**************************************************************************/
@@ -231,11 +331,35 @@ void Adafruit_SSD1681::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
   // set RAM x address count
-  buf[0] = 0;
+  buf[0] = x;
   EPD_command(SSD1681_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0;
-  buf[1] = 0;
+  buf[0] = y;
+  buf[1] = y>>8;
   EPD_command(SSD1681_SET_RAMYCOUNT, buf, 2);
+}
+
+
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
+void Adafruit_SSD1681::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+  uint8_t buf[5];
+
+  // Set ram X start/end postion
+  buf[0] = x1;
+  buf[1] = x2;
+  EPD_command(SSD1681_SET_RAMXPOS, buf, 2);
+
+  // Set ram Y start/end postion
+  buf[0] = y1;
+  buf[1] = y1 >> 8;
+  buf[2] = y2;
+  buf[3] = y2 >> 8;
+  EPD_command(SSD1681_SET_RAMYPOS, buf, 4);
 }
