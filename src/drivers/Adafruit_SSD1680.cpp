@@ -160,10 +160,10 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[2] = (WIDTH - 1);
-  buf[3] = (WIDTH - 1) >> 8;
   buf[0] = 0x00;
   buf[1] = 0x00;
+  buf[2] = (WIDTH - 1);
+  buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
   // border color

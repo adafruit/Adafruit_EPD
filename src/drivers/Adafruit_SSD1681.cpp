@@ -152,7 +152,7 @@ void Adafruit_SSD1681::powerUp() {
   EPD_command(SSD1681_DRIVER_CONTROL, buf, 3);
 
   // Ram data entry mode
-  buf[0] = 0x01;
+  buf[0] = 0x03;
   EPD_command(SSD1681_DATA_MODE, buf, 1);
 
   // Set ram X start/end postion
@@ -161,10 +161,10 @@ void Adafruit_SSD1681::powerUp() {
   EPD_command(SSD1681_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[0] = (WIDTH - 1);
-  buf[1] = (WIDTH - 1) >> 8;
-  buf[2] = 0x00;
-  buf[3] = 0x00;
+  buf[0] = 0x00;
+  buf[1] = 0x00;
+  buf[2] = (WIDTH - 1);
+  buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1681_SET_RAMYPOS, buf, 4);
 
   // border color
@@ -180,7 +180,7 @@ void Adafruit_SSD1681::powerUp() {
   EPD_command(SSD1681_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0xC7;
+  buf[0] = 0;
   buf[1] = 0;
   EPD_command(SSD1681_SET_RAMYCOUNT, buf, 2);
 
@@ -235,11 +235,11 @@ void Adafruit_SSD1681::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
   // set RAM x address count
-  buf[0] = 1;
+  buf[0] = 0;
   EPD_command(SSD1681_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0xC7;
+  buf[0] = 0;
   buf[1] = 0;
   EPD_command(SSD1681_SET_RAMYCOUNT, buf, 2);
 }
