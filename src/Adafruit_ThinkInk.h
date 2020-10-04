@@ -13,3 +13,6 @@ typedef enum {
 #include "panels/ThinkInk_213_Grayscale4_T5.h"
 
 #include "panels/ThinkInk_154_Mono_D67.h"
+#include "panels/ThinkInk_154_Mono_D27.h"
+#include "panels/ThinkInk_213_Mono_B72.h"
+#include "panels/ThinkInk_213_Mono_B73.h"

@@ -46,7 +46,7 @@ public:
                    int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
                    int8_t BUSY = -1);
   Adafruit_SSD1675(int width, int height, int8_t DC, int8_t RST, int8_t CS,
-                   int8_t SRCS, int8_t BUSY = -1);
+                   int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
