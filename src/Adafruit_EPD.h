@@ -20,7 +20,7 @@
 #ifndef _ADAFRUIT_EPD_H_
 #define _ADAFRUIT_EPD_H_
 
-//#define EPD_DEBUG
+#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
@@ -182,5 +182,6 @@ protected:
 #include "drivers/Adafruit_SSD1675.h"
 #include "drivers/Adafruit_SSD1675B.h"
 #include "drivers/Adafruit_SSD1680.h"
+#include "drivers/Adafruit_SSD1681.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */
