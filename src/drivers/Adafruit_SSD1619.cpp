@@ -141,8 +141,8 @@ void Adafruit_SSD1619::update() {
   uint8_t buf[1];
 
   // display update sequence
-  buf[0] = 0x40;
-  EPD_command(SSD1619_DISP_CTRL1, buf, 1);
+  //buf[0] = 0x40;
+  //EPD_command(SSD1619_DISP_CTRL1, buf, 1);
   buf[0] = 0xC7;
   EPD_command(SSD1619_DISP_CTRL2, buf, 1);
 

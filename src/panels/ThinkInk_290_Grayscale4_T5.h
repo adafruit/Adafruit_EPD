@@ -185,7 +185,7 @@ public:
       layer_colors[EPD_DARK] = 0b01;
     }
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 800;
 
     powerDown();
   };

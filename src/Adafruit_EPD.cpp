@@ -295,6 +295,10 @@ void Adafruit_EPD::display(bool sleep) {
 
   powerUp();
 
+#ifdef EPD_DEBUG
+  Serial.println("  Set RAM address");
+#endif
+
   // Set X & Y ram counters
   setRAMAddress(0, 0);
 

@@ -1,7 +1,7 @@
 #include "Adafruit_IL0373.h"
 #include "Adafruit_EPD.h"
 
-#define BUSY_WAIT 500
+#define BUSY_WAIT 100
 
 // clang-format off
 
@@ -92,6 +92,7 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST,
 */
 /**************************************************************************/
 void Adafruit_IL0373::busy_wait(void) {
+  Serial.print("Waiting...");
   if (_busy_pin >= 0) {
     while (!digitalRead(_busy_pin)) {
       delay(10); // wait for busy high
@@ -99,6 +100,7 @@ void Adafruit_IL0373::busy_wait(void) {
   } else {
     delay(BUSY_WAIT);
   }
+  Serial.println("OK!");
 }
 
 /**************************************************************************/
