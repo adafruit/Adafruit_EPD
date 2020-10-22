@@ -17,10 +17,10 @@
  *
  */
 
-#ifndef _Adafruit_EPD_H_
-#define _Adafruit_EPD_H_
+#ifndef _ADAFRUIT_EPD_H_
+#define _ADAFRUIT_EPD_H_
 
-//#define EPD_DEBUG
+#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
@@ -34,13 +34,13 @@
 */
 /**************************************************************************/
 enum {
-  EPD_BLACK,   ///< black color
-  EPD_WHITE,   ///< white color
-  EPD_INVERSE, ///< invert color
-  EPD_RED,     ///< red color
-  EPD_GRAY,    ///< gray color ('red' on grayscale)
-  EPD_DARK,    ///< darker color
-  EPD_LIGHT,   ///< lighter color
+  EPD_WHITE, ///< white color
+  EPD_BLACK, ///< black color
+  EPD_RED,   ///< red color
+  EPD_GRAY,  ///< gray color ('red' on grayscale)
+  EPD_DARK,  ///< darker color
+  EPD_LIGHT, ///< lighter color
+  EPD_NUM_COLORS
 };
 
 #define EPD_swap(a, b)                                                         \
@@ -70,7 +70,7 @@ public:
   void clearDisplay();
   void setBlackBuffer(int8_t index, bool inverted);
   void setColorBuffer(int8_t index, bool inverted);
-  void display(void);
+  void display(bool sleep = false);
 
 protected:
   /**************************************************************************/
@@ -93,12 +93,14 @@ protected:
   /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
 
+  virtual void busy_wait(void) = 0;
+
   /**************************************************************************/
   /*!
     @brief start up the display
   */
   /**************************************************************************/
-  virtual void powerUp(void) = 0;
+  virtual void powerUp() = 0;
 
   /**************************************************************************/
   /*!
@@ -115,21 +117,29 @@ protected:
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
 
-  int8_t _sid_pin,                    ///< sid pin
-      _sclk_pin,                      ///< serial clock pin
-      _dc_pin,                        ///< data/command pin
+  int8_t _dc_pin,                     ///< data/command pin
       _reset_pin,                     ///< reset pin
       _cs_pin,                        ///< chip select pin
       _busy_pin;                      ///< busy pin
-  SPIClass *_spi = NULL;              ///< SPI object
   Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
   static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
-  bool singleByteTxns;   ///< if true CS will go high after every data byte
-                         ///< transferred
+  bool singleByteTxns; ///< if true CS will go high after every data byte
+                       ///< transferred
+
+  const uint8_t *_epd_init_code = NULL;
+  const uint8_t *_epd_lut_code = NULL;
+  const uint8_t *_epd_partial_init_code = NULL;
+  const uint8_t *_epd_partial_lut_code = NULL;
+
+  uint16_t default_refresh_delay = 15000;
+
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 
-  bool blackInverted;    ///< is black channel inverted
-  bool colorInverted;    ///< is red channel inverted
+  bool blackInverted; ///< is black channel inverted
+  bool colorInverted; ///< is red channel inverted
+
+  uint8_t layer_colors[EPD_NUM_COLORS];
+
   uint16_t buffer1_size; ///< size of the primary buffer
   uint16_t buffer2_size; ///< size of the secondary buffer
   uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram
@@ -144,6 +154,7 @@ protected:
   uint16_t colorbuffer_addr; ///< The SRAM address offsets for the color buffer
   uint16_t blackbuffer_addr; ///< The SRAM address offsets for the black buffer
 
+  void EPD_commandList(const uint8_t *init_code);
   void EPD_command(uint8_t c, const uint8_t *buf, uint16_t len);
   uint8_t EPD_command(uint8_t c, bool end = true);
   void EPD_data(const uint8_t *buf, uint16_t len);
@@ -152,7 +163,6 @@ protected:
   uint8_t SPItransfer(uint8_t c);
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
-  bool hwSPI;    ///< true if using hardware SPI
 
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
@@ -165,15 +175,14 @@ protected:
   void dcLow();
 };
 
-/*
-#include "Adafruit_IL0371.h"
-#include "Adafruit_IL0376F.h"
-*/
-#include "Adafruit_IL0373.h"
-#include "Adafruit_IL0398.h"
-#include "Adafruit_IL91874.h"
-#include "Adafruit_SSD1608.h"
-#include "Adafruit_SSD1675.h"
-#include "Adafruit_SSD1675B.h"
-#include "Adafruit_SSD1680.h"
-#endif /* _Adafruit_EPD_H_ */
+#include "drivers/Adafruit_IL0373.h"
+#include "drivers/Adafruit_IL0398.h"
+#include "drivers/Adafruit_IL91874.h"
+#include "drivers/Adafruit_SSD1608.h"
+#include "drivers/Adafruit_SSD1619.h"
+#include "drivers/Adafruit_SSD1675.h"
+#include "drivers/Adafruit_SSD1675B.h"
+#include "drivers/Adafruit_SSD1680.h"
+#include "drivers/Adafruit_SSD1681.h"
+
+#endif /* _ADAFRUIT_EPD_H_ */

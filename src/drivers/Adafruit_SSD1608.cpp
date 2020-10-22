@@ -60,8 +60,9 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY)
-    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
+                                   SPIClass *spi)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   if ((height % 8) != 0) {
     height += 8 - (height % 8);

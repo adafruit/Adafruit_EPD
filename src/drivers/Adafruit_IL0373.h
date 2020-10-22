@@ -4,9 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-#define EPD_RAM_RED 0x13
-
 #define IL0373_PANEL_SETTING 0x00
 #define IL0373_POWER_SETTING 0x01
 #define IL0373_POWER_OFF 0x02
@@ -18,6 +15,7 @@
 #define IL0373_DTM1 0x10
 #define IL0373_DATA_STOP 0x11
 #define IL0373_DISPLAY_REFRESH 0x12
+#define IL0373_DTM2 0x13
 #define IL0373_PDTM1 0x14
 #define IL0373_PDTM2 0x15
 #define IL0373_PDRF 0x16
@@ -30,6 +28,12 @@
 #define IL0373_CDI 0x50
 #define IL0373_RESOLUTION 0x61
 #define IL0373_VCM_DC_SETTING 0x82
+#define IL0373_PARTIAL_WINDOW 0x90
+#define IL0373_PARTIAL_ENTER 0x91
+#define IL0373_PARTIAL_EXIT 0x92
+
+#define EPD_RAM_BW IL0373_DTM1
+#define EPD_RAM_RED IL0373_DTM2
 
 /**************************************************************************/
 /*!
@@ -37,6 +41,7 @@
 */
 /**************************************************************************/
 class Adafruit_IL0373 : public Adafruit_EPD {
+private:
 public:
   Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
@@ -48,6 +53,7 @@ public:
   void powerUp();
   void powerDown();
   void update();
+  void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 protected:
   uint8_t writeRAMCommand(uint8_t index);

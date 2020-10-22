@@ -45,7 +45,7 @@ public:
                    int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
                    int8_t BUSY = -1);
   Adafruit_SSD1680(int width, int height, int8_t DC, int8_t RST, int8_t CS,
-                   int8_t SRCS, int8_t BUSY = -1);
+                   int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
@@ -57,14 +57,5 @@ protected:
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
 };
-
-/*******************************************************************************/
-#define MAX_LINE_BYTES 16
-#define MAX_COLUMN_BYTES 296
-#define ALLSCREEN_BYTES 4736
-#define SPI_OUT 0
-#define SPI_IN 1
-#define MONO 0
-#define RED 1
 
 #endif

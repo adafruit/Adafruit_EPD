@@ -101,7 +101,6 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
   _reset_pin = RST;
   _dc_pin = DC;
   _busy_pin = BUSY;
-  _spi = spi;
   if (SRCS >= 0) {
     use_sram = true;
   } else {
@@ -112,7 +111,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
                                    4000000,               // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
                                    SPI_MODE0,             // data mode
-                                   _spi);
+                                   spi);
 
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
@@ -146,6 +145,13 @@ Adafruit_EPD::~Adafruit_EPD() {
 void Adafruit_EPD::begin(bool reset) {
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to not inverted
+
+  layer_colors[EPD_WHITE] = 0b00;
+  layer_colors[EPD_BLACK] = 0b01;
+  layer_colors[EPD_RED] = 0b10;
+  layer_colors[EPD_GRAY] = 0b10;
+  layer_colors[EPD_DARK] = 0b01;
+  layer_colors[EPD_LIGHT] = 0b10;
 
   if (use_sram) {
     sram.begin();
@@ -216,7 +222,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 
-  uint8_t *pBuf;
+  uint8_t *black_pBuf, *color_pBuf;
 
   // deal with non-8-bit heights
   uint16_t _HEIGHT = HEIGHT;
@@ -240,35 +246,38 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     break;
   }
   uint16_t addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
-  uint8_t c;
+  uint8_t black_c, color_c;
+
   if (use_sram) {
-    if ((color == EPD_RED) || (color == EPD_GRAY)) {
-      addr = colorbuffer_addr + addr;
-    } else {
-      addr = blackbuffer_addr + addr;
-    }
-    c = sram.read8(addr);
-    pBuf = &c;
+    black_c = sram.read8(blackbuffer_addr + addr);
+    black_pBuf = &black_c;
+    color_c = sram.read8(colorbuffer_addr + addr);
+    color_pBuf = &color_c;
   } else {
-    if ((color == EPD_RED) || (color == EPD_GRAY)) {
-      pBuf = color_buffer + addr;
-    } else {
-      pBuf = black_buffer + addr;
-    }
+    color_pBuf = color_buffer + addr;
+    black_pBuf = black_buffer + addr;
   }
 
-  if (((color == EPD_RED || color == EPD_GRAY) && colorInverted) ||
-      ((color == EPD_BLACK) && blackInverted)) {
-    *pBuf &= ~(1 << (7 - y % 8));
-  } else if (((color == EPD_RED || color == EPD_GRAY) && !colorInverted) ||
-             ((color == EPD_BLACK) && !blackInverted)) {
-    *pBuf |= (1 << (7 - y % 8));
-  } else if (color == EPD_INVERSE) {
-    *pBuf ^= (1 << (7 - y % 8));
+  bool color_bit, black_bit;
+
+  black_bit = layer_colors[color] & 0x1;
+  color_bit = layer_colors[color] & 0x2;
+
+  if ((color_bit && colorInverted) || (!color_bit && !colorInverted)) {
+    *color_pBuf &= ~(1 << (7 - y % 8));
+  } else {
+    *color_pBuf |= (1 << (7 - y % 8));
+  }
+
+  if ((black_bit && blackInverted) || (!black_bit && !blackInverted)) {
+    *black_pBuf &= ~(1 << (7 - y % 8));
+  } else {
+    *black_pBuf |= (1 << (7 - y % 8));
   }
 
   if (use_sram) {
-    sram.write8(addr, *pBuf);
+    sram.write8(colorbuffer_addr + addr, *color_pBuf);
+    sram.write8(blackbuffer_addr + addr, *black_pBuf);
   }
 }
 
@@ -277,10 +286,18 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     @brief Transfer the data stored in the buffer(s) to the display
 */
 /**************************************************************************/
-void Adafruit_EPD::display(void) {
+void Adafruit_EPD::display(bool sleep) {
   uint8_t c;
 
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Up");
+#endif
+
   powerUp();
+
+#ifdef EPD_DEBUG
+  Serial.println("  Set RAM address");
+#endif
 
   // Set X & Y ram counters
   setRAMAddress(0, 0);
@@ -354,9 +371,17 @@ void Adafruit_EPD::display(void) {
     csHigh();
   }
 
+#ifdef EPD_DEBUG
+  Serial.println("  Update");
+#endif
   update();
 
-  powerDown();
+  if (sleep) {
+#ifdef EPD_DEBUG
+    Serial.println("  Powering Down");
+#endif
+    powerDown();
+  }
 }
 
 /**************************************************************************/
@@ -462,6 +487,37 @@ void Adafruit_EPD::clearDisplay() {
 
 /**************************************************************************/
 /*!
+ */
+/**************************************************************************/
+void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
+  uint8_t buf[64];
+
+  while (init_code[0] != 0xFE) {
+    char cmd = init_code[0];
+    init_code++;
+    int num_args = init_code[0];
+    init_code++;
+    if (cmd == 0xFF) {
+      busy_wait();
+      delay(num_args);
+      continue;
+    }
+    if (num_args > sizeof(buf)) {
+      Serial.println("ERROR - buf not large enough!");
+      while (1)
+        delay(10);
+    }
+
+    for (int i = 0; i < num_args; i++) {
+      buf[i] = init_code[0];
+      init_code++;
+    }
+    EPD_command(cmd, buf, num_args);
+  }
+}
+
+/**************************************************************************/
+/*!
     @brief send an EPD command followed by data
     @param c the command to send
     @param buf the buffer of data to send
@@ -490,9 +546,8 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 
   uint8_t data = SPItransfer(c);
 #ifdef EPD_DEBUG
-  Serial.print("\nCommand: 0x");
-  Serial.print(c, HEX);
-  Serial.print(" - ");
+  Serial.print("\tCommand: 0x");
+  Serial.println(c, HEX);
 #endif
 
   if (end) {
@@ -514,7 +569,7 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
   dcHigh();
 
 #ifdef EPD_DEBUG
-  Serial.print("Data: ");
+  Serial.print("\tData: ");
 #endif
   for (uint16_t i = 0; i < len; i++) {
     SPItransfer(buf[i]);
@@ -524,9 +579,11 @@ void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
     Serial.print(", ");
 #endif
   }
+
 #ifdef EPD_DEBUG
   Serial.println();
 #endif
+
   csHigh();
 }
 
