@@ -25,7 +25,6 @@ const uint8_t ssd1619_default_init_code[] {
 
 // clang-format on
 
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -81,9 +80,9 @@ Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY, 
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
                                    SPIClass *spi)
-  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -141,8 +140,8 @@ void Adafruit_SSD1619::update() {
   uint8_t buf[1];
 
   // display update sequence
-  //buf[0] = 0x40;
-  //EPD_command(SSD1619_DISP_CTRL1, buf, 1);
+  // buf[0] = 0x40;
+  // EPD_command(SSD1619_DISP_CTRL1, buf, 1);
   buf[0] = 0xC7;
   EPD_command(SSD1619_DISP_CTRL2, buf, 1);
 
@@ -153,7 +152,6 @@ void Adafruit_SSD1619::update() {
     delay(1000);
   }
 }
-
 
 /**************************************************************************/
 /*!
@@ -180,7 +178,7 @@ void Adafruit_SSD1619::powerUp() {
   buf[2] = 0x00;
   EPD_command(SSD1619_DRIVER_CONTROL, buf, 3);
 
-  setRAMWindow(0, 0, HEIGHT-1, WIDTH-1);
+  setRAMWindow(0, 0, HEIGHT - 1, WIDTH - 1);
 }
 
 /**************************************************************************/
@@ -241,7 +239,6 @@ void Adafruit_SSD1619::setRAMAddress(uint16_t x, uint16_t y) {
   EPD_command(SSD1619_SET_RAMYCOUNT, buf, 2);
 }
 
-
 /**************************************************************************/
 /*!
     @brief Some displays require setting the RAM address pointer
@@ -249,12 +246,13 @@ void Adafruit_SSD1619::setRAMAddress(uint16_t x, uint16_t y) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_SSD1619::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+void Adafruit_SSD1619::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
+                                    uint16_t y2) {
   uint8_t buf[5];
 
   // Set ram X start/end postion
-  buf[0] = x1/8;
-  buf[1] = x2/8;
+  buf[0] = x1 / 8;
+  buf[1] = x2 / 8;
   EPD_command(SSD1619_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion

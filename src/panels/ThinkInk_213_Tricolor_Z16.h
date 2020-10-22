@@ -7,11 +7,12 @@ class ThinkInk_213_Tricolor_Z16 : public Adafruit_IL0373 {
 private:
 public:
   ThinkInk_213_Tricolor_Z16(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
-                          int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1)
+                            int8_t CS, int8_t SRCS, int8_t MISO,
+                            int8_t BUSY = -1)
       : Adafruit_IL0373(212, 104, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_213_Tricolor_Z16(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                          int8_t BUSY = -1, SPIClass *spi = &SPI)
+                            int8_t BUSY = -1, SPIClass *spi = &SPI)
       : Adafruit_IL0373(212, 104, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {

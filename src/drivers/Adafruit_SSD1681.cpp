@@ -17,7 +17,6 @@ const uint8_t ssd1681_default_init_code[] {
 
 // clang-format on
 
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -73,9 +72,9 @@ Adafruit_SSD1681::Adafruit_SSD1681(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_SSD1681::Adafruit_SSD1681(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY, 
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
                                    SPIClass *spi)
-  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -164,11 +163,8 @@ void Adafruit_SSD1681::updatePartial(void) {
   }
 }
 
-
-
-
 void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
-                                     uint16_t y2) {
+                                      uint16_t y2) {
   uint8_t buf[7];
   uint8_t c;
 
@@ -219,9 +215,9 @@ void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   powerUp();
 
   // display....
-  //setRAMWindow(0, 0, 16/8, 16);
-  setRAMWindow(x1/8, y1, x2/8, y2);
-  setRAMAddress(x1/8, y1);
+  // setRAMWindow(0, 0, 16/8, 16);
+  setRAMWindow(x1 / 8, y1, x2 / 8, y2);
+  setRAMAddress(x1 / 8, y1);
 
   // write image
   writeRAMCommand(0);
@@ -233,7 +229,7 @@ void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
     for (uint16_t x = x1; x < x2; x += 8) {
       uint16_t i = (x / 8) + y * 25;
       SPItransfer(black_buffer[i]);
-      //SPItransfer(0xAA);
+      // SPItransfer(0xAA);
     }
   }
   csHigh();
@@ -249,9 +245,7 @@ void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
 #endif
 
   powerDown();
-
 }
-
 
 /**************************************************************************/
 /*!
@@ -277,7 +271,6 @@ void Adafruit_SSD1681::powerUp() {
   buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1681_DRIVER_CONTROL, buf, 3);
-
 
   setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
 }
@@ -336,10 +329,9 @@ void Adafruit_SSD1681::setRAMAddress(uint16_t x, uint16_t y) {
 
   // set RAM y address count
   buf[0] = y;
-  buf[1] = y>>8;
+  buf[1] = y >> 8;
   EPD_command(SSD1681_SET_RAMYCOUNT, buf, 2);
 }
-
 
 /**************************************************************************/
 /*!
@@ -348,7 +340,8 @@ void Adafruit_SSD1681::setRAMAddress(uint16_t x, uint16_t y) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_SSD1681::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+void Adafruit_SSD1681::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
+                                    uint16_t y2) {
   uint8_t buf[5];
 
   // Set ram X start/end postion

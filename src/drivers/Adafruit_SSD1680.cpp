@@ -3,7 +3,6 @@
 
 #define BUSY_WAIT 500
 
-
 // clang-format off
 
 const uint8_t ssd1680_default_init_code[] {
@@ -21,7 +20,6 @@ const uint8_t ssd1680_default_init_code[] {
     0xFE};
 
 // clang-format on
-
 
 /**************************************************************************/
 /*!
@@ -78,8 +76,9 @@ Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
-  : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
+                                   SPIClass *spi)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -184,7 +183,6 @@ void Adafruit_SSD1680::powerUp() {
   buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
-
   // Set LUT
   /*
   buf[0] = LUT_DATA[74];
@@ -192,13 +190,11 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_WRITE_LUT, LUT_DATA, 70);
   */
 
-
   // Set display size and driver output control
   buf[0] = (WIDTH - 1);
   buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1680_DRIVER_CONTROL, buf, 3);
-
 }
 
 /**************************************************************************/
