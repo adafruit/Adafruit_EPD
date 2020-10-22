@@ -9,12 +9,11 @@
 
 #include "Adafruit_ThinkInk.h"
 
-
-#define EPD_CS     10
-#define EPD_DC      9
-#define SRAM_CS     -1
+#define EPD_CS      9
+#define EPD_DC      10
+#define SRAM_CS     6
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    6 // can set to -1 to not use a pin (will wait a fixed delay)
+#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
 
 //ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
