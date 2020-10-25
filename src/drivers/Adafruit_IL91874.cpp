@@ -184,61 +184,9 @@ void Adafruit_IL91874::powerUp() {
   }
   EPD_commandList(init_code);
 
-  /*
-  EPD_command(IL91874_POWER_ON);
-  busy_wait();
-
-  buf[0] = 0xAF;
-  EPD_command(IL91874_PANEL_SETTING, buf, 1);
-
-  buf[0] = 0x3a;
-  EPD_command(IL91874_PLL, buf, 1);
-
-  buf[0] = 0x03;
-  buf[1] = 0x00;
-  buf[2] = 0x2b;
-  buf[3] = 0x2b;
-  buf[4] = 0x09;
-  EPD_command(IL91874_POWER_SETTING, buf, 5);
-
-  buf[0] = 0x07;
-  buf[1] = 0x07;
-  buf[2] = 0x017;
-  EPD_command(IL91874_BOOSTER_SOFT_START, buf, 3);
-
-  buf[0] = 0x60;
-  buf[1] = 0xA5;
-  EPD_command(0xF8, buf, 2);
-
-  buf[0] = 0x89;
-  buf[1] = 0xA5;
-  EPD_command(0xF8, buf, 2);
-
-  buf[0] = 0x90;
-  buf[1] = 0x00;
-  EPD_command(0xF8, buf, 2);
-
-  buf[0] = 0x93;
-  buf[1] = 0x2A;
-  EPD_command(0xF8, buf, 2);
-
-  buf[0] = 0x73;
-  buf[1] = 0x41;
-  EPD_command(0xF8, buf, 2);
-
-  buf[0] = 0x12;
-  EPD_command(IL91874_VCM_DC_SETTING, buf, 1);
-
-  buf[0] = 0x87;
-  EPD_command(IL91874_CDI, buf, 1);
-
-  EPD_command(IL91874_LUT1, lut_vcomDC, 44);
-  EPD_command(IL91874_LUTWW, lut_ww, 42);
-  EPD_command(IL91874_LUTBW, lut_bw, 42);
-  EPD_command(IL91874_LUTWB, lut_wb, 42);
-  EPD_command(IL91874_LUTBB, lut_bb, 42);
-
-  */
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
 
   buf[0] = (HEIGHT >> 8) & 0xFF;
   buf[1] = HEIGHT & 0xFF;
