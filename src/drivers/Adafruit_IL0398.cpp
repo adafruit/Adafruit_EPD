@@ -3,6 +3,19 @@
 
 #define BUSY_WAIT 500
 
+// clang-format off
+
+const uint8_t il0398_default_init_code[] {
+    0xFF, 20,          // busy wait
+    IL0398_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+    IL0398_POWER_ON, 0,
+    0xFF, 20,          // busy wait
+    IL0398_PANEL_SETTING, 2, 0x0F, 0x0, // lut from OTP & vcom = 0v
+    IL0398_VCOM, 1, 0xD7,
+    0xFE};
+
+// clang-format on
+
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -51,8 +64,9 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
 */
 /**************************************************************************/
 Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST,
-                                 int8_t CS, int8_t SRCS, int8_t BUSY)
-    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY) {
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
+                                   SPIClass *spi)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
@@ -78,7 +92,7 @@ void Adafruit_IL0398::busy_wait(void) {
     do {
       EPD_command(IL0398_GETSTATUS);
       delay(10);
-    } while (digitalRead(_busy_pin)); // wait for busy low
+    } while (! digitalRead(_busy_pin)); // wait for busy HIGH
     delay(200);
   } else {
     delay(BUSY_WAIT);
@@ -125,16 +139,11 @@ void Adafruit_IL0398::powerUp() {
 
   hardwareReset();
 
-  buf[0] = 0x17;
-  buf[1] = 0x17;
-  buf[2] = 0x17;
-  EPD_command(IL0398_BOOSTER_SOFT_START, buf, 3);
-
-  EPD_command(IL0398_POWER_ON);
-  busy_wait();
-
-  buf[0] = 0x0F;
-  EPD_command(IL0398_PANEL_SETTING, buf, 1);
+  const uint8_t *init_code = il0398_default_init_code;
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
 
   buf[0] = (HEIGHT >> 8) & 0xFF;
   buf[1] = HEIGHT & 0xFF;
@@ -158,8 +167,11 @@ void Adafruit_IL0398::powerDown() {
   EPD_command(IL0398_VCOM, buf, 1);
   EPD_command(IL0398_POWER_OFF);
   busy_wait();
-  buf[0] = 0xA5; // deep sleep
-  EPD_command(IL0398_DEEP_SLEEP, buf, 1);
+  // Only deep sleep if we can get out of it
+  if (_reset_pin >= 0) {
+    buf[0] = 0xA5; // deep sleep
+    EPD_command(UC8276_DEEPSLEEP, buf, 1);
+  }
   delay(100);
 }
 
