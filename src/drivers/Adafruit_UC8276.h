@@ -25,10 +25,10 @@
 class Adafruit_UC8276 : public Adafruit_EPD {
 public:
   Adafruit_UC8276(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
-                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
-                   int8_t BUSY = -1);
+                  int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                  int8_t BUSY = -1);
   Adafruit_UC8276(int width, int height, int8_t DC, int8_t RST, int8_t CS,
-                   int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
+                  int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();

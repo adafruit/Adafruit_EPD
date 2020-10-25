@@ -29,10 +29,9 @@ const uint8_t uc8276_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_UC8276::Adafruit_UC8276(int width, int height, int8_t SID,
-                                   int8_t SCLK, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t MISO,
-                                   int8_t BUSY)
+Adafruit_UC8276::Adafruit_UC8276(int width, int height, int8_t SID, int8_t SCLK,
+                                 int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+                                 int8_t MISO, int8_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
@@ -69,8 +68,8 @@ Adafruit_UC8276::Adafruit_UC8276(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_UC8276::Adafruit_UC8276(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY,
-                                   SPIClass *spi)
+                                 int8_t CS, int8_t SRCS, int8_t BUSY,
+                                 SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
@@ -169,7 +168,7 @@ void Adafruit_UC8276::powerDown() {
   busy_wait();
 
   // Only deep sleep if we can get out of it
-  if (_reset_pin >= 0) {    
+  if (_reset_pin >= 0) {
     buf[0] = 0xA5;
     EPD_command(UC8276_DEEPSLEEP, buf, 1);
   }
@@ -213,6 +212,6 @@ void Adafruit_UC8276::setRAMAddress(uint16_t x, uint16_t y) {
 */
 /**************************************************************************/
 void Adafruit_UC8276::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
-                                    uint16_t y2) {
+                                   uint16_t y2) {
   // not used in this chip!
 }
