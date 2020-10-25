@@ -10,8 +10,8 @@ const uint8_t il0398_default_init_code[] {
     IL0398_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
     IL0398_POWER_ON, 0,
     0xFF, 20,          // busy wait
-    IL0398_PANEL_SETTING, 2, 0x0F, 0x0, // lut from OTP & vcom = 0v
-    IL0398_VCOM, 1, 0xD7,
+    IL0398_PANEL_SETTING, 2, 0x1F, 0x0D, // lut from OTP & vcom = 0v
+    IL0398_VCOM, 1, 0x97,
     0xFE};
 
 // clang-format on
@@ -144,6 +144,10 @@ void Adafruit_IL0398::powerUp() {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
+
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
 
   buf[0] = (HEIGHT >> 8) & 0xFF;
   buf[1] = HEIGHT & 0xFF;
