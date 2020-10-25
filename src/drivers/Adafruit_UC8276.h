@@ -17,32 +17,6 @@
 #define UC8276_WRITE_VCOM 0x50
 #define UC8276_GET_STATUS 0x71
 
-/*
-#define UC8276_GATE_VOLTAGE 0x03
-#define UC8276_PROGOTP_INITIAL 0x08
-#define UC8276_PROGREG_INITIAL 0x09
-#define UC8276_READREG_INITIAL 0x0A
-#define UC8276_BOOST_SOFTSTART 0x0C
-#define UC8276_DATA_MODE 0x11
-#define UC8276_SW_RESET 0x12
-#define UC8276_TEMP_CONTROL 0x18
-#define UC8276_TEMP_WRITE 0x1A
-
-#define UC8276_DISP_CTRL1 0x21
-#define UC8276_DISP_CTRL2 0x22
-
-#define UC8276_READ_OTP 0x2D
-#define UC8276_READ_STATUS 0x2F
-#define UC8276_WRITE_LUT 0x32
-#define UC8276_WRITE_BORDER 0x3C
-#define UC8276_SET_RAMXPOS 0x44
-#define UC8276_SET_RAMYPOS 0x45
-#define UC8276_SET_RAMXCOUNT 0x4E
-#define UC8276_SET_RAMYCOUNT 0x4F
-#define UC8276_SET_ANALOGBLOCK 0x74
-#define UC8276_SET_DIGITALBLOCK 0x7E
-*/
-
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with UC8276 EPD drivers
