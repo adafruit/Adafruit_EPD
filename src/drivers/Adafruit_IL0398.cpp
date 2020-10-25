@@ -64,8 +64,8 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
 */
 /**************************************************************************/
 Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY,
-                                   SPIClass *spi)
+                                 int8_t CS, int8_t SRCS, int8_t BUSY,
+                                 SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
@@ -92,7 +92,7 @@ void Adafruit_IL0398::busy_wait(void) {
     do {
       EPD_command(IL0398_GETSTATUS);
       delay(10);
-    } while (! digitalRead(_busy_pin)); // wait for busy HIGH
+    } while (!digitalRead(_busy_pin)); // wait for busy HIGH
     delay(200);
   } else {
     delay(BUSY_WAIT);
