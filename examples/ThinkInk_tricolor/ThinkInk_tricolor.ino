@@ -9,18 +9,20 @@
 
 #include "Adafruit_ThinkInk.h"
 
-#define EPD_CS      9
-#define EPD_DC      10
-#define SRAM_CS     6
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define EPD_DC      10 // can be any pin, but required!
+#define EPD_CS      9  // can be any pin, but required!
+#define EPD_BUSY    7  // can set to -1 to not use a pin (will wait a fixed delay)
+#define SRAM_CS     6  // can set to -1 to not use a pin (uses a lot of RAM!)
+#define EPD_RESET   5  // can set to -1 and share with chip Reset (can't deep sleep)
 
 //ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_154_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_270_Tricolor_C44 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-//ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 2.9" Tricolor Featherwing or Breakout:
+ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 void setup() {
   Serial.begin(115200);
