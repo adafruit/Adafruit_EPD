@@ -9,14 +9,16 @@
 
 #include "Adafruit_ThinkInk.h"
 
-#define EPD_CS      9
-#define EPD_DC      10
-#define SRAM_CS     6
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define EPD_DC      10 // can be any pin, but required!
+#define EPD_CS      9  // can be any pin, but required!
+#define EPD_BUSY    7  // can set to -1 to not use a pin (will wait a fixed delay)
+#define SRAM_CS     6  // can set to -1 to not use a pin (uses a lot of RAM!)
+#define EPD_RESET   5  // can set to -1 and share with chip Reset (can't deep sleep)
 
 //ThinkInk_154_Grayscale4_T8 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// 2.9" Grayscale Featherwing or Breakout:
 ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 #define COLOR1 EPD_BLACK
