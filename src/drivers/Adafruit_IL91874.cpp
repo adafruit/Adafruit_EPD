@@ -3,6 +3,24 @@
 
 #define BUSY_WAIT 500
 
+// clang-format off
+
+const uint8_t il91874_default_init_code[] {
+  IL91874_BOOSTER_SOFT_START, 3, 0x07, 0x07, 0x17,
+    IL91874_POWER_ON, 0,
+    0xFF, 20,          // busy wait
+    IL91874_PANEL_SETTING, 1, 0x1f, // LUT from OTP
+    IL91874_PDRF, 1, 0x00,
+    0xF8, 2, 0x60, 0xA5, // boost
+    0xF8, 2, 0x73, 0x23, // boost
+    0xF8, 2, 0x7C, 0x00, // boost
+    IL91874_CDI, 1, 0x97,
+    0xFE};
+
+// clang-format on
+
+
+
 const unsigned char lut_vcomDC[] = {
     0x00, 0x00, 0x00, 0x1A, 0x1A, 0x00, 0x00, 0x01, 0x00, 0x0A, 0x0A,
     0x00, 0x00, 0x08, 0x00, 0x0E, 0x01, 0x0E, 0x01, 0x10, 0x00, 0x0A,
@@ -130,7 +148,7 @@ void Adafruit_IL91874::begin(bool reset) {
   Adafruit_EPD::begin(reset);
 
   setBlackBuffer(0, true);  // black defaults to inverted
-  setColorBuffer(1, false); // red defaults to not inverted
+  setColorBuffer(1, true); // red defaults to not inverted
 
   powerDown();
 }
@@ -142,10 +160,10 @@ void Adafruit_IL91874::begin(bool reset) {
 /**************************************************************************/
 void Adafruit_IL91874::update() {
   EPD_command(IL91874_DISPLAY_REFRESH);
-
+  delay(100);
   busy_wait();
   if (_busy_pin <= -1) {
-    delay(16000);
+    delay(default_refresh_delay);
   }
 }
 
@@ -159,7 +177,14 @@ void Adafruit_IL91874::powerUp() {
 
   hardwareReset();
   delay(200);
+  const uint8_t *init_code = il91874_default_init_code;
 
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
+
+  /*
   EPD_command(IL91874_POWER_ON);
   busy_wait();
 
@@ -213,6 +238,8 @@ void Adafruit_IL91874::powerUp() {
   EPD_command(IL91874_LUTWB, lut_wb, 42);
   EPD_command(IL91874_LUTBB, lut_bb, 42);
 
+  */
+
   buf[0] = (HEIGHT >> 8) & 0xFF;
   buf[1] = HEIGHT & 0xFF;
   buf[2] = (WIDTH >> 8) & 0xFF;
@@ -229,9 +256,12 @@ void Adafruit_IL91874::powerUp() {
 */
 /**************************************************************************/
 void Adafruit_IL91874::powerDown() {
-  // power off
   uint8_t buf[1];
 
+  buf[0] = 0xF7;
+  EPD_command(IL91874_CDI, buf, 1);
+
+  // power off
   EPD_command(IL91874_POWER_OFF);
   busy_wait();
 
