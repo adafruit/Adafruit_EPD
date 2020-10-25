@@ -19,8 +19,6 @@ const uint8_t il91874_default_init_code[] {
 
 // clang-format on
 
-
-
 const unsigned char lut_vcomDC[] = {
     0x00, 0x00, 0x00, 0x1A, 0x1A, 0x00, 0x00, 0x01, 0x00, 0x0A, 0x0A,
     0x00, 0x00, 0x08, 0x00, 0x0E, 0x01, 0x0E, 0x01, 0x10, 0x00, 0x0A,
@@ -147,7 +145,7 @@ void Adafruit_IL91874::begin(bool reset) {
   singleByteTxns = true;
   Adafruit_EPD::begin(reset);
 
-  setBlackBuffer(0, true);  // black defaults to inverted
+  setBlackBuffer(0, true); // black defaults to inverted
   setColorBuffer(1, true); // red defaults to not inverted
 
   powerDown();
