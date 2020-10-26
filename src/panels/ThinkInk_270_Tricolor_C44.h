@@ -3,6 +3,24 @@
 
 #include "Adafruit_EPD.h"
 
+// clang-format off
+
+static const uint8_t ti_270c44_tri_init_code[] {
+    IL91874_BOOSTER_SOFT_START, 3, 0x07, 0x07, 0x17,
+    IL91874_POWER_ON, 0,
+    0xFF, 200,
+    IL91874_PANEL_SETTING, 1, 0x0F, // OTP lut
+    IL91874_PDRF, 1, 0x00,
+
+    0xF8, 2, 0x60, 0xA5, // boost
+    0xF8, 2, 0x73, 0x23, // boost
+    0xF8, 2, 0x7C, 0x00, // boost
+
+    0xFE // EOM
+};
+
+// clang-format on
+
 class ThinkInk_270_Tricolor_C44 : public Adafruit_IL91874 {
 private:
 public:
@@ -17,12 +35,17 @@ public:
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
     Adafruit_IL91874::begin(true);
+    setBlackBuffer(0, false);
+    setColorBuffer(1, false);
 
-    layer_colors[EPD_WHITE] = 0b10;
+    _epd_init_code = ti_270c44_tri_init_code;
+    _epd_lut_code = NULL;
+
+    layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b01;
     layer_colors[EPD_RED] = 0b10;
     layer_colors[EPD_GRAY] = 0b10;
-    layer_colors[EPD_LIGHT] = 0b10;
+    layer_colors[EPD_LIGHT] = 0b00;
     layer_colors[EPD_DARK] = 0b01;
 
     default_refresh_delay = 13000;
