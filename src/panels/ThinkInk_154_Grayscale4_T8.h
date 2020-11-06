@@ -1,6 +1,8 @@
 #ifndef _THINKINK_154_GRAYSCALE4_T8_H
 #define _THINKINK_154_GRAYSCALE4_T8_H
 
+#include "Adafruit_ThinkInk.h" // Includes EPD header, ink mode enum
+
 // clang-format off
 
 static const uint8_t ti_154t8_gray4_init_code[] {
@@ -144,7 +146,6 @@ static const uint8_t ti_154t8_gray4_lut_code[] = {
 // clang-format on
 
 class ThinkInk_154_Grayscale4_T8 : public Adafruit_IL0373 {
-private:
 public:
   ThinkInk_154_Grayscale4_T8(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                              int8_t CS, int8_t SRCS, int8_t MISO,
@@ -160,6 +161,8 @@ public:
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(1, true); // layer 1 uninverted
 
+    inkmode = mode; // Preserve ink mode for ImageReader or others
+
     if (mode == THINKINK_GRAYSCALE4) {
       _epd_init_code = ti_154t8_gray4_init_code;
       _epd_lut_code = ti_154t8_gray4_lut_code;
@@ -170,8 +173,7 @@ public:
       layer_colors[EPD_GRAY] = 0b10;
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
-    }
-    if (mode == THINKINK_MONO) {
+    } else if (mode == THINKINK_MONO) {
       _epd_init_code = ti_154t8_monofull_init_code;
       _epd_partial_init_code = ti_154t8_monopart_init_code;
       _epd_partial_lut_code = ti_154t8_monopart_lut_code;
@@ -187,7 +189,12 @@ public:
     default_refresh_delay = 1000;
     setRotation(3);
     powerDown();
-  };
+  }
+
+  thinkinkmode_t getMode(void) { return inkmode; }
+
+private:
+  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_154_GRAYSCALE4_T8_H

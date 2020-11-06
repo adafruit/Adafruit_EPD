@@ -1,10 +1,9 @@
 #ifndef _THINKINK_213_MONO_B73_H
 #define _THINKINK_213_MONO_B73_H
 
-#include "Adafruit_EPD.h"
+#include "Adafruit_ThinkInk.h" // Includes EPD header, ink mode enum
 
 class ThinkInk_213_Mono_B73 : public Adafruit_SSD1675B {
-private:
 public:
   ThinkInk_213_Mono_B73(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                         int8_t CS, int8_t SRCS, int8_t MISO, int8_t BUSY = -1)
@@ -19,6 +18,8 @@ public:
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(0, true); // only one buffer
 
+    inkmode = mode; // Preserve ink mode for ImageReader or others
+
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b01;
     layer_colors[EPD_RED] = 0b01;
@@ -29,7 +30,12 @@ public:
     default_refresh_delay = 1000;
     setRotation(0);
     powerDown();
-  };
+  }
+
+  thinkinkmode_t getMode(void) { return inkmode; }
+
+private:
+  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_213_MONO_B73_H

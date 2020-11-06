@@ -1,3 +1,8 @@
+#ifndef _ADAFRUIT_THINKINK_H_
+#define _ADAFRUIT_THINKINK_H_
+
+#include "Adafruit_EPD.h"
+
 typedef enum {
   THINKINK_MONO,
   THINKINK_TRICOLOR,
@@ -22,3 +27,5 @@ typedef enum {
 #include "panels/ThinkInk_213_Mono_B73.h"
 #include "panels/ThinkInk_213_Mono_BN.h"
 #include "panels/ThinkInk_420_Mono_BN.h"
+
+#endif // _ADAFRUIT_THINKINK_H_
