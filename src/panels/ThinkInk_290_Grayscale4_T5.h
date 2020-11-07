@@ -1,41 +1,42 @@
 #ifndef _THINKINK_290_GRAYSCALE4_T5_H
 #define _THINKINK_290_GRAYSCALE4_T5_H
 
-#include "Adafruit_ThinkInk.h" // Includes EPD header, ink mode enum
+// This file is #included by Adafruit_ThinkInk.h and does not need to
+// #include anything else to pick up the EPD header or ink mode enum.
 
 // clang-format off
 
 static const uint8_t ti_290t5_gray4_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 1, 0x3F,
-    IL0373_PLL, 1, 0x3C,    
-    IL0373_VCM_DC_SETTING, 1, 0x12,
-    IL0373_CDI, 1, 0x97,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 1, 0x3F,
+  IL0373_PLL, 1, 0x3C,    
+  IL0373_VCM_DC_SETTING, 1, 0x12,
+  IL0373_CDI, 1, 0x97,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monopart_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x03,
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 2, 0xbF, 0x0d,
-    IL0373_PLL, 1, 0x3C,    
-    IL0373_VCM_DC_SETTING, 1, 0x12,
-    IL0373_CDI, 1, 0x47,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 2, 0xbF, 0x0d,
+  IL0373_PLL, 1, 0x3C,    
+  IL0373_VCM_DC_SETTING, 1, 0x12,
+  IL0373_CDI, 1, 0x47,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monofull_init_code[] {
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 2, 0x1f, 0x0d,
-    IL0373_CDI, 1, 0x97,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 2, 0x1f, 0x0d,
+  IL0373_CDI, 1, 0x97,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monopart_lut_code[] = {

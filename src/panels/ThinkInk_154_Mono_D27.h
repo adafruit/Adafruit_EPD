@@ -1,7 +1,8 @@
 #ifndef _THINKINK_154_MONO_D27_H
 #define _THINKINK_154_MONO_D27_H
 
-#include "Adafruit_ThinkInk.h" // Includes EPD header, ink mode enum
+// This file is #included by Adafruit_ThinkInk.h and does not need to
+// #include anything else to pick up the EPD header or ink mode enum.
 
 class ThinkInk_154_Mono_D27 : public Adafruit_SSD1608 {
 public:

@@ -1,7 +1,8 @@
 #ifndef _THINKINK_213_TRICOLOR_Z16_H
 #define _THINKINK_213_TRICOLOR_Z16_H
 
-#include "Adafruit_ThinkInk.h" // Includes EPD header, ink mode enum
+// This file is #included by Adafruit_ThinkInk.h and does not need to
+// #include anything else to pick up the EPD header or ink mode enum.
 
 class ThinkInk_213_Tricolor_Z16 : public Adafruit_IL0373 {
 public:
