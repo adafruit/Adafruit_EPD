@@ -1,10 +1,10 @@
 #ifndef _THINKINK_213_TRICOLOR_Z16_H
 #define _THINKINK_213_TRICOLOR_Z16_H
 
-#include "Adafruit_EPD.h"
+// This file is #included by Adafruit_ThinkInk.h and does not need to
+// #include anything else to pick up the EPD header or ink mode enum.
 
 class ThinkInk_213_Tricolor_Z16 : public Adafruit_IL0373 {
-private:
 public:
   ThinkInk_213_Tricolor_Z16(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                             int8_t CS, int8_t SRCS, int8_t MISO,
@@ -20,6 +20,8 @@ public:
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(1, true); // layer 1 uninverted
 
+    inkmode = mode; // Preserve ink mode for ImageReader or others
+
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b10;
     layer_colors[EPD_RED] = 0b01;
@@ -30,7 +32,12 @@ public:
     default_refresh_delay = 16000;
 
     powerDown();
-  };
+  }
+
+  thinkinkmode_t getMode(void) { return inkmode; }
+
+private:
+  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_213_TRICOLOR_Z16_H
