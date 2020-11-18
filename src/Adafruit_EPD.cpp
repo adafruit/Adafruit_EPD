@@ -493,9 +493,9 @@ void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
   uint8_t buf[64];
 
   while (init_code[0] != 0xFE) {
-    char cmd = init_code[0];
+    uint8_t cmd = init_code[0];
     init_code++;
-    int num_args = init_code[0];
+    uint8_t num_args = init_code[0];
     init_code++;
     if (cmd == 0xFF) {
       busy_wait();
