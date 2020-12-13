@@ -647,7 +647,7 @@ void Adafruit_EPD::csHigh() {
   digitalWrite(_cs_pin, HIGH);
 #endif
 
-  if ( _isInTransaction ) {
+  if (_isInTransaction) {
     spi_dev->endTransaction();
     _isInTransaction = false;
   }
@@ -659,7 +659,7 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
-  if ( ! _isInTransaction ) {
+  if (! _isInTransaction) {
     spi_dev->beginTransaction();
     _isInTransaction = true;
   }
