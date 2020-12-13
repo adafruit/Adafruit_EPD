@@ -659,7 +659,7 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
-  if (! _isInTransaction) {
+  if (!_isInTransaction) {
     spi_dev->beginTransaction();
     _isInTransaction = true;
   }
