@@ -99,17 +99,14 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
 */
 /**************************************************************************/
 void Adafruit_UC8151D::busy_wait(void) {
-  Serial.print("Waiting...");
   if (_busy_pin >= 0) {
-    EPD_command(UC8151D_FLG);
-
-    if (digitalRead(_busy_pin)) { 
+    do {
+      EPD_command(UC8151D_FLG);
       delay(10);
-    }
+    } while (!digitalRead(_busy_pin));
   } else {
     delay(BUSY_WAIT);
   }
-  Serial.println("OK!");
 }
 
 /**************************************************************************/
