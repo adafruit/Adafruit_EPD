@@ -103,7 +103,7 @@ void Adafruit_UC8151D::busy_wait(void) {
   if (_busy_pin >= 0) {
     EPD_command(UC8151D_FLG);
 
-    if (! digitalRead(_busy_pin)) { // wait for busy high
+    if (digitalRead(_busy_pin)) { 
       delay(10);
     }
   } else {
