@@ -184,5 +184,6 @@ protected:
 #include "drivers/Adafruit_SSD1675B.h"
 #include "drivers/Adafruit_SSD1680.h"
 #include "drivers/Adafruit_SSD1681.h"
+#include "drivers/Adafruit_UC8151D.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */
