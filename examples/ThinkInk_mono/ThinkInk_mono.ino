@@ -19,7 +19,7 @@
 //ThinkInk_154_Mono_D27 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 // 1.54" Monochrome displays with 152x152 pixels and UC8151D chipset
-ThinkInk_154_Mono_M10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_154_Mono_M10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 // 2.13" Monochrome displays with 250x122 pixels and SSD1675 chipset
 ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
