@@ -23,9 +23,12 @@ typedef enum {
 
 #include "panels/ThinkInk_154_Mono_D27.h"
 #include "panels/ThinkInk_154_Mono_D67.h"
+#include "panels/ThinkInk_154_Mono_M10.h"
 #include "panels/ThinkInk_213_Mono_B72.h"
 #include "panels/ThinkInk_213_Mono_B73.h"
 #include "panels/ThinkInk_213_Mono_BN.h"
+#include "panels/ThinkInk_213_Mono_M21.h"
+#include "panels/ThinkInk_290_Mono_M06.h"
 #include "panels/ThinkInk_420_Mono_BN.h"
 
 #endif // _ADAFRUIT_THINKINK_H_
