@@ -95,4 +95,4 @@ void testdrawtext(char *text, uint16_t color) {
   display.setTextColor(color);
   display.setTextWrap(true);
   display.print(text);
-}}
+}
