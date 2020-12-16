@@ -16,7 +16,7 @@ const uint8_t uc8151d_default_init_code[] {
     UC8151D_PSR, 1, 0x1F,
     UC8151D_CDI, 1, 0x97,
     0xFE};
-    
+
 // clang-format on
 
 /**************************************************************************/
@@ -175,11 +175,11 @@ void Adafruit_UC8151D::powerDown(void) {
   buf[0] = 0xF7;
   EPD_command(UC8151D_CDI, buf, 1);
 
-  EPD_command(UC8151D_POF);   //power off
+  EPD_command(UC8151D_POF); // power off
   busy_wait();
 
   buf[0] = 0xA5;
-  EPD_command(UC8151D_DSLP, buf, 1);       
+  EPD_command(UC8151D_DSLP, buf, 1);
 }
 
 /**************************************************************************/
@@ -208,5 +208,4 @@ uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {
-}
+void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
