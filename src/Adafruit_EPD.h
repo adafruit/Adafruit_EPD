@@ -175,6 +175,7 @@ protected:
   void dcLow();
 };
 
+#include "drivers/Adafruit_EK79686.h"
 #include "drivers/Adafruit_IL0373.h"
 #include "drivers/Adafruit_IL0398.h"
 #include "drivers/Adafruit_IL91874.h"
