@@ -73,6 +73,11 @@ public:
   void display(bool sleep = false);
 
 protected:
+  void writeRAMFramebufferToEPD(uint8_t *buffer,
+                             uint32_t buffer_size, uint8_t EPDlocation);
+  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, 
+                             uint32_t buffer_size, uint8_t EPDlocation);
+
   /**************************************************************************/
   /*!
     @brief Send the specific command to start writing to EPD display RAM
