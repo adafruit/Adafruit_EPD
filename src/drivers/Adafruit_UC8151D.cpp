@@ -1,23 +1,7 @@
-#include "Adafruit_IL0373.h"
+#include "Adafruit_UC8151D.h"
 #include "Adafruit_EPD.h"
 
-#define BUSY_WAIT 100
-
-// clang-format off
-
-const uint8_t il0373_default_init_code[] {
-  IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x09,
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 1, 0xCF,
-    IL0373_CDI, 1, 0x37,
-    IL0373_PLL, 1, 0x29,    
-    IL0373_VCM_DC_SETTING, 1, 0x0A,
-    0xFF, 20,
-    0xFE};
-
-// clang-format on
+#define BUSY_WAIT 500
 
 /**************************************************************************/
 /*!
@@ -34,11 +18,15 @@ const uint8_t il0373_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
-                                 int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                                 int8_t MISO, int8_t BUSY)
+Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t SID,
+                                   int8_t SCLK, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t MISO,
+                                   int8_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
+  if ((width % 8) != 0) {
+    width += 8 - (width % 8);
+  }
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
@@ -65,14 +53,17 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
     @param CS the chip select pin to use
     @param SRCS the SRAM chip select pin to use
     @param BUSY the busy pin to use
-    @param spi the SPI bus to use
 */
 /**************************************************************************/
-Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST,
-                                 int8_t CS, int8_t SRCS, int8_t BUSY,
-                                 SPIClass *spi)
+Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
+                                   int8_t CS, int8_t SRCS, int8_t BUSY,
+                                   SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
+
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  buffer1_size = (uint16_t)width * (uint16_t)height / 8;
   buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
@@ -91,16 +82,15 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_IL0373::busy_wait(void) {
-  // Serial.print("Waiting...");
+void Adafruit_UC8151D::busy_wait(void) {
   if (_busy_pin >= 0) {
-    while (!digitalRead(_busy_pin)) {
-      delay(10); // wait for busy high
-    }
+    do {
+      EPD_command(UC8151D_FLG);
+      delay(10);
+    } while (!digitalRead(_busy_pin));
   } else {
     delay(BUSY_WAIT);
   }
-  // Serial.println("OK!");
 }
 
 /**************************************************************************/
@@ -109,10 +99,10 @@ void Adafruit_IL0373::busy_wait(void) {
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_IL0373::begin(bool reset) {
+void Adafruit_UC8151D::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true); // black defaults to inverted
-  setColorBuffer(1, true); // red defaults to inverted
+  setBlackBuffer(1, true); // black defaults to inverted
+  setColorBuffer(0, true); // red defaults to inverted
 
   powerDown();
 }
@@ -122,15 +112,10 @@ void Adafruit_IL0373::begin(bool reset) {
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_IL0373::update() {
-  EPD_command(IL0373_DISPLAY_REFRESH);
-
+void Adafruit_UC8151D::update() {
+  EPD_command(UC8151D_DRF);
   delay(100);
-
   busy_wait();
-  if (_busy_pin <= -1) {
-    delay(default_refresh_delay);
-  }
 }
 
 /**************************************************************************/
@@ -138,12 +123,18 @@ void Adafruit_IL0373::update() {
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_IL0373::powerUp(void) {
+void Adafruit_UC8151D::powerUp() {
   uint8_t buf[5];
 
+  // Demo code resets 3 times!
   hardwareReset();
+  delay(10);
+  hardwareReset();
+  delay(10);
+  hardwareReset();
+  delay(10);
 
-  const uint8_t *init_code = il0373_default_init_code;
+  const uint8_t *init_code = uc8151d_monofull_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
@@ -153,11 +144,7 @@ void Adafruit_IL0373::powerUp(void) {
   if (_epd_lut_code) {
     EPD_commandList(_epd_lut_code);
   }
-
-  buf[0] = HEIGHT & 0xFF;
-  buf[1] = (WIDTH >> 8) & 0xFF;
-  buf[2] = WIDTH & 0xFF;
-  EPD_command(IL0373_RESOLUTION, buf, 3);
+  busy_wait();
 }
 
 /**************************************************************************/
@@ -165,17 +152,18 @@ void Adafruit_IL0373::powerUp(void) {
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_IL0373::powerDown() {
-  // power off
-  uint8_t buf[4];
 
-  buf[0] = 0x17;
-  EPD_command(IL0373_CDI, buf, 1);
+void Adafruit_UC8151D::powerDown(void) {
+  uint8_t buf[1];
 
-  buf[0] = 0x00;
-  EPD_command(IL0373_VCM_DC_SETTING, buf, 0);
+  buf[0] = 0xF7;
+  EPD_command(UC8151D_CDI, buf, 1);
 
-  EPD_command(IL0373_POWER_OFF);
+  EPD_command(UC8151D_POF); // power off
+  busy_wait();
+
+  buf[0] = 0xA5;
+  EPD_command(UC8151D_DSLP, buf, 1);
 }
 
 /**************************************************************************/
@@ -187,12 +175,12 @@ void Adafruit_IL0373::powerDown() {
    command
 */
 /**************************************************************************/
-uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
+uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
   if (index == 0) {
-    return EPD_command(EPD_RAM_BW, false);
+    return EPD_command(UC8151D_DTM1, false);
   }
   if (index == 1) {
-    return EPD_command(EPD_RAM_RED, false);
+    return EPD_command(UC8151D_DTM2, false);
   }
   return 0;
 }
@@ -204,12 +192,15 @@ uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_IL0373::setRAMAddress(uint16_t x, uint16_t y) {
-  // on this chip we do nothing
-}
+void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
 
-void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
-                                     uint16_t y2) {
+/**************************************************************************/
+/*!
+    @brief Transfer the data stored in the buffer(s) to the display
+*/
+/**************************************************************************/
+void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
+                                      uint16_t y2) {
   uint8_t buf[7];
   uint8_t c;
 
@@ -218,22 +209,22 @@ void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   case 0:
     EPD_swap(x1, y1);
     EPD_swap(x2, y2);
-    y1 = WIDTH - y1;
-    y2 = WIDTH - y2;
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
     break;
   case 1:
     break;
   case 2:
     EPD_swap(x1, y1);
     EPD_swap(x2, y2);
-    x1 = HEIGHT - x1;
-    x2 = HEIGHT - x2;
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
     break;
   case 3:
-    y1 = WIDTH - y1;
-    y2 = WIDTH - y2;
-    x1 = HEIGHT - x1;
-    x2 = HEIGHT - x2;
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
   }
   if (x1 > x2)
     EPD_swap(x1, x2);
@@ -251,82 +242,82 @@ void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   Serial.println(y2);
   */
 
-  // x1 and x2 must be on byte boundaries
-  x1 -= x1 % 8;           // round down;
-  x2 = (x2 + 7) & ~0b111; // round up
-
-  // Serial.println("Partial update!");
-
   // backup & change init to the partial code
   const uint8_t *init_code_backup = _epd_init_code;
   const uint8_t *lut_code_backup = _epd_lut_code;
   _epd_init_code = _epd_partial_init_code;
   _epd_lut_code = _epd_partial_lut_code;
 
-  // perform standard power up
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Up Partial");
+  Serial.print("Partials since last full update: ");
+  Serial.println(partialsSinceLastFullUpdate);
+#endif
+
   powerUp();
 
-  EPD_command(IL0373_PARTIAL_ENTER);
+  // This command makes the display enter partial mode
+  EPD_command(UC8151D_PTIN);
+
   buf[0] = x1;
-  buf[1] = x2 - 1;
+  buf[1] = x2;
   buf[2] = y1 >> 8;
   buf[3] = y1 & 0xFF;
-  buf[4] = (y2 - 1) >> 8;
-  buf[5] = (y2 - 1) & 0xFF;
+  buf[4] = (y2) >> 8;
+  buf[5] = (y2)&0xFF;
   buf[6] = 0x28;
-  EPD_command(IL0373_PARTIAL_WINDOW, buf, 7);
 
-  // display....
+  EPD_command(UC8151D_PTL, buf, 7); // resolution setting
 
-  // write image
-  writeRAMCommand(0);
-  dcHigh();
-  for (uint16_t y = y1; y < y2; y++) {
-    for (uint16_t x = x1; x < x2; x += 8) {
-      uint16_t i = (x / 8) + y * 16;
-      SPItransfer(black_buffer[i]);
-      // SPItransfer(0);
+  // buffer 1 has the old data from the last update
+  if (use_sram) {
+    if (partialsSinceLastFullUpdate == 0) {
+      // first partial update
+      sram.erase(buffer1_addr, buffer1_size, 0xFF);
     }
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0, true);
+  } else {
+    if (partialsSinceLastFullUpdate == 0) {
+      // first partial update
+      memset(buffer1, 0xFF, buffer1_size);
+    }
+
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 0, true);
   }
-  csHigh();
 
   delay(2);
 
-  writeRAMCommand(1);
-  dcHigh();
-
-  // Serial.print("Transfering: ");
-
-  for (uint16_t y = y1; y < y2; y++) {
-    for (uint16_t x = x1; x < x2; x += 8) {
-      uint16_t i = (x / 8) + y * 16;
-      /*
-      Serial.print(i);
-      Serial.print(" (0x");
-      Serial.print(buffer2[i]);
-      Serial.print("), ");
-      if (i % 16 == 15) Serial.println();
-      */
-      SPItransfer(~black_buffer[i]);
-      // SPItransfer(0xFF);
-    }
+  // buffer 2 has the new data, that we're updating
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1, true);
+  } else {
+    writeRAMFramebufferToEPD(buffer2, buffer2_size, 1, true);
   }
-  Serial.println();
-  csHigh();
 
 #ifdef EPD_DEBUG
   Serial.println("  Update");
 #endif
-
   update();
 
-  EPD_command(IL0373_PARTIAL_EXIT);
+  // Serial.println("Partial, saving old data to secondary buffer");
+  if (use_sram) {
+    uint32_t remaining = buffer1_size;
+    uint32_t offset = 0;
+    uint8_t mcp_buf[16];
+    while (remaining) {
+      uint8_t to_xfer = min(sizeof(mcp_buf), remaining);
 
-#ifdef EPD_DEBUG
-  Serial.println("  Powering Down");
-#endif
+      sram.read(buffer2_addr + offset, mcp_buf, to_xfer);
+      sram.write(buffer1_addr + offset, mcp_buf, to_xfer);
+      offset += to_xfer;
+      remaining -= to_xfer;
+    }
+  } else {
+    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup
+  }
 
-  powerDown();
+  partialsSinceLastFullUpdate++;
+
   // change init back
   _epd_lut_code = lut_code_backup;
   _epd_init_code = init_code_backup;

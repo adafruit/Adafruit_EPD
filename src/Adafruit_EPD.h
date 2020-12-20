@@ -20,7 +20,7 @@
 #ifndef _ADAFRUIT_EPD_H_
 #define _ADAFRUIT_EPD_H_
 
-#define EPD_DEBUG
+//#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
@@ -42,6 +42,13 @@ enum {
   EPD_LIGHT, ///< lighter color
   EPD_NUM_COLORS
 };
+
+typedef enum {
+  THINKINK_MONO,
+  THINKINK_TRICOLOR,
+  THINKINK_GRAYSCALE4,
+  THINKINK_MONO_PARTIAL,
+} thinkinkmode_t;
 
 #define EPD_swap(a, b)                                                         \
   {                                                                            \
@@ -72,7 +79,15 @@ public:
   void setColorBuffer(int8_t index, bool inverted);
   void display(bool sleep = false);
 
+  thinkinkmode_t getMode(void) { return inkmode; }
+
 protected:
+  void writeRAMFramebufferToEPD(uint8_t *buffer, uint32_t buffer_size,
+                                uint8_t EPDlocation, bool invertdata = false);
+  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
+                                 uint32_t buffer_size, uint8_t EPDlocation,
+                                 bool invertdata = false);
+
   /**************************************************************************/
   /*!
     @brief Send the specific command to start writing to EPD display RAM
@@ -164,6 +179,10 @@ protected:
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
 
+  thinkinkmode_t inkmode; // Ink mode passed to begin()
+
+  uint8_t partialsSinceLastFullUpdate = 0;
+
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
   BusIO_PortMask csPinMask, dcPinMask;
@@ -175,6 +194,7 @@ protected:
   void dcLow();
 };
 
+#include "drivers/Adafruit_EK79686.h"
 #include "drivers/Adafruit_IL0373.h"
 #include "drivers/Adafruit_IL0398.h"
 #include "drivers/Adafruit_IL91874.h"
@@ -185,6 +205,7 @@ protected:
 #include "drivers/Adafruit_SSD1680.h"
 #include "drivers/Adafruit_SSD1681.h"
 #include "drivers/Adafruit_UC8276.h"
+#include "drivers/Adafruit_UC8151D.h"
 #include "drivers/Adafruit_ACeP.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */

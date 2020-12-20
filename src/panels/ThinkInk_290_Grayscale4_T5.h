@@ -1,41 +1,42 @@
 #ifndef _THINKINK_290_GRAYSCALE4_T5_H
 #define _THINKINK_290_GRAYSCALE4_T5_H
 
-#include "Adafruit_EPD.h"
+// This file is #included by Adafruit_ThinkInk.h and does not need to
+// #include anything else to pick up the EPD header or ink mode enum.
 
 // clang-format off
 
 static const uint8_t ti_290t5_gray4_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 1, 0x3F,
-    IL0373_PLL, 1, 0x3C,    
-    IL0373_VCM_DC_SETTING, 1, 0x12,
-    IL0373_CDI, 1, 0x97,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 1, 0x3F,
+  IL0373_PLL, 1, 0x3C,    
+  IL0373_VCM_DC_SETTING, 1, 0x12,
+  IL0373_CDI, 1, 0x97,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monopart_init_code[] {
   IL0373_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x03,
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 2, 0xbF, 0x0d,
-    IL0373_PLL, 1, 0x3C,    
-    IL0373_VCM_DC_SETTING, 1, 0x12,
-    IL0373_CDI, 1, 0x47,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 2, 0xbF, 0x0d,
+  IL0373_PLL, 1, 0x3C,    
+  IL0373_VCM_DC_SETTING, 1, 0x12,
+  IL0373_CDI, 1, 0x47,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monofull_init_code[] {
-    IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0373_POWER_ON, 0,
-    0xFF, 200,
-    IL0373_PANEL_SETTING, 2, 0x1f, 0x0d,
-    IL0373_CDI, 1, 0x97,
-    0xFE // EOM
+  IL0373_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+  IL0373_POWER_ON, 0,
+  0xFF, 200,
+  IL0373_PANEL_SETTING, 2, 0x1f, 0x0d,
+  IL0373_CDI, 1, 0x97,
+  0xFE // EOM
 };
 
 static const uint8_t ti_290t5_monopart_lut_code[] = {
@@ -146,7 +147,6 @@ const uint8_t ti_290t5_gray4_lut_code[] = {
 // clang-format on
 
 class ThinkInk_290_Grayscale4_T5 : public Adafruit_IL0373 {
-private:
 public:
   ThinkInk_290_Grayscale4_T5(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                              int8_t CS, int8_t SRCS, int8_t MISO,
@@ -158,9 +158,11 @@ public:
       : Adafruit_IL0373(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
-    Adafruit_EPD::begin(true);
+    Adafruit_IL0373::begin(true);
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(1, true); // layer 1 uninverted
+
+    inkmode = mode; // Preserve ink mode for ImageReader or others
 
     if (mode == THINKINK_GRAYSCALE4) {
       _epd_init_code = ti_290t5_gray4_init_code;
@@ -172,8 +174,7 @@ public:
       layer_colors[EPD_GRAY] = 0b10;
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
-    }
-    if (mode == THINKINK_MONO) {
+    } else if (mode == THINKINK_MONO) {
       _epd_init_code = ti_290t5_monofull_init_code;
       _epd_partial_init_code = ti_290t5_monopart_init_code;
       _epd_partial_lut_code = ti_290t5_monopart_lut_code;
@@ -189,7 +190,7 @@ public:
     default_refresh_delay = 800;
 
     powerDown();
-  };
+  }
 };
 
 #endif // _THINKINK_290_GRAYSCALE4_T5_H
