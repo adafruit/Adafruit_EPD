@@ -15,8 +15,8 @@ public:
                            int8_t BUSY = -1, SPIClass *spi = &SPI)
       : Adafruit_SSD1680(250, 122, DC, RST, CS, SRCS, BUSY, spi){};
 
-  void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
+  void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
+    Adafruit_SSD1680::begin(true);
     setBlackBuffer(0, true);
     setColorBuffer(1, false);
 
@@ -33,11 +33,6 @@ public:
     setRotation(0);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_213_TRI

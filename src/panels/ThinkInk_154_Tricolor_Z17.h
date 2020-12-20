@@ -16,7 +16,7 @@ public:
       : Adafruit_IL0373(152, 152, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
-    Adafruit_EPD::begin(true);
+    Adafruit_IL0373::begin(true);
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(1, true); // layer 1 uninverted
 
@@ -34,11 +34,6 @@ public:
     setRotation(3);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_154_TRICOLOR_Z17_H

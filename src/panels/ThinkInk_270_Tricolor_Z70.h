@@ -30,11 +30,6 @@ public:
     default_refresh_delay = 13000;
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_270_TRICOLOR_Z70_H

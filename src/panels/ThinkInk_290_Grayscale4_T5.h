@@ -158,7 +158,7 @@ public:
       : Adafruit_IL0373(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
-    Adafruit_EPD::begin(true);
+    Adafruit_IL0373::begin(true);
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(1, true); // layer 1 uninverted
 
@@ -191,11 +191,6 @@ public:
 
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_290_GRAYSCALE4_T5_H
