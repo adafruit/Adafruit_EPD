@@ -31,10 +31,6 @@ public:
     powerDown();
   }
 
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_270_TRICOLOR_C44_H

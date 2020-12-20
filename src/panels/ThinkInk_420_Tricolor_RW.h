@@ -16,7 +16,7 @@ public:
       : Adafruit_SSD1619(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
-    Adafruit_EPD::begin(true);
+    Adafruit_SSD1619::begin(true);
     setBlackBuffer(0, true);
     setColorBuffer(1, false);
 
@@ -33,11 +33,6 @@ public:
     setRotation(1);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_420_TRI
