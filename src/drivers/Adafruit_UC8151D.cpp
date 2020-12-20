@@ -104,9 +104,6 @@ void Adafruit_UC8151D::begin(bool reset) {
   setBlackBuffer(1, true); // black defaults to inverted
   setColorBuffer(0, true); // red defaults to inverted
 
-  Serial.printf("Buffer1 %04x: ", &buffer1);
-  Serial.printf("Buffer2 %04x: ", &buffer2);
-
   powerDown();
 }
 
@@ -255,12 +252,11 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
 
 #ifdef EPD_DEBUG
   Serial.println("  Powering Up Partial");
+  Serial.print("Partials since last full update: ");
+  Serial.println(partialsSinceLastFullUpdate);
 #endif
 
   powerUp();
-
-  Serial.print("Partials since last full update: ");
-  Serial.println(partialsSinceLastFullUpdate);
 
   // This command makes the display enter partial mode
   EPD_command(UC8151D_PTIN);
@@ -305,32 +301,22 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
   Serial.println("  Update");
 #endif
   update();
-
+  
+  //Serial.println("Partial, saving old data to secondary buffer");
   if (use_sram) {
-    Serial.println("MEME FIX");
-    while (1);
-  } else {
-    Serial.println("Partial, saving old data to secondary buffer");
-    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup 
+    uint32_t remaining = buffer1_size;
+    uint32_t offset = 0;
+    uint8_t mcp_buf[16];
+    while (remaining) {
+      uint8_t to_xfer = min(sizeof(mcp_buf), remaining);
 
-    /*    
-    Serial.println("Buffer 1");
-    for (uint16_t i = 0; i < buffer1_size; i++) {
-      uint8_t d = buffer1[i];
-      Serial.printf("%02x", d);
-      if ((i+1) % (WIDTH/8) == 0)
-        Serial.println();
+      sram.read(buffer2_addr+offset, mcp_buf, to_xfer);
+      sram.write(buffer1_addr+offset, mcp_buf, to_xfer);
+      offset += to_xfer;
+      remaining -= to_xfer;
     }
-    Serial.println();
-    Serial.println("Buffer 2");
-    for (uint16_t i = 0; i < buffer2_size; i++) {
-      uint8_t d = buffer2[i];
-      Serial.printf("%02x", d);
-      if ((i+1) % (WIDTH/8) == 0)
-        Serial.println();
-    }
-    */
-    Serial.println();
+  } else {
+    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup 
   }
     
   partialsSinceLastFullUpdate++;
