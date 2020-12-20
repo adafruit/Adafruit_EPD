@@ -16,8 +16,10 @@
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
 
-/* Uncomment the following line if you are using 1.54" tricolor EPD */
+// Uncomment the following line if you are using 1.54" tricolor EPD
 //Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// Uncomment the following line if you are using 1.54" tricolor EPD with SSD1680
+//Adafruit_SSD1680 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 1.54" monochrome EPD */
 //Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);

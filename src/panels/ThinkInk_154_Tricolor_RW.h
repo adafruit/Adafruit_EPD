@@ -16,10 +16,8 @@ public:
       : Adafruit_SSD1680(152, 152, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
-    setBlackBuffer(0, true);
-    setColorBuffer(1, false);
-
+    Adafruit_SSD1680::begin(true);
+    
     inkmode = mode; // Preserve ink mode for ImageReader or others
 
     layer_colors[EPD_WHITE] = 0b00;
@@ -33,11 +31,6 @@ public:
     setRotation(3);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_154_TRI
