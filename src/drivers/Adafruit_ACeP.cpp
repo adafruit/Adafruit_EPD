@@ -3,7 +3,6 @@
 
 #define BUSY_WAIT 500
 
-
 // clang-format off
 
 const uint8_t acep_default_init_code[] {
@@ -21,7 +20,6 @@ const uint8_t acep_default_init_code[] {
 
 // clang-format on
 
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -37,10 +35,9 @@ const uint8_t acep_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t SID,
-                                   int8_t SCLK, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t MISO,
-                                   int8_t BUSY)
+Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t SID, int8_t SCLK,
+                             int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+                             int8_t MISO, int8_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
   if ((width % 8) != 0) {
@@ -59,7 +56,6 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t SID,
   }
 
   singleByteTxns = true;
-
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
@@ -77,8 +73,7 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t SID,
 */
 /**************************************************************************/
 Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY,
-                                   SPIClass *spi)
+                             int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   if ((height % 8) != 0) {
@@ -106,7 +101,7 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t DC, int8_t RST,
 /**************************************************************************/
 void Adafruit_ACEP::busy_wait(void) {
   if (_busy_pin >= 0) {
-    while (! digitalRead(_busy_pin)) { // wait for busy high
+    while (!digitalRead(_busy_pin)) { // wait for busy high
       delay(10);
     }
   } else {
@@ -169,9 +164,9 @@ void Adafruit_ACEP::update() {
   buf[3] = 0xC0;
   EPD_command(ACEP_RESOLUTION, buf, 4);
   EPD_command(ACEP_DTM);
-  for (int i=0; i< 134400/256; i++) {
+  for (int i = 0; i < 134400 / 256; i++) {
     uint8_t block[256];
-    memset(block, ((i % 6) << 4) | (i %6), 256);
+    memset(block, ((i % 6) << 4) | (i % 6), 256);
     EPD_data(block, 256);
   }
   EPD_command(ACEP_POWER_ON);
@@ -241,6 +236,4 @@ uint8_t Adafruit_ACEP::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_ACEP::setRAMAddress(uint16_t x, uint16_t y) {
-
-}
+void Adafruit_ACEP::setRAMAddress(uint16_t x, uint16_t y) {}

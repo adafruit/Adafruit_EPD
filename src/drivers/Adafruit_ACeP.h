@@ -4,7 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-
 #define ACEP_PANEL_SETTING 0x00
 #define ACEP_POWER_SETTING 0x01
 #define ACEP_POWER_OFF 0x02
@@ -29,10 +28,10 @@
 class Adafruit_ACEP : public Adafruit_EPD {
 public:
   Adafruit_ACEP(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
-                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
-                   int8_t BUSY = -1);
+                int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
+                int8_t BUSY = -1);
   Adafruit_ACEP(int width, int height, int8_t DC, int8_t RST, int8_t CS,
-                   int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
+                int8_t SRCS, int8_t BUSY = -1, SPIClass *spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();

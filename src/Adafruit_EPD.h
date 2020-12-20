@@ -194,6 +194,7 @@ protected:
   void dcLow();
 };
 
+#include "drivers/Adafruit_ACeP.h"
 #include "drivers/Adafruit_EK79686.h"
 #include "drivers/Adafruit_IL0373.h"
 #include "drivers/Adafruit_IL0398.h"
@@ -204,8 +205,7 @@ protected:
 #include "drivers/Adafruit_SSD1675B.h"
 #include "drivers/Adafruit_SSD1680.h"
 #include "drivers/Adafruit_SSD1681.h"
-#include "drivers/Adafruit_UC8276.h"
 #include "drivers/Adafruit_UC8151D.h"
-#include "drivers/Adafruit_ACeP.h"
+#include "drivers/Adafruit_UC8276.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */
