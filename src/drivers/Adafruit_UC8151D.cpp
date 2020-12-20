@@ -214,22 +214,22 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
   case 0:
     EPD_swap(x1, y1);
     EPD_swap(x2, y2);
-    y1 = WIDTH - y1;
-    y2 = WIDTH - y2;
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
     break;
   case 1:
     break;
   case 2:
     EPD_swap(x1, y1);
     EPD_swap(x2, y2);
-    x1 = HEIGHT - x1;
-    x2 = HEIGHT - x2;
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
     break;
   case 3:
-    y1 = WIDTH - y1;
-    y2 = WIDTH - y2;
-    x1 = HEIGHT - x1;
-    x2 = HEIGHT - x2;
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
   }
   if (x1 > x2)
     EPD_swap(x1, x2);
@@ -246,11 +246,6 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
   Serial.print(" -> ");
   Serial.println(y2);
   */
-
-  // x1 and x2 must be on byte boundaries
-  x1 -= x1 % 8;           // round down;
-  x2 = (x2 + 7) & ~0b111; // round up
-
 
   // backup & change init to the partial code
   const uint8_t *init_code_backup = _epd_init_code;
@@ -271,43 +266,27 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
   EPD_command(UC8151D_PTIN);
 
   buf[0] = x1;
-  buf[1] = x2-1;
+  buf[1] = x2;
   buf[2] = y1 >> 8;
   buf[3] = y1 & 0xFF;
-  buf[4] = (y2-1) >> 8;
-  buf[5] = (y2-1) & 0xFF;
+  buf[4] = (y2) >> 8;
+  buf[5] = (y2) & 0xFF;
   buf[6] = 0x28;
     
   EPD_command(UC8151D_PTL, buf, 7);   //resolution setting
-
-  Serial.printf("Buffer=1 %04x: ", &buffer1);
-  Serial.printf("Buffer=2 %04x: ", &buffer2);
 
   // buffer 1 has the old data from the last update
   if (use_sram) {
     if (partialsSinceLastFullUpdate == 0) {
       // first partial update
-      Serial.println("Erasing SRAM buffer 1");
       sram.erase(buffer1_addr, buffer1_size, 0xFF);
     }
     writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0, true);
   } else {
     if (partialsSinceLastFullUpdate == 0) {
       // first partial update
-      Serial.println("Erasing RAM buffer 1");
       memset(buffer1, 0xFF, buffer1_size);
     }
-
-    /*
-    Serial.println("Buffer 1)");
-    for (uint16_t i = 0; i < buffer1_size; i++) {
-      uint8_t d = buffer1[i];
-      Serial.printf("%02x", d);
-      if ((i+1) % (WIDTH/8) == 0)
-        Serial.println();
-    }
-    Serial.println();
-    */
 
     writeRAMFramebufferToEPD(buffer1, buffer1_size, 0, true);
   }

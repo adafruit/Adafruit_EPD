@@ -446,33 +446,29 @@ void Adafruit_EPD::setColorBuffer(int8_t index, bool inverted) {
 /**************************************************************************/
 void Adafruit_EPD::clearBuffer() {
   if (use_sram) {
-    if (buffer1_size != 0) {
-      if (blackInverted) {
-        sram.erase(buffer1_addr, buffer1_size, 0xFF);
-      } else {
-        sram.erase(buffer1_addr, buffer1_size, 0x00);
-      }
+    if (blackInverted) {
+      sram.erase(blackbuffer_addr, buffer1_size, 0xFF);
+    } else {
+      sram.erase(blackbuffer_addr, buffer1_size, 0x00);
     }
-    if (buffer2_size != 0) {
-      if (colorInverted) {
-        sram.erase(buffer2_addr, buffer2_size, 0xFF);
-      } else {
-        sram.erase(buffer2_addr, buffer2_size, 0x00);
-      }
+    if (colorInverted) {
+      sram.erase(colorbuffer_addr, buffer2_size, 0xFF);
+    } else {
+      sram.erase(colorbuffer_addr, buffer2_size, 0x00);
     }
   } else {
-    if (buffer1) {
+    if (black_buffer) {
       if (blackInverted) {
-        memset(buffer1, 0xFF, buffer1_size);
+        memset(black_buffer, 0xFF, buffer1_size);
       } else {
-        memset(buffer1, 0x00, buffer1_size);
+        memset(black_buffer, 0x00, buffer1_size);
       }
     }
-    if (buffer2) {
+    if (color_buffer) {
       if (colorInverted) {
-        memset(buffer2, 0xFF, buffer2_size);
+        memset(color_buffer, 0xFF, buffer2_size);
       } else {
-        memset(buffer2, 0x00, buffer2_size);
+        memset(color_buffer, 0x00, buffer2_size);
       }
     }
   }
