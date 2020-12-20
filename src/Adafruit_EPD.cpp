@@ -281,16 +281,18 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
-void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer, uint32_t framebuffer_size, 
-                                            uint8_t EPDlocation, bool invertdata) {
+void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer,
+                                            uint32_t framebuffer_size,
+                                            uint8_t EPDlocation,
+                                            bool invertdata) {
   // write image
   writeRAMCommand(EPDlocation);
   dcHigh();
-  //Serial.printf("Writing from RAM location %04x: \n", &framebuffer);
+  // Serial.printf("Writing from RAM location %04x: \n", &framebuffer);
 
   for (uint16_t i = 0; i < framebuffer_size; i++) {
     uint8_t d = framebuffer[i];
-    if (invertdata) 
+    if (invertdata)
       d = ~d;
 
     /*
@@ -306,8 +308,10 @@ void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer, uint32_t frame
   return;
 }
 
-void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t buffer_size, 
-                                             uint8_t EPDlocation, bool invertdata) {
+void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
+                                             uint32_t buffer_size,
+                                             uint8_t EPDlocation,
+                                             bool invertdata) {
   uint8_t c;
 
   // use SRAM
@@ -317,11 +321,11 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t
   // send address
   SPItransfer(SRAM_buffer_addr >> 8);
   SPItransfer(SRAM_buffer_addr & 0xFF);
-  
+
   // first data byte from SRAM will be transfered in at the same time
   // as the EPD command is transferred out
   c = writeRAMCommand(EPDlocation);
-  
+
   dcHigh();
   for (uint16_t i = 0; i < buffer_size; i++) {
     c = SPItransfer(c);
@@ -331,8 +335,6 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t
   csHigh();
   sram.csHigh();
 }
-
-
 
 /**************************************************************************/
 /*!
@@ -364,10 +366,10 @@ void Adafruit_EPD::display(bool sleep) {
   if (buffer2_size != 0) {
     // oh there's another buffer eh?
     delay(2);
-    
+
     // Set X & Y ram counters
     setRAMAddress(0, 0);
-    
+
     if (use_sram) {
       writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1);
     } else {

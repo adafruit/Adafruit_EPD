@@ -83,9 +83,10 @@ public:
 
 protected:
   void writeRAMFramebufferToEPD(uint8_t *buffer, uint32_t buffer_size,
-                                uint8_t EPDlocation, bool invertdata=false);
-  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t buffer_size, 
-                                 uint8_t EPDlocation, bool invertdata=false);
+                                uint8_t EPDlocation, bool invertdata = false);
+  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
+                                 uint32_t buffer_size, uint8_t EPDlocation,
+                                 bool invertdata = false);
 
   /**************************************************************************/
   /*!
