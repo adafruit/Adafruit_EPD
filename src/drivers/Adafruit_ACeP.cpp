@@ -1,17 +1,21 @@
-#include "Adafruit_IL0398.h"
+#include "Adafruit_ACeP.h"
 #include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
 
 // clang-format off
 
-const uint8_t il0398_default_init_code[] {
-    0xFF, 20,          // busy wait
-    IL0398_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
-    IL0398_POWER_ON, 0,
-    0xFF, 20,          // busy wait
-    IL0398_PANEL_SETTING, 2, 0x1F, 0x0D, // lut from OTP & vcom = 0v
-    IL0398_VCOM, 1, 0x97,
+const uint8_t acep_default_init_code[] {
+  ACEP_PANEL_SETTING, 2, 0xEF, 0x08, // LUT from OTP
+    ACEP_POWER_SETTING, 4, 0x37, 0x00, 0x23, 0x23, // 0x05&0x05?
+    ACEP_POWER_OFF_SEQUENCE, 1, 0x00,
+    ACEP_BOOSTER_SOFT_START, 3, 0xC7, 0xC7, 0x1D,
+    ACEP_PLL, 1, 0x3C,
+    ACEP_TSE, 1, 0x00,
+    ACEP_CDI, 1, 0x37,
+    ACEP_TCON, 1, 0x22,
+    ACEP_RESOLUTION, 4, 0x02, 0x58, 0x01, 0xC0,
+    ACEP_PWS, 1, 0xAA,
     0xFE};
 
 // clang-format on
@@ -31,26 +35,31 @@ const uint8_t il0398_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
-                                 int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                                 int8_t MISO, int8_t BUSY)
+Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t SID, int8_t SCLK,
+                             int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+                             int8_t MISO, int8_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
-  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
-  buffer2_size = buffer1_size;
+  if ((width % 8) != 0) {
+    width += 8 - (width % 8);
+  }
+  buffer1_size = (uint16_t)width * (uint16_t)height / 2;
+  buffer2_size = 0;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = buffer1_size;
-    buffer1 = buffer2 = NULL;
+    buffer2_addr = 0;
   } else {
     buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer2 = NULL;
   }
+
+  singleByteTxns = true;
 }
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
+
 /**************************************************************************/
 /*!
     @brief constructor if using on-chip RAM and hardware SPI
@@ -63,23 +72,26 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t SID, int8_t SCLK,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST,
-                                 int8_t CS, int8_t SRCS, int8_t BUSY,
-                                 SPIClass *spi)
+Adafruit_ACEP::Adafruit_ACEP(int width, int height, int8_t DC, int8_t RST,
+                             int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
-  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
-  buffer2_size = buffer1_size;
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+  buffer1_size = (uint16_t)width * (uint16_t)height / 2;
+  buffer2_size = 0;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = buffer1_size;
-    buffer1 = buffer2 = NULL;
+    buffer2_addr = 0;
   } else {
     buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer2 = buffer1;
   }
+
+  singleByteTxns = true;
 }
 
 /**************************************************************************/
@@ -87,13 +99,11 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int8_t DC, int8_t RST,
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_IL0398::busy_wait(void) {
-  if (_busy_pin > -1) {
-    do {
-      EPD_command(IL0398_GETSTATUS);
+void Adafruit_ACEP::busy_wait(void) {
+  if (_busy_pin >= 0) {
+    while (!digitalRead(_busy_pin)) { // wait for busy high
       delay(10);
-    } while (!digitalRead(_busy_pin)); // wait for busy HIGH
-    delay(200);
+    }
   } else {
     delay(BUSY_WAIT);
   }
@@ -105,12 +115,10 @@ void Adafruit_IL0398::busy_wait(void) {
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_IL0398::begin(bool reset) {
+void Adafruit_ACEP::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(0, true); // black defaults to inverted
-  setColorBuffer(1, true); // red defaults to inverted
 
-  setRotation(1);
+  delay(100);
   powerDown();
 }
 
@@ -119,14 +127,53 @@ void Adafruit_IL0398::begin(bool reset) {
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_IL0398::update() {
-  EPD_command(IL0398_DISPLAY_REFRESH);
-  delay(100);
-
-  busy_wait();
-  if (_busy_pin <= -1) {
-    delay(15000);
+void Adafruit_ACEP::update() {
+  uint8_t buf[4];
+  /*
+  // clear data
+  buf[0] = 0x02;
+  buf[1] = 0x58;
+  buf[2] = 0x01;
+  buf[3] = 0xC0;
+  EPD_command(ACEP_RESOLUTION, buf, 4);
+  EPD_command(ACEP_DTM);
+  for (int i=0; i< 134400/256; i++) {
+    uint8_t block[256];
+    memset(block, 0x77, 256);
+    EPD_data(block, 256);
   }
+  EPD_command(ACEP_POWER_ON);
+  busy_wait();
+  EPD_command(ACEP_DISPLAY_REFRESH);
+  busy_wait();
+  EPD_command(ACEP_POWER_OFF);
+
+  if (_busy_pin >= 0) {
+    while (digitalRead(_busy_pin)) { // wait for busy LOW
+      delay(10);
+    }
+  } else {
+    delay(BUSY_WAIT);
+  }*/
+
+  // actual data
+  // clear data
+  buf[0] = 0x02;
+  buf[1] = 0x58;
+  buf[2] = 0x01;
+  buf[3] = 0xC0;
+  EPD_command(ACEP_RESOLUTION, buf, 4);
+  EPD_command(ACEP_DTM);
+  for (int i = 0; i < 134400 / 256; i++) {
+    uint8_t block[256];
+    memset(block, ((i % 6) << 4) | (i % 6), 256);
+    EPD_data(block, 256);
+  }
+  EPD_command(ACEP_POWER_ON);
+  busy_wait();
+  EPD_command(ACEP_DISPLAY_REFRESH);
+  busy_wait();
+  EPD_command(ACEP_POWER_OFF);
 }
 
 /**************************************************************************/
@@ -134,28 +181,21 @@ void Adafruit_IL0398::update() {
     @brief start up the display
 */
 /**************************************************************************/
-void Adafruit_IL0398::powerUp() {
-  uint8_t buf[4];
+void Adafruit_ACEP::powerUp() {
+  uint8_t buf[5];
 
   hardwareReset();
+  delay(200);
+  busy_wait();
+  const uint8_t *init_code = acep_default_init_code;
 
-  const uint8_t *init_code = il0398_default_init_code;
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
-
-  if (_epd_lut_code) {
-    EPD_commandList(_epd_lut_code);
-  }
-
-  buf[0] = (HEIGHT >> 8) & 0xFF;
-  buf[1] = HEIGHT & 0xFF;
-  buf[2] = (WIDTH >> 8) & 0xFF;
-  buf[3] = WIDTH & 0xFF;
-  EPD_command(IL0398_RESOLUTION, buf, 4);
-
-  delay(20);
+  delay(1000);
+  buf[0] = 0x37;
+  EPD_command(ACEP_CDI, buf, 1);
 }
 
 /**************************************************************************/
@@ -163,19 +203,16 @@ void Adafruit_IL0398::powerUp() {
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_IL0398::powerDown() {
-  uint8_t buf[4];
 
-  // power off
-  buf[0] = 0xF7; // border floating
-  EPD_command(IL0398_VCOM, buf, 1);
-  EPD_command(IL0398_POWER_OFF);
-  busy_wait();
-  // Only deep sleep if we can get out of it
-  if (_reset_pin >= 0) {
-    buf[0] = 0xA5; // deep sleep
-    EPD_command(UC8276_DEEPSLEEP, buf, 1);
-  }
+void Adafruit_ACEP::powerDown(void) {
+  uint8_t buf[1];
+
+  delay(1000);
+
+  // deep sleep
+  buf[0] = 0xA5;
+  EPD_command(ACEP_DEEP_SLEEP, buf, 1);
+
   delay(100);
 }
 
@@ -188,14 +225,8 @@ void Adafruit_IL0398::powerDown() {
    command
 */
 /**************************************************************************/
-uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
-  if (index == 0) {
-    return EPD_command(EPD_RAM_BW, false);
-  }
-  if (index == 1) {
-    return EPD_command(EPD_RAM_RED, false);
-  }
-  return 0;
+uint8_t Adafruit_ACEP::writeRAMCommand(uint8_t index) {
+  return EPD_command(ACEP_DTM, false);
 }
 
 /**************************************************************************/
@@ -205,6 +236,4 @@ uint8_t Adafruit_IL0398::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_IL0398::setRAMAddress(uint16_t x, uint16_t y) {
-  // on this chip we do nothing
-}
+void Adafruit_ACEP::setRAMAddress(uint16_t x, uint16_t y) {}

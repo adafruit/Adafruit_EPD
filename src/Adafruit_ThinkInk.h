@@ -12,11 +12,13 @@
 #include "panels/ThinkInk_290_Tricolor_RH.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
 #include "panels/ThinkInk_420_Tricolor_RW.h"
+#include "panels/ThinkInk_420_Tricolor_Z21.h"
 
 #include "panels/ThinkInk_154_Grayscale4_T8.h"
 #include "panels/ThinkInk_213_Grayscale4_T5.h"
 #include "panels/ThinkInk_270_Grayscale4_W3.h"
 #include "panels/ThinkInk_290_Grayscale4_T5.h"
+#include "panels/ThinkInk_420_Grayscale4_T2.h"
 
 #include "panels/ThinkInk_154_Mono_D27.h"
 #include "panels/ThinkInk_154_Mono_D67.h"

@@ -1,45 +1,35 @@
-#ifndef _THINKINK_270_GRAY4_W3_H
-#define _THINKINK_270_GRAY4_W3_H
+#ifndef _THINKINK_420_GRAY4_T2_H
+#define _THINKINK_420_GRAY4_T2_H
 
 #include "Adafruit_EPD.h"
 
 // clang-format off
 
-static const uint8_t ti_270w3_gray4_init_code[] {
-    IL91874_POWER_SETTING, 4, 0x03, 0x00, 0x2b, 0x2b,
-    IL91874_BOOSTER_SOFT_START, 3, 0x07, 0x07, 0x17,
-    0xF8, 2, 0x60, 0xA5, // boost
-    0xF8, 2, 0x89, 0xA5, // boost
-    0xF8, 2, 0x90, 0x00, // boost
-    0xF8, 2, 0x93, 0x2A, // boost
-    0xF8, 2, 0xA0, 0xA5, // boost
-    0xF8, 2, 0xA1, 0x00, // boost
-    0xF8, 2, 0x73, 0x41, // boost
-    IL91874_PDRF, 1, 0x00,
-    IL91874_POWER_ON, 0,
+static const uint8_t ti_420t2_gray4_init_code[] {
+    IL0398_POWER_SETTING, 5, 0x03, 0x00, 0x2b, 0x2b, 0x13,
+    IL0398_BOOSTER_SOFT_START, 3, 0x17, 0x17, 0x17,
+    IL0398_POWER_ON, 0,
     0xFF, 200,
-    IL91874_PANEL_SETTING, 1, 0xBF,
-    IL91874_PLL, 1, 0x90,
-    IL91874_VCM_DC_SETTING, 1, 0x12,
-    IL91874_CDI, 1, 0x97,
+    IL0398_PANEL_SETTING, 1, 0x3F,
+    IL0398_PLL, 1, 0x3C,    
+    IL0398_VCM_DC_SETTING, 1, 0x12,
+    IL0398_VCOM, 1, 0x97,
     0xFE // EOM
 };
 
-
-static const uint8_t ti_270w3_gray4_lut_code[] = {
+static const uint8_t ti_420t2_gray4_lut_code[] = {
   // const unsigned char lut_vcom[]PROGMEM =
-  IL91874_LUT1, 44,
-  0x00, 0x00,
-  0x00 , 0x0A, 0x00, 0x00, 0x00, 0x01,
+  IL0398_LUT1, 42,
+  0x00, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x60, 0x14, 0x14, 0x00, 0x00, 0x01,
   0x00, 0x14, 0x00, 0x00, 0x00, 0x01,
   0x00, 0x13, 0x0A, 0x01, 0x00, 0x01,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
   // const unsigned char lut_ww[]PROGMEM ={
-  IL91874_LUTWW, 42, 
+  IL0398_LUTWW, 42, 
   0x40, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x90, 0x14, 0x14, 0x00, 0x00, 0x01,
   0x10, 0x14, 0x0A, 0x00, 0x00, 0x01,
@@ -49,7 +39,7 @@ static const uint8_t ti_270w3_gray4_lut_code[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
   // const unsigned char lut_bw[]PROGMEM ={
-  IL91874_LUTBW, 42,
+  IL0398_LUTBW, 42,
   0x40, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x90, 0x14, 0x14, 0x00, 0x00, 0x01,
   0x00, 0x14, 0x0A, 0x00, 0x00, 0x01,
@@ -59,7 +49,7 @@ static const uint8_t ti_270w3_gray4_lut_code[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
   // const unsigned char lut_wb[]PROGMEM ={
-  IL91874_LUTWB, 42,
+  IL0398_LUTWB, 42,
   0x40, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x90, 0x14, 0x14, 0x00, 0x00, 0x01,
   0x00, 0x14, 0x0A, 0x00, 0x00, 0x01,
@@ -69,7 +59,7 @@ static const uint8_t ti_270w3_gray4_lut_code[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
   // const unsigned char lut_bb[]PROGMEM ={
-  IL91874_LUTBB, 42,
+  IL0398_LUTBB, 42,
   0x80, 0x0A, 0x00, 0x00, 0x00, 0x01,
   0x90, 0x14, 0x14, 0x00, 0x00, 0x01,
   0x20, 0x14, 0x0A, 0x00, 0x00, 0x01,
@@ -81,48 +71,51 @@ static const uint8_t ti_270w3_gray4_lut_code[] = {
 
 // clang-format on
 
-class ThinkInk_270_Grayscale4_W3 : public Adafruit_IL91874 {
+class ThinkInk_420_Grayscale4_T2 : public Adafruit_IL0398 {
 private:
 public:
-  ThinkInk_270_Grayscale4_W3(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
+  ThinkInk_420_Grayscale4_T2(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                              int8_t CS, int8_t SRCS, int8_t MISO,
                              int8_t BUSY = -1)
-      : Adafruit_IL91874(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, -1){};
+      : Adafruit_IL0398(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_270_Grayscale4_W3(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
+  ThinkInk_420_Grayscale4_T2(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
                              int8_t BUSY = -1, SPIClass *spi = &SPI)
-      : Adafruit_IL91874(264, 176, DC, RST, CS, SRCS, -1, spi){};
+      : Adafruit_IL0398(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_IL91874::begin(true);
-
-    setBlackBuffer(0, true); // black defaults to inverted
-    setColorBuffer(1, true); // red defaults to not inverted
+    Adafruit_EPD::begin(true);
+    setColorBuffer(0, true); // layer 0 uninverted
+    setBlackBuffer(1, true); // layer 1 uninverted
 
     if (mode == THINKINK_MONO) {
       _epd_init_code = NULL;
       _epd_lut_code = NULL;
+
       layer_colors[EPD_WHITE] = 0b00;
-      layer_colors[EPD_BLACK] = 0b10;
-      layer_colors[EPD_RED] = 0b10;
-      layer_colors[EPD_GRAY] = 0b10;
+      layer_colors[EPD_BLACK] = 0b01;
+      layer_colors[EPD_RED] = 0b01;
+      layer_colors[EPD_GRAY] = 0b01;
       layer_colors[EPD_LIGHT] = 0b00;
-      layer_colors[EPD_DARK] = 0b10;
-    }
-    if (mode == THINKINK_GRAYSCALE4) {
-      _epd_init_code = ti_270w3_gray4_init_code;
-      _epd_lut_code = ti_270w3_gray4_lut_code;
-      layer_colors[EPD_WHITE] = 0b00;
-      layer_colors[EPD_BLACK] = 0b11;
-      layer_colors[EPD_RED] = 0b10;
-      layer_colors[EPD_GRAY] = 0b10;
-      layer_colors[EPD_LIGHT] = 0b10;
       layer_colors[EPD_DARK] = 0b01;
     }
 
+    if (mode == THINKINK_GRAYSCALE4) {
+      _epd_init_code = ti_420t2_gray4_init_code;
+      _epd_lut_code = ti_420t2_gray4_lut_code;
+
+      layer_colors[EPD_WHITE] = 0b00;
+      layer_colors[EPD_BLACK] = 0b11;
+      layer_colors[EPD_RED] = 0b01;
+      layer_colors[EPD_GRAY] = 0b10;
+      layer_colors[EPD_LIGHT] = 0b01;
+      layer_colors[EPD_DARK] = 0b10;
+    }
+
     default_refresh_delay = 1000;
+    setRotation(1);
     powerDown();
   };
 };
 
-#endif // _THINKINK_270_GRAY4_W3_H
+#endif // _THINKINK_420_GRAY4_T2_H

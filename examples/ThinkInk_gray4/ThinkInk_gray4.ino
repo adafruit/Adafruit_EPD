@@ -20,6 +20,8 @@
 
 // 2.9" Grayscale Featherwing or Breakout:
 ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 4.2" Grayscale display
+//ThinkInk_420_Grayscale4_T2 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 #define COLOR1 EPD_BLACK
 #define COLOR2 EPD_LIGHT
