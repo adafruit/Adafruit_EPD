@@ -85,7 +85,7 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
 void Adafruit_UC8151D::busy_wait(void) {
   if (_busy_pin >= 0) {
     do {
-      // EPD_command(UC8151D_FLG);
+      EPD_command(UC8151D_FLG);
       delay(10);
     } while (!digitalRead(_busy_pin));
   } else {

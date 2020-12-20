@@ -17,13 +17,8 @@ public:
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_UC8151D::begin(true);
 
-    if (mode == THINKINK_MONO) {
-      setColorBuffer(1, true); // layer 1 uninverted
-      setBlackBuffer(1, true); // only one buffer
-    } else {
-      setColorBuffer(1, true);
-      setBlackBuffer(1, true);
-    }
+    setColorBuffer(1, true); // layer 1 uninverted
+    setBlackBuffer(1, true); // only one buffer
 
     inkmode = mode; // Preserve ink mode for ImageReader or others
 
