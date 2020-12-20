@@ -15,9 +15,16 @@
 #define SRAM_CS     6  // can set to -1 to not use a pin (uses a lot of RAM!)
 #define EPD_RESET   8  // can set to -1 and share with chip Reset (can't deep sleep)
 
+// 1.54" Tricolor EPD with SSD1680 chipset
 //ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// 1.54" Tricolor EPD with SSD1680 chipset
 //ThinkInk_154_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// 2.13" Tricolor EPD with SSD1680 chipset
 //ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// 2.13" Tricolor EPD with IL0373 chipset
 //ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 // 2.7" Tricolor Featherwing or Breakout with IL91874 chipset

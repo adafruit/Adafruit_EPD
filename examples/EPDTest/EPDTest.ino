@@ -24,14 +24,26 @@
 //Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 // Uncomment the following line if you are using 1.54" EPD with SSD1681
 //Adafruit_SSD1681 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// Uncomment the following line if you are using 1.54" EPD with UC8151D
+Adafruit_UC8151D display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 
-/* Uncomment the following line if you are using 2.13" tricolor EPD */
-Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//Uncomment the following line if you are using 2.13" EPD with SSD1680
+//Adafruit_SSD1680 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// Uncomment the following line if you are using 2.13" EPD with SSD1675
+//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// Uncomment the following line if you are using 2.13" EPD with SSD1675B
+//Adafruit_SSD1675B display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// Uncomment the following line if you are using 2.13" EPD with UC8151D
+//Adafruit_UC8151D display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+//Uncomment the following line if you are using 2.13" EPD with IL0373
+//Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
-/* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
-//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 /* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD */
 //Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);

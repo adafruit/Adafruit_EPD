@@ -15,7 +15,7 @@ public:
       : Adafruit_UC8151D(212, 104, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
+    Adafruit_UC8151D::begin(true);
     setColorBuffer(1, true); // layer 1 uninverted
     setBlackBuffer(1, true); // only one buffer
 
@@ -32,11 +32,6 @@ public:
     setRotation(0);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_213_MONO_M21_H
