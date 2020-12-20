@@ -281,20 +281,33 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
-void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *buffer, uint32_t buffer_size, 
-                                            uint8_t EPDlocation) {
+void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer, uint32_t framebuffer_size, 
+                                            uint8_t EPDlocation, bool invertdata) {
   // write image
   writeRAMCommand(EPDlocation);
   dcHigh();
-  for (uint16_t i = 0; i < buffer1_size; i++) {
-    SPItransfer(buffer[i]);
+  //Serial.printf("Writing from RAM location %04x: \n", &framebuffer);
+
+  for (uint16_t i = 0; i < framebuffer_size; i++) {
+    uint8_t d = framebuffer[i];
+    if (invertdata) 
+      d = ~d;
+
+    /*
+    Serial.printf("%02x", d);
+    if ((i+1) % (WIDTH/8) == 0)
+      Serial.println();
+    */
+
+    SPItransfer(d);
   }
+  //  Serial.println();
   csHigh();
   return;
 }
 
 void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t buffer_size, 
-                                             uint8_t EPDlocation) {
+                                             uint8_t EPDlocation, bool invertdata) {
   uint8_t c;
 
   // use SRAM
@@ -366,6 +379,7 @@ void Adafruit_EPD::display(bool sleep) {
   Serial.println("  Update");
 #endif
   update();
+  partialsSinceLastFullUpdate = 0;
 
   if (sleep) {
 #ifdef EPD_DEBUG

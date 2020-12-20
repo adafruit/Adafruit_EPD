@@ -43,6 +43,13 @@ enum {
   EPD_NUM_COLORS
 };
 
+typedef enum {
+  THINKINK_MONO,
+  THINKINK_TRICOLOR,
+  THINKINK_GRAYSCALE4,
+  THINKINK_MONO_PARTIAL,
+} thinkinkmode_t;
+
 #define EPD_swap(a, b)                                                         \
   {                                                                            \
     int16_t t = a;                                                             \
@@ -72,11 +79,13 @@ public:
   void setColorBuffer(int8_t index, bool inverted);
   void display(bool sleep = false);
 
+  thinkinkmode_t getMode(void) { return inkmode; }
+
 protected:
-  void writeRAMFramebufferToEPD(uint8_t *buffer,
-                             uint32_t buffer_size, uint8_t EPDlocation);
-  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, 
-                             uint32_t buffer_size, uint8_t EPDlocation);
+  void writeRAMFramebufferToEPD(uint8_t *buffer, uint32_t buffer_size,
+                                uint8_t EPDlocation, bool invertdata=false);
+  void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr, uint32_t buffer_size, 
+                                 uint8_t EPDlocation, bool invertdata=false);
 
   /**************************************************************************/
   /*!
@@ -168,6 +177,10 @@ protected:
   uint8_t SPItransfer(uint8_t c);
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
+
+  thinkinkmode_t inkmode; // Ink mode passed to begin()
+
+  uint8_t partialsSinceLastFullUpdate = 0;
 
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
