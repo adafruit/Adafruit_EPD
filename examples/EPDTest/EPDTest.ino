@@ -32,6 +32,9 @@ Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 /* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD */
 //Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
 
+// 2.7" tricolor with Adafruit_EK79686
+//Adafruit_EK79686 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
+
 /* Uncomment the following line if you are using 2.9" EPD */
 //Adafruit_IL0373 display(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_290

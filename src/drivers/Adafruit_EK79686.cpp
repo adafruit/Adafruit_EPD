@@ -125,8 +125,8 @@ void Adafruit_EK79686::busy_wait(void) {
 /**************************************************************************/
 void Adafruit_EK79686::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  setBlackBuffer(1, true);  // black defaults to inverted
-  setColorBuffer(0, false); // red defaults to not-inverted
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, false); // red defaults to not-inverted
 
   powerDown();
 }
