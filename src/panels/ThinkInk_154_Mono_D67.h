@@ -15,7 +15,7 @@ public:
       : Adafruit_SSD1681(200, 200, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
+    Adafruit_SSD1681::begin(true);
     setColorBuffer(0, true); // layer 0 uninverted
     setBlackBuffer(0, true); // only one buffer
 
@@ -32,11 +32,6 @@ public:
     setRotation(3);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_154_MONO_D67_H
