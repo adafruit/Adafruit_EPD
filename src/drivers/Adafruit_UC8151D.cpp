@@ -3,22 +3,6 @@
 
 #define BUSY_WAIT 500
 
-const unsigned char LUT_DATA[30] = {
-    0x02, 0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22, 0x66, 0x69,
-    0x69, 0x59, 0x58, 0x99, 0x99, 0x88, 0x00, 0x00, 0x00, 0x00,
-    0xF8, 0xB4, 0x13, 0x51, 0x35, 0x51, 0x51, 0x19, 0x01, 0x00};
-
-// clang-format off
-
-const uint8_t uc8151d_default_init_code[] {
-  UC8151D_PON, 0,
-    0xFF, 10,
-    UC8151D_PSR, 1, 0x1F,
-    UC8151D_CDI, 1, 0x97,
-    0xFE};
-
-// clang-format on
-
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
@@ -101,7 +85,7 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
 void Adafruit_UC8151D::busy_wait(void) {
   if (_busy_pin >= 0) {
     do {
-      EPD_command(UC8151D_FLG);
+      // EPD_command(UC8151D_FLG);
       delay(10);
     } while (!digitalRead(_busy_pin));
   } else {
@@ -150,7 +134,7 @@ void Adafruit_UC8151D::powerUp() {
   hardwareReset();
   delay(10);
 
-  const uint8_t *init_code = uc8151d_default_init_code;
+  const uint8_t *init_code = uc8151d_monofull_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
@@ -209,3 +193,132 @@ uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
 */
 /**************************************************************************/
 void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
+
+/**************************************************************************/
+/*!
+    @brief Transfer the data stored in the buffer(s) to the display
+*/
+/**************************************************************************/
+void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
+                                      uint16_t y2) {
+  uint8_t buf[7];
+  uint8_t c;
+
+  // check rotation, move window around if necessary
+  switch (getRotation()) {
+  case 0:
+    EPD_swap(x1, y1);
+    EPD_swap(x2, y2);
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
+    break;
+  case 1:
+    break;
+  case 2:
+    EPD_swap(x1, y1);
+    EPD_swap(x2, y2);
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
+    break;
+  case 3:
+    y1 = WIDTH - y1 - 1;
+    y2 = WIDTH - y2 - 1;
+    x1 = HEIGHT - x1 - 1;
+    x2 = HEIGHT - x2 - 1;
+  }
+  if (x1 > x2)
+    EPD_swap(x1, x2);
+  if (y1 > y2)
+    EPD_swap(y1, y2);
+
+  /*
+  Serial.print("x: ");
+  Serial.print(x1);
+  Serial.print(" -> ");
+  Serial.println(x2);
+  Serial.print("y: ");
+  Serial.print(y1);
+  Serial.print(" -> ");
+  Serial.println(y2);
+  */
+
+  // backup & change init to the partial code
+  const uint8_t *init_code_backup = _epd_init_code;
+  const uint8_t *lut_code_backup = _epd_lut_code;
+  _epd_init_code = _epd_partial_init_code;
+  _epd_lut_code = _epd_partial_lut_code;
+
+#ifdef EPD_DEBUG
+  Serial.println("  Powering Up Partial");
+  Serial.print("Partials since last full update: ");
+  Serial.println(partialsSinceLastFullUpdate);
+#endif
+
+  powerUp();
+
+  // This command makes the display enter partial mode
+  EPD_command(UC8151D_PTIN);
+
+  buf[0] = x1;
+  buf[1] = x2;
+  buf[2] = y1 >> 8;
+  buf[3] = y1 & 0xFF;
+  buf[4] = (y2) >> 8;
+  buf[5] = (y2)&0xFF;
+  buf[6] = 0x28;
+
+  EPD_command(UC8151D_PTL, buf, 7); // resolution setting
+
+  // buffer 1 has the old data from the last update
+  if (use_sram) {
+    if (partialsSinceLastFullUpdate == 0) {
+      // first partial update
+      sram.erase(buffer1_addr, buffer1_size, 0xFF);
+    }
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0, true);
+  } else {
+    if (partialsSinceLastFullUpdate == 0) {
+      // first partial update
+      memset(buffer1, 0xFF, buffer1_size);
+    }
+
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 0, true);
+  }
+
+  delay(2);
+
+  // buffer 2 has the new data, that we're updating
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1, true);
+  } else {
+    writeRAMFramebufferToEPD(buffer2, buffer2_size, 1, true);
+  }
+
+#ifdef EPD_DEBUG
+  Serial.println("  Update");
+#endif
+  update();
+
+  // Serial.println("Partial, saving old data to secondary buffer");
+  if (use_sram) {
+    uint32_t remaining = buffer1_size;
+    uint32_t offset = 0;
+    uint8_t mcp_buf[16];
+    while (remaining) {
+      uint8_t to_xfer = min(sizeof(mcp_buf), remaining);
+
+      sram.read(buffer2_addr + offset, mcp_buf, to_xfer);
+      sram.write(buffer1_addr + offset, mcp_buf, to_xfer);
+      offset += to_xfer;
+      remaining -= to_xfer;
+    }
+  } else {
+    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup
+  }
+
+  partialsSinceLastFullUpdate++;
+
+  // change init back
+  _epd_lut_code = lut_code_backup;
+  _epd_init_code = init_code_backup;
+}

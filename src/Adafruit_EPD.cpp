@@ -281,6 +281,61 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
+void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer,
+                                            uint32_t framebuffer_size,
+                                            uint8_t EPDlocation,
+                                            bool invertdata) {
+  // write image
+  writeRAMCommand(EPDlocation);
+  dcHigh();
+  // Serial.printf("Writing from RAM location %04x: \n", &framebuffer);
+
+  for (uint16_t i = 0; i < framebuffer_size; i++) {
+    uint8_t d = framebuffer[i];
+    if (invertdata)
+      d = ~d;
+
+    /*
+    Serial.printf("%02x", d);
+    if ((i+1) % (WIDTH/8) == 0)
+      Serial.println();
+    */
+
+    SPItransfer(d);
+  }
+  //  Serial.println();
+  csHigh();
+  return;
+}
+
+void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
+                                             uint32_t buffer_size,
+                                             uint8_t EPDlocation,
+                                             bool invertdata) {
+  uint8_t c;
+
+  // use SRAM
+  sram.csLow();
+  // send read command
+  SPItransfer(MCPSRAM_READ);
+  // send address
+  SPItransfer(SRAM_buffer_addr >> 8);
+  SPItransfer(SRAM_buffer_addr & 0xFF);
+
+  // first data byte from SRAM will be transfered in at the same time
+  // as the EPD command is transferred out
+  c = writeRAMCommand(EPDlocation);
+
+  dcHigh();
+  for (uint16_t i = 0; i < buffer_size; i++) {
+    c = SPItransfer(c);
+    // Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+    // if (i % 32 == 31) Serial.println();
+  }
+  csHigh();
+  sram.csHigh();
+}
+
 /**************************************************************************/
 /*!
     @brief Transfer the data stored in the buffer(s) to the display
@@ -303,78 +358,30 @@ void Adafruit_EPD::display(bool sleep) {
   setRAMAddress(0, 0);
 
   if (use_sram) {
-    sram.csLow();
-    // send read command
-    SPItransfer(MCPSRAM_READ);
-    // send address
-    SPItransfer(buffer1_addr >> 8);
-    SPItransfer(buffer1_addr & 0xFF);
-
-    // first data byte from SRAM will be transfered in at the same time
-    // as the EPD command is transferred out
-    c = writeRAMCommand(0);
-
-    dcHigh();
-    for (uint16_t i = 0; i < buffer1_size; i++) {
-      c = SPItransfer(c);
-      // Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-      // if (i % 32 == 31) Serial.println();
-    }
-    csHigh();
-    sram.csHigh();
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0);
   } else {
-    // write image
-    writeRAMCommand(0);
-    dcHigh();
-    for (uint16_t i = 0; i < buffer1_size; i++) {
-      SPItransfer(buffer1[i]);
-    }
-    csHigh();
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 0);
   }
 
-  if (buffer2_size == 0) {
-    update();
-    return;
-  }
+  if (buffer2_size != 0) {
+    // oh there's another buffer eh?
+    delay(2);
 
-  // oh there's another buffer eh?
-  delay(2);
+    // Set X & Y ram counters
+    setRAMAddress(0, 0);
 
-  // Set X & Y ram counters
-  setRAMAddress(0, 0);
-
-  if (use_sram) {
-    sram.csLow();
-    // send read command
-    SPItransfer(MCPSRAM_READ);
-    // send address
-    SPItransfer(buffer2_addr >> 8);
-    SPItransfer(buffer2_addr & 0xFF);
-
-    // first data byte from SRAM will be transfered in at the same time
-    // as the EPD command is transferred out
-    c = writeRAMCommand(1);
-
-    dcHigh();
-    for (uint16_t i = 0; i < buffer2_size; i++) {
-      c = SPItransfer(c);
+    if (use_sram) {
+      writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1);
+    } else {
+      writeRAMFramebufferToEPD(buffer2, buffer2_size, 1);
     }
-    csHigh();
-    sram.csHigh();
-  } else {
-    writeRAMCommand(1);
-    dcHigh();
-
-    for (uint16_t i = 0; i < buffer2_size; i++) {
-      SPItransfer(buffer2[i]);
-    }
-    csHigh();
   }
 
 #ifdef EPD_DEBUG
   Serial.println("  Update");
 #endif
   update();
+  partialsSinceLastFullUpdate = 0;
 
   if (sleep) {
 #ifdef EPD_DEBUG
@@ -441,33 +448,29 @@ void Adafruit_EPD::setColorBuffer(int8_t index, bool inverted) {
 /**************************************************************************/
 void Adafruit_EPD::clearBuffer() {
   if (use_sram) {
-    if (buffer1_size != 0) {
-      if (blackInverted) {
-        sram.erase(buffer1_addr, buffer1_size, 0xFF);
-      } else {
-        sram.erase(buffer1_addr, buffer1_size, 0x00);
-      }
+    if (blackInverted) {
+      sram.erase(blackbuffer_addr, buffer1_size, 0xFF);
+    } else {
+      sram.erase(blackbuffer_addr, buffer1_size, 0x00);
     }
-    if (buffer2_size != 0) {
-      if (colorInverted) {
-        sram.erase(buffer2_addr, buffer2_size, 0xFF);
-      } else {
-        sram.erase(buffer2_addr, buffer2_size, 0x00);
-      }
+    if (colorInverted) {
+      sram.erase(colorbuffer_addr, buffer2_size, 0xFF);
+    } else {
+      sram.erase(colorbuffer_addr, buffer2_size, 0x00);
     }
   } else {
-    if (buffer1) {
+    if (black_buffer) {
       if (blackInverted) {
-        memset(buffer1, 0xFF, buffer1_size);
+        memset(black_buffer, 0xFF, buffer1_size);
       } else {
-        memset(buffer1, 0x00, buffer1_size);
+        memset(black_buffer, 0x00, buffer1_size);
       }
     }
-    if (buffer2) {
+    if (color_buffer) {
       if (colorInverted) {
-        memset(buffer2, 0xFF, buffer2_size);
+        memset(color_buffer, 0xFF, buffer2_size);
       } else {
-        memset(buffer2, 0x00, buffer2_size);
+        memset(color_buffer, 0x00, buffer2_size);
       }
     }
   }

@@ -3,12 +3,6 @@
 
 #include "Adafruit_EPD.h"
 
-typedef enum {
-  THINKINK_MONO,
-  THINKINK_TRICOLOR,
-  THINKINK_GRAYSCALE4,
-} thinkinkmode_t;
-
 #include "panels/ThinkInk_154_Tricolor_RW.h"
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_213_Tricolor_RW.h"

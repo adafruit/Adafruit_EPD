@@ -15,11 +15,21 @@ public:
       : Adafruit_UC8151D(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
-    setColorBuffer(1, true); // layer 1 uninverted
-    setBlackBuffer(1, true); // only one buffer
+    Adafruit_UC8151D::begin(true);
+
+    if (mode == THINKINK_MONO) {
+      setColorBuffer(1, true); // layer 1 uninverted
+      setBlackBuffer(1, true); // only one buffer
+    } else {
+      setColorBuffer(1, true);
+      setBlackBuffer(1, true);
+    }
 
     inkmode = mode; // Preserve ink mode for ImageReader or others
+
+    _epd_init_code = uc8151d_monofull_init_code;
+    _epd_partial_init_code = uc8151d_partial_init_code;
+    _epd_partial_lut_code = uc8151d_partialmono_lut;
 
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b01;
@@ -32,11 +42,6 @@ public:
     setRotation(0);
     powerDown();
   }
-
-  thinkinkmode_t getMode(void) { return inkmode; }
-
-private:
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
 };
 
 #endif // _THINKINK_290_MONO_M06_H
