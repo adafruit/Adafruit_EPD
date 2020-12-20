@@ -17,7 +17,7 @@ public:
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_SSD1680::begin(true);
-    
+
     inkmode = mode; // Preserve ink mode for ImageReader or others
 
     layer_colors[EPD_WHITE] = 0b00;

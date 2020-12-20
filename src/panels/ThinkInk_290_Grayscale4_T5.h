@@ -191,7 +191,6 @@ public:
 
     powerDown();
   }
-
 };
 
 #endif // _THINKINK_290_GRAYSCALE4_T5_H

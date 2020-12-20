@@ -30,7 +30,6 @@ public:
     default_refresh_delay = 13000;
     powerDown();
   }
-
 };
 
 #endif // _THINKINK_270_TRICOLOR_C44_H

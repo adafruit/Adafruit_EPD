@@ -32,7 +32,6 @@ public:
     setRotation(1);
     powerDown();
   }
-
 };
 
 #endif // _THINKINK_420_MONO_BN_H
