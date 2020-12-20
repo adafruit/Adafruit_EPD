@@ -21,7 +21,7 @@ public:
       setColorBuffer(1, true); // layer 1 uninverted
       setBlackBuffer(1, true); // only one buffer
     } else {
-      setColorBuffer(1, true); 
+      setColorBuffer(1, true);
       setBlackBuffer(1, true);
     }
 
@@ -30,7 +30,7 @@ public:
     _epd_init_code = uc8151d_monofull_init_code;
     _epd_partial_init_code = uc8151d_partial_init_code;
     _epd_partial_lut_code = uc8151d_partialmono_lut;
-    
+
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b01;
     layer_colors[EPD_RED] = 0b01;

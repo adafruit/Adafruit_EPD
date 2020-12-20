@@ -85,7 +85,7 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
 void Adafruit_UC8151D::busy_wait(void) {
   if (_busy_pin >= 0) {
     do {
-      //EPD_command(UC8151D_FLG);
+      // EPD_command(UC8151D_FLG);
       delay(10);
     } while (!digitalRead(_busy_pin));
   } else {
@@ -194,17 +194,15 @@ uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
 /**************************************************************************/
 void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
 
-
-
 /**************************************************************************/
 /*!
     @brief Transfer the data stored in the buffer(s) to the display
 */
 /**************************************************************************/
-void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
+                                      uint16_t y2) {
   uint8_t buf[7];
   uint8_t c;
-
 
   // check rotation, move window around if necessary
   switch (getRotation()) {
@@ -266,10 +264,10 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
   buf[2] = y1 >> 8;
   buf[3] = y1 & 0xFF;
   buf[4] = (y2) >> 8;
-  buf[5] = (y2) & 0xFF;
+  buf[5] = (y2)&0xFF;
   buf[6] = 0x28;
-    
-  EPD_command(UC8151D_PTL, buf, 7);   //resolution setting
+
+  EPD_command(UC8151D_PTL, buf, 7); // resolution setting
 
   // buffer 1 has the old data from the last update
   if (use_sram) {
@@ -286,9 +284,9 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
 
     writeRAMFramebufferToEPD(buffer1, buffer1_size, 0, true);
   }
-  
+
   delay(2);
-  
+
   // buffer 2 has the new data, that we're updating
   if (use_sram) {
     writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1, true);
@@ -296,13 +294,12 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
     writeRAMFramebufferToEPD(buffer2, buffer2_size, 1, true);
   }
 
-
 #ifdef EPD_DEBUG
   Serial.println("  Update");
 #endif
   update();
-  
-  //Serial.println("Partial, saving old data to secondary buffer");
+
+  // Serial.println("Partial, saving old data to secondary buffer");
   if (use_sram) {
     uint32_t remaining = buffer1_size;
     uint32_t offset = 0;
@@ -310,15 +307,15 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uin
     while (remaining) {
       uint8_t to_xfer = min(sizeof(mcp_buf), remaining);
 
-      sram.read(buffer2_addr+offset, mcp_buf, to_xfer);
-      sram.write(buffer1_addr+offset, mcp_buf, to_xfer);
+      sram.read(buffer2_addr + offset, mcp_buf, to_xfer);
+      sram.write(buffer1_addr + offset, mcp_buf, to_xfer);
       offset += to_xfer;
       remaining -= to_xfer;
     }
   } else {
-    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup 
+    memcpy(buffer1, buffer2, buffer1_size); // buffer1 has the backup
   }
-    
+
   partialsSinceLastFullUpdate++;
 
   // change init back

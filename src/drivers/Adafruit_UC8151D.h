@@ -46,7 +46,6 @@
 #define UC8151D_LVSEL 0xE4
 #define UC8151D_TSSET 0xE5
 
-
 // clang-format off
 
 const uint8_t uc8151d_monofull_init_code[] {
@@ -121,7 +120,6 @@ const uint8_t uc8151d_partialmono_lut[] = {
 };
 
 // clang-format on
-
 
 /**************************************************************************/
 /*!
