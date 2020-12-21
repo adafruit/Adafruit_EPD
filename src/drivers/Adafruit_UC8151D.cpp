@@ -103,8 +103,6 @@ void Adafruit_UC8151D::begin(bool reset) {
   Adafruit_EPD::begin(reset);
   setBlackBuffer(1, true); // black defaults to inverted
   setColorBuffer(0, true); // red defaults to inverted
-
-  powerDown();
 }
 
 /**************************************************************************/

@@ -55,6 +55,15 @@ const uint8_t uc8151d_monofull_init_code[] {
     UC8151D_CDI, 1, 0x97,
     0xFE};
 
+const uint8_t uc8151d_trifull_init_code[] {
+  UC8151D_PON, 0,
+    0xFF, 10,
+    UC8151D_PSR, 2, 0x0F, 0x89,
+    0x61, 3, 0x80, 0x01, 0x28,
+    UC8151D_CDI, 1, 0x77,
+    0xFE};
+
+
 const uint8_t uc8151d_partial_init_code[] {
   UC8151D_PWR, 5, 0x03, 0x00, 0x2B, 0x2B, 0x03,     //POWER SETTING 
     UC8151D_BTST, 3, 0x17, 0x17, 0x17, //boost soft start
