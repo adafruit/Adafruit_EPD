@@ -14,7 +14,7 @@
 #define ACEP_DTM 0x10
 #define ACEP_DISPLAY_REFRESH 0x12
 #define ACEP_PLL 0x30
-#define ACEP_TSE 0x41
+#define ACEP_TSE 0x40
 #define ACEP_CDI 0x50
 #define ACEP_TCON 0x60
 #define ACEP_RESOLUTION 0x61

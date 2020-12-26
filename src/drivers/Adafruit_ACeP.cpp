@@ -6,6 +6,7 @@
 // clang-format off
 
 const uint8_t acep_default_init_code[] {
+  0xFF, 10, // wait a lil bit
   ACEP_PANEL_SETTING, 2, 0xEF, 0x08, // LUT from OTP
     ACEP_POWER_SETTING, 4, 0x37, 0x00, 0x23, 0x23, // 0x05&0x05?
     ACEP_POWER_OFF_SEQUENCE, 1, 0x00,
@@ -16,6 +17,8 @@ const uint8_t acep_default_init_code[] {
     ACEP_TCON, 1, 0x22,
     ACEP_RESOLUTION, 4, 0x02, 0x58, 0x01, 0xC0,
     ACEP_PWS, 1, 0xAA,
+    0xFF, 100, // 100 ms delay
+    ACEP_CDI, 1, 0x37,
     0xFE};
 
 // clang-format on
@@ -119,7 +122,7 @@ void Adafruit_ACEP::begin(bool reset) {
   Adafruit_EPD::begin(reset);
 
   delay(100);
-  powerDown();
+  //powerDown();
 }
 
 /**************************************************************************/
@@ -128,20 +131,25 @@ void Adafruit_ACEP::begin(bool reset) {
 */
 /**************************************************************************/
 void Adafruit_ACEP::update() {
+  
   uint8_t buf[4];
-  /*
-  // clear data
+  /***************** clear data first */
   buf[0] = 0x02;
   buf[1] = 0x58;
   buf[2] = 0x01;
   buf[3] = 0xC0;
   EPD_command(ACEP_RESOLUTION, buf, 4);
+
   EPD_command(ACEP_DTM);
-  for (int i=0; i< 134400/256; i++) {
+  uint32_t remaining = (600UL * 448UL / 2);
+  while (remaining) {
     uint8_t block[256];
-    memset(block, 0x77, 256);
-    EPD_data(block, 256);
+    uint32_t numbytes = min(remaining, sizeof(block));
+    memset(block, 0x77, numbytes);
+    EPD_data(block, numbytes);
+    remaining -= numbytes;
   }
+
   EPD_command(ACEP_POWER_ON);
   busy_wait();
   EPD_command(ACEP_DISPLAY_REFRESH);
@@ -154,26 +162,40 @@ void Adafruit_ACEP::update() {
     }
   } else {
     delay(BUSY_WAIT);
-  }*/
+  }
+
+  delay(500);
 
   // actual data
-  // clear data
+  // setresolution, write data
   buf[0] = 0x02;
   buf[1] = 0x58;
   buf[2] = 0x01;
   buf[3] = 0xC0;
   EPD_command(ACEP_RESOLUTION, buf, 4);
   EPD_command(ACEP_DTM);
-  for (int i = 0; i < 134400 / 256; i++) {
+
+  remaining = (600UL * 448UL / 2);
+  while (remaining) {
     uint8_t block[256];
-    memset(block, ((i % 6) << 4) | (i % 6), 256);
-    EPD_data(block, 256);
+    uint32_t numbytes = min(remaining, sizeof(block));
+    memset(block, 0x44, numbytes);
+    EPD_data(block, numbytes);
+    remaining -= numbytes;
   }
+
   EPD_command(ACEP_POWER_ON);
   busy_wait();
   EPD_command(ACEP_DISPLAY_REFRESH);
   busy_wait();
   EPD_command(ACEP_POWER_OFF);
+  if (_busy_pin >= 0) {
+    while (digitalRead(_busy_pin)) { // wait for busy LOW
+      delay(10);
+    }
+  } else {
+    delay(BUSY_WAIT);
+  }
 }
 
 /**************************************************************************/
@@ -193,10 +215,10 @@ void Adafruit_ACEP::powerUp() {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
-  delay(1000);
-  buf[0] = 0x37;
-  EPD_command(ACEP_CDI, buf, 1);
+  delay(100);
 }
+
+
 
 /**************************************************************************/
 /*!
