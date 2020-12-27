@@ -23,7 +23,7 @@ jobs:
     - name: extra libraries
       run: |
         git clone --quiet https://github.com/adafruit/SdFat.git /home/runner/Arduino/libraries/SdFat
-
+        git clone --quiet https://github.com/adafruit/Adafruit_SPIFlash.git /home/runner/Arduino/libraries/Adafruit_SPIFlash
 
     - name: test platforms
       run: python3 ci/build_platform.py main_platforms metro_m4_tinyusb cpb cpx
