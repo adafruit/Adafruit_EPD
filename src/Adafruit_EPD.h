@@ -155,8 +155,8 @@ protected:
 
   uint8_t layer_colors[EPD_NUM_COLORS];
 
-  uint16_t buffer1_size; ///< size of the primary buffer
-  uint16_t buffer2_size; ///< size of the secondary buffer
+  uint32_t buffer1_size; ///< size of the primary buffer
+  uint32_t buffer2_size; ///< size of the secondary buffer
   uint8_t *buffer1; ///< the pointer to the primary buffer if using on-chip ram
   uint8_t
       *buffer2; ///< the pointer to the secondary buffer if using on-chip ram

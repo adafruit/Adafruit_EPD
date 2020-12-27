@@ -14,11 +14,19 @@
 #define ACEP_DTM 0x10
 #define ACEP_DISPLAY_REFRESH 0x12
 #define ACEP_PLL 0x30
-#define ACEP_TSE 0x41
+#define ACEP_TSE 0x40
 #define ACEP_CDI 0x50
 #define ACEP_TCON 0x60
 #define ACEP_RESOLUTION 0x61
 #define ACEP_PWS 0xE3
+
+#define ACEP_COLOR_BLACK 0x0  /// 000
+#define ACEP_COLOR_WHITE 0x1  ///	001
+#define ACEP_COLOR_GREEN 0x2  ///	010
+#define ACEP_COLOR_BLUE 0x3   ///	011
+#define ACEP_COLOR_RED 0x4    ///	100
+#define ACEP_COLOR_YELLOW 0x5 ///	101
+#define ACEP_COLOR_ORANGE 0x6 ///	110
 
 /**************************************************************************/
 /*!
@@ -37,6 +45,12 @@ public:
   void powerUp();
   void powerDown();
   void update();
+  void display(bool sleep = true);
+
+  void clearBuffer();
+  void clearDisplay();
+  void deGhost();
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
 
 protected:
   uint8_t writeRAMCommand(uint8_t index);

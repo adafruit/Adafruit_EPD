@@ -290,7 +290,7 @@ void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer,
   dcHigh();
   // Serial.printf("Writing from RAM location %04x: \n", &framebuffer);
 
-  for (uint16_t i = 0; i < framebuffer_size; i++) {
+  for (uint32_t i = 0; i < framebuffer_size; i++) {
     uint8_t d = framebuffer[i];
     if (invertdata)
       d = ~d;
