@@ -149,7 +149,6 @@ void Adafruit_ACEP::deGhost() {
   }
 }
 
-
 /**************************************************************************/
 /*!
     @brief clear the display twice to remove any spooky ghost images
@@ -195,7 +194,7 @@ void Adafruit_ACEP::drawPixel(int16_t x, int16_t y, uint16_t color) {
     y = _HEIGHT - y - 1;
     break;
   }
-  uint32_t addr = ((uint32_t)x + (uint32_t)y*WIDTH)/2;
+  uint32_t addr = ((uint32_t)x + (uint32_t)y * WIDTH) / 2;
   bool lower_nibble = x % 2;
   uint8_t color_c;
 
@@ -213,12 +212,11 @@ void Adafruit_ACEP::drawPixel(int16_t x, int16_t y, uint16_t color) {
     *pBuf &= 0x0F; // save lower nib
     *pBuf |= (color & 0xF) << 4;
   }
-  
+
   if (use_sram) {
     sram.write8(colorbuffer_addr + addr, *pBuf);
   }
 }
-
 
 /**************************************************************************/
 /*!
@@ -246,7 +244,6 @@ void Adafruit_ACEP::begin(bool reset) {
   delay(100);
 }
 
-
 /**************************************************************************/
 /*!
     @brief Transfer the data stored in the buffer(s) to the display
@@ -268,11 +265,9 @@ void Adafruit_ACEP::display(bool sleep) {
   deGhost();
   delay(500);
 
-
 #ifdef EPD_DEBUG
   Serial.println("  Powering Up");
 #endif
-
 
   powerUp();
 
@@ -300,14 +295,13 @@ void Adafruit_ACEP::display(bool sleep) {
   }
 }
 
-
 /**************************************************************************/
 /*!
     @brief signal the display to update
 */
 /**************************************************************************/
 void Adafruit_ACEP::update(void) {
-  
+
   uint8_t buf[4];
 
   EPD_command(ACEP_POWER_ON);
@@ -351,8 +345,6 @@ void Adafruit_ACEP::powerUp() {
 
   delay(100);
 }
-
-
 
 /**************************************************************************/
 /*!
