@@ -9,7 +9,7 @@ const uint8_t il91874_default_init_code[] {
   IL91874_BOOSTER_SOFT_START, 3, 0x07, 0x07, 0x17,
     IL91874_POWER_ON, 0,
     0xFF, 20,          // busy wait
-    IL91874_PANEL_SETTING, 1, 0x1f, // LUT from OTP
+    IL91874_PANEL_SETTING, 1, 0x0f, // LUT from OTP
     IL91874_PDRF, 1, 0x00,
     0xF8, 2, 0x60, 0xA5, // boost
     0xF8, 2, 0x73, 0x23, // boost
@@ -146,7 +146,7 @@ void Adafruit_IL91874::begin(bool reset) {
   Adafruit_EPD::begin(reset);
 
   setBlackBuffer(0, true); // black defaults to inverted
-  setColorBuffer(1, true); // red defaults to not inverted
+  setColorBuffer(1, false); // red defaults to not inverted
 
   powerDown();
 }
