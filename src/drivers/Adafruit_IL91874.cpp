@@ -145,7 +145,7 @@ void Adafruit_IL91874::begin(bool reset) {
   singleByteTxns = true;
   Adafruit_EPD::begin(reset);
 
-  setBlackBuffer(0, true); // black defaults to inverted
+  setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to not inverted
 
   powerDown();
