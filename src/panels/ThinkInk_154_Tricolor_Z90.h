@@ -7,12 +7,12 @@
 class ThinkInk_154_Tricolor_Z90 : public Adafruit_SSD1681 {
 public:
   ThinkInk_154_Tricolor_Z90(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
-                           int8_t CS, int8_t SRCS, int8_t MISO,
-                           int8_t BUSY = -1)
+                            int8_t CS, int8_t SRCS, int8_t MISO,
+                            int8_t BUSY = -1)
       : Adafruit_SSD1681(200, 200, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_154_Tricolor_Z90(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                           int8_t BUSY = -1, SPIClass *spi = &SPI)
+                            int8_t BUSY = -1, SPIClass *spi = &SPI)
       : Adafruit_SSD1681(200, 200, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
