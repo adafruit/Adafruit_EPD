@@ -9,7 +9,7 @@ public:
   ThinkInk_154_Tricolor_RW(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                            int8_t CS, int8_t SRCS, int8_t MISO,
                            int8_t BUSY = -1)
-      : Adafruit_SSD1680(250, 152, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_SSD1680(152, 152, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_154_Tricolor_RW(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
                            int8_t BUSY = -1, SPIClass *spi = &SPI)

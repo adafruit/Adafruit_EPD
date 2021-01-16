@@ -158,7 +158,7 @@ void Adafruit_EPD::begin(bool reset) {
     sram.write8(0, K640_SEQUENTIAL_MODE, MCPSRAM_WRSR);
   }
 
-  Serial.println("set pins");
+  // Serial.println("set pins");
   // set pin directions
   pinMode(_dc_pin, OUTPUT);
   pinMode(_cs_pin, OUTPUT);
@@ -176,16 +176,16 @@ void Adafruit_EPD::begin(bool reset) {
     return;
   }
 
-  Serial.println("hard reset");
+  // Serial.println("hard reset");
   if (reset) {
     hardwareReset();
   }
 
-  Serial.println("busy");
+  // Serial.println("busy");
   if (_busy_pin >= 0) {
     pinMode(_busy_pin, INPUT);
   }
-  Serial.println("done!");
+  // Serial.println("done!");
 }
 
 /**************************************************************************/
@@ -313,7 +313,6 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
                                              uint8_t EPDlocation,
                                              bool invertdata) {
   uint8_t c;
-
   // use SRAM
   sram.csLow();
   // send read command
@@ -327,10 +326,17 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
   c = writeRAMCommand(EPDlocation);
 
   dcHigh();
-  for (uint16_t i = 0; i < buffer_size; i++) {
+  for (uint32_t i = 0; i < buffer_size; i++) {
     c = SPItransfer(c);
-    // Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
-    // if (i % 32 == 31) Serial.println();
+    /*
+    Serial.print("0x"); Serial.print((byte)c, HEX); Serial.print(", ");
+    if (i % 32 == 31) {
+      Serial.println();
+      Serial.print("$");
+      Serial.print(i, HEX);
+      Serial.print(": ");
+    }
+    */
   }
   csHigh();
   sram.csHigh();
@@ -358,8 +364,14 @@ void Adafruit_EPD::display(bool sleep) {
   setRAMAddress(0, 0);
 
   if (use_sram) {
+#ifdef EPD_DEBUG
+    Serial.println("  Write SRAM buff to EPD");
+#endif
     writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0);
   } else {
+#ifdef EPD_DEBUG
+    Serial.println("  Write RAM buff to EPD");
+#endif
     writeRAMFramebufferToEPD(buffer1, buffer1_size, 0);
   }
 
