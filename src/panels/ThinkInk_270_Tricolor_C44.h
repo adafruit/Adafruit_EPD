@@ -35,8 +35,8 @@ public:
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
     Adafruit_IL91874::begin(true);
-    setBlackBuffer(0, false);
-    setColorBuffer(1, false);
+    setBlackBuffer(0, true);
+    setColorBuffer(1, true);
 
     _epd_init_code = ti_270c44_tri_init_code;
     _epd_lut_code = NULL;
