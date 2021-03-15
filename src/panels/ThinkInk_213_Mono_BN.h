@@ -34,4 +34,6 @@ public:
   }
 };
 
+typedef ThinkInk_213_Mono_BN ThinkInk_213_Mono_B74;
+
 #endif // _THINKINK_213_MONO_BN_H
