@@ -315,6 +315,7 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
   uint8_t c;
   // use SRAM
   sram.csLow();
+  _isInTransaction = true;
   // send read command
   SPItransfer(MCPSRAM_READ);
   // send address
@@ -340,6 +341,7 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
   }
   csHigh();
   sram.csHigh();
+  _isInTransaction = false;
 }
 
 /**************************************************************************/
@@ -658,8 +660,10 @@ void Adafruit_EPD::csHigh() {
   digitalWrite(_cs_pin, HIGH);
 #endif
 
-  spi_dev->endTransaction();
-  _isInTransaction = false;
+  if (_isInTransaction) {
+    spi_dev->endTransaction();
+    _isInTransaction = false;
+  }
 }
 
 /**************************************************************************/
@@ -668,8 +672,11 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
-  spi_dev->beginTransaction();
-  _isInTransaction = true;
+
+  if (!_isInTransaction) {
+    spi_dev->beginTransaction();
+    _isInTransaction = true;
+  }
 
 #ifdef BUSIO_USE_FAST_PINIO
   *csPort &= ~csPinMask;
