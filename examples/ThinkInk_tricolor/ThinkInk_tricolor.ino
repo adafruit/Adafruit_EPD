@@ -36,8 +36,10 @@
 // 2.7" Tricolor Featherwing or Breakout with EK79686 chipset
 //ThinkInk_270_Tricolor_Z70 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-// 2.9" Tricolor Featherwing or Breakout:
+// 2.9" Tricolor Featherwing or Breakout with IL0373 chipset
 ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 2.9" Tricolor Featherwing or Breakout with UC8151D chipset
+//ThinkInk_290_Tricolor_Z13 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 //ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_420_Tricolor_Z21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);

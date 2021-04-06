@@ -45,8 +45,13 @@ ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 // 2.9" Monochrome displays with 296x128 pixels and UC8151D chipset
 //ThinkInk_290_Mono_M06 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
+
 // 4.2" Monochrome displays with 400x300 pixels and SSD1619 chipset
 //ThinkInk_420_Mono_BN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
+// 4.2" Monochrome displays with 400x300 pixels and UC8276 chipset
+//ThinkInk_420_Mono_M06 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
 
 void setup() {
   Serial.begin(115200);

@@ -12,6 +12,7 @@
 #include "panels/ThinkInk_270_Tricolor_Z70.h"
 #include "panels/ThinkInk_290_Tricolor_RH.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
+#include "panels/ThinkInk_290_Tricolor_Z13.h"
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
 
@@ -31,5 +32,6 @@
 #include "panels/ThinkInk_290_Mono_BN.h"
 #include "panels/ThinkInk_290_Mono_M06.h"
 #include "panels/ThinkInk_420_Mono_BN.h"
+#include "panels/ThinkInk_420_Mono_M06.h"
 
 #endif // _ADAFRUIT_THINKINK_H_
