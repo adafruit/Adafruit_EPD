@@ -1,6 +1,9 @@
 #include "Adafruit_IL0373.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW IL0373_DTM1
+#define EPD_RAM_RED IL0373_DTM2
+
 #define BUSY_WAIT 100
 
 // clang-format off
@@ -206,12 +209,13 @@ uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
 /**************************************************************************/
 void Adafruit_IL0373::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
+  (void)x;
+  (void)y;
 }
 
 void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
                                      uint16_t y2) {
   uint8_t buf[7];
-  uint8_t c;
 
   // check rotation, move window around if necessary
   switch (getRotation()) {

@@ -32,9 +32,6 @@
 #define IL0373_PARTIAL_ENTER 0x91
 #define IL0373_PARTIAL_EXIT 0x92
 
-#define EPD_RAM_BW IL0373_DTM1
-#define EPD_RAM_RED IL0373_DTM2
-
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with IL0373 EPD drivers

@@ -1,6 +1,8 @@
 #include "Adafruit_SSD1608.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+
 #define BUSY_WAIT 500
 
 const unsigned char LUT_DATA[30] = {
@@ -232,6 +234,7 @@ void Adafruit_SSD1608::powerDown(void) {
 */
 /**************************************************************************/
 uint8_t Adafruit_SSD1608::writeRAMCommand(uint8_t index) {
+  (void)index;
   return EPD_command(SSD1608_WRITE_RAM, false);
 }
 

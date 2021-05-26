@@ -1,6 +1,9 @@
 #include "Adafruit_UC8276.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
+
 #define BUSY_WAIT 500
 
 // clang-format off
@@ -142,8 +145,6 @@ void Adafruit_UC8276::update() {
 */
 /**************************************************************************/
 void Adafruit_UC8276::powerUp() {
-  uint8_t buf[5];
-
   hardwareReset();
 
   const uint8_t *init_code = uc8276_default_init_code;
@@ -202,6 +203,8 @@ uint8_t Adafruit_UC8276::writeRAMCommand(uint8_t index) {
 /**************************************************************************/
 void Adafruit_UC8276::setRAMAddress(uint16_t x, uint16_t y) {
   // not used in this chip!
+  (void)x;
+  (void)y;
 }
 
 /**************************************************************************/
@@ -214,4 +217,8 @@ void Adafruit_UC8276::setRAMAddress(uint16_t x, uint16_t y) {
 void Adafruit_UC8276::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
                                    uint16_t y2) {
   // not used in this chip!
+  (void)x1;
+  (void)y1;
+  (void)x2;
+  (void)y2;
 }

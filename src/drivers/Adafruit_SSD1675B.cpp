@@ -1,6 +1,9 @@
 #include "Adafruit_SSD1675B.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
+
 #define BUSY_WAIT 500
 
 #define SSD1675B_USELUT
@@ -280,6 +283,8 @@ uint8_t Adafruit_SSD1675B::writeRAMCommand(uint8_t index) {
 */
 /**************************************************************************/
 void Adafruit_SSD1675B::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
   uint8_t buf[2];
 
   // Set RAM X address counter

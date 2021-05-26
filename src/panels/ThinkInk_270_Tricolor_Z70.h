@@ -9,11 +9,11 @@ public:
   ThinkInk_270_Tricolor_Z70(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
                             int8_t CS, int8_t SRCS, int8_t MISO,
                             int8_t BUSY = -1)
-      : Adafruit_EK79686(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, -1){};
+      : Adafruit_EK79686(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_270_Tricolor_Z70(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
                             int8_t BUSY = -1, SPIClass *spi = &SPI)
-      : Adafruit_EK79686(264, 176, DC, RST, CS, SRCS, -1, spi){};
+      : Adafruit_EK79686(264, 176, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
     Adafruit_EK79686::begin(true);

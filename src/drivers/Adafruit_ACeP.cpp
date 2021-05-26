@@ -250,8 +250,6 @@ void Adafruit_ACEP::begin(bool reset) {
 */
 /**************************************************************************/
 void Adafruit_ACEP::display(bool sleep) {
-  uint8_t c;
-
 #ifdef EPD_DEBUG
   Serial.println("  Powering Up");
 #endif
@@ -301,9 +299,6 @@ void Adafruit_ACEP::display(bool sleep) {
 */
 /**************************************************************************/
 void Adafruit_ACEP::update(void) {
-
-  uint8_t buf[4];
-
   EPD_command(ACEP_POWER_ON);
   busy_wait();
   EPD_command(ACEP_DISPLAY_REFRESH);
@@ -374,6 +369,7 @@ void Adafruit_ACEP::powerDown(void) {
 */
 /**************************************************************************/
 uint8_t Adafruit_ACEP::writeRAMCommand(uint8_t index) {
+  (void)index;
   return EPD_command(ACEP_DTM, false);
 }
 
@@ -384,4 +380,7 @@ uint8_t Adafruit_ACEP::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_ACEP::setRAMAddress(uint16_t x, uint16_t y) {}
+void Adafruit_ACEP::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
+}

@@ -312,6 +312,7 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
                                              uint32_t buffer_size,
                                              uint8_t EPDlocation,
                                              bool invertdata) {
+  (void)invertdata;
   uint8_t c;
   // use SRAM
   sram.csLow();
@@ -350,8 +351,6 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
 */
 /**************************************************************************/
 void Adafruit_EPD::display(bool sleep) {
-  uint8_t c;
-
 #ifdef EPD_DEBUG
   Serial.println("  Powering Up");
 #endif

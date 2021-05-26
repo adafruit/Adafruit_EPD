@@ -4,9 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-#define EPD_RAM_RED 0x13
-
 #define IL91874_PANEL_SETTING 0x00
 #define IL91874_POWER_SETTING 0x01
 #define IL91874_POWER_OFF 0x02

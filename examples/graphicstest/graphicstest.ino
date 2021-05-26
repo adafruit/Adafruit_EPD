@@ -158,7 +158,7 @@ void testlines(uint16_t color) {
   display.display();
 }
 
-void testdrawtext(char *text, uint16_t color) {
+void testdrawtext(const char *text, uint16_t color) {
   display.clearBuffer();
   display.setCursor(5, 5);
   display.setTextColor(color);

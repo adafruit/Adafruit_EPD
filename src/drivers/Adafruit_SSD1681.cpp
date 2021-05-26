@@ -1,6 +1,9 @@
 #include "Adafruit_SSD1681.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
+
 #define BUSY_WAIT 500
 
 // clang-format off
@@ -165,9 +168,6 @@ void Adafruit_SSD1681::updatePartial(void) {
 
 void Adafruit_SSD1681::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
                                       uint16_t y2) {
-  uint8_t buf[7];
-  uint8_t c;
-
   // check rotation, move window around if necessary
   switch (getRotation()) {
   case 0:
