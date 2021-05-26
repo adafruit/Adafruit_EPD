@@ -4,8 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-
 #define SSD1608_DRIVER_CONTROL 0x01
 #define SSD1608_GATE_VOLTAGE 0x03
 #define SSD1608_SOURCE_VOLTAGE 0x04

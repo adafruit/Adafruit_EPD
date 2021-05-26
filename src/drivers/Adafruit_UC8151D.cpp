@@ -1,6 +1,8 @@
 #include "Adafruit_UC8151D.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+
 #define BUSY_WAIT 500
 
 /**************************************************************************/

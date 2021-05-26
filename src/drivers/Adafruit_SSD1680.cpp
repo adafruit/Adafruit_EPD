@@ -1,6 +1,9 @@
 #include "Adafruit_SSD1680.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
+
 #define BUSY_WAIT 500
 
 // clang-format off

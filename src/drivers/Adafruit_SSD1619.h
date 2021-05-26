@@ -4,9 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-#define EPD_RAM_RED 0x13
-
 #define SSD1619_DRIVER_CONTROL 0x01
 #define SSD1619_GATE_VOLTAGE 0x03
 #define SSD1619_SOURCE_VOLTAGE 0x04

@@ -4,9 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-#define EPD_RAM_RED 0x13
-
 #define UC8276_PANELSETTING 0x00
 #define UC8276_POWEROFF 0x02
 #define UC8276_POWERON 0x04

@@ -1,6 +1,8 @@
 #include "Adafruit_SSD1608.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW 0x10
+
 #define BUSY_WAIT 500
 
 const unsigned char LUT_DATA[30] = {

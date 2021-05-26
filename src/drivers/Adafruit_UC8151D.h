@@ -4,8 +4,6 @@
 #include "Adafruit_EPD.h"
 #include <Arduino.h>
 
-#define EPD_RAM_BW 0x10
-
 #define UC8151D_PSR 0x00
 #define UC8151D_PWR 0x01
 #define UC8151D_POF 0x02

@@ -1,6 +1,9 @@
 #include "Adafruit_IL0373.h"
 #include "Adafruit_EPD.h"
 
+#define EPD_RAM_BW IL0373_DTM1
+#define EPD_RAM_RED IL0373_DTM2
+
 #define BUSY_WAIT 100
 
 // clang-format off
