@@ -11,7 +11,7 @@ jobs:
         arduino-platform:
           - 'uno'
           - 'leonardo'
-          - 'atmega2560'
+          - 'mega2560'
           - 'esp8266'
           - 'esp32'
           - 'trinket_m0'
