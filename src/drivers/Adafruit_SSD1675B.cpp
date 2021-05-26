@@ -214,7 +214,7 @@ void Adafruit_SSD1675B::powerUp() {
   buf[2] = LUT_DATA[103];
   EPD_command(SSD1675B_SOURCE_VOLTAGE, buf, 3);
 
-  // Set dummy line periodAdafruit_SSD1675B.cpp
+  // Set dummy line period
   buf[0] = LUT_DATA[105];
   EPD_command(SSD1675B_WRITE_DUMMY, buf, 1);
 
