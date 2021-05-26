@@ -81,7 +81,7 @@ void loop() {
 
 #define BUFFPIXEL 20
 
-bool bmpDraw(char *filename, int16_t x, int16_t y) {
+bool bmpDraw(const char *filename, int16_t x, int16_t y) {
   File     bmpFile;
   int      bmpWidth, bmpHeight;   // W+H in pixels
   uint8_t  bmpDepth;              // Bit depth (currently must be 24)
@@ -103,7 +103,7 @@ bool bmpDraw(char *filename, int16_t x, int16_t y) {
   Serial.println('\'');
 
   // Open requested file on SD card
-  if ((bmpFile = fatfs.open(filename, FILE_READ)) == NULL) {
+  if ((bmpFile = fatfs.open(filename, FILE_READ)) == false) {
     Serial.print(F("File not found"));
     return false;
   }

@@ -96,7 +96,7 @@ void loop() {
 }
 
 
-void testdrawtext(char *text, uint16_t color) {
+void testdrawtext(const char *text, uint16_t color) {
   display.setCursor(0, 0);
   display.setTextColor(color);
   display.setTextWrap(true);
