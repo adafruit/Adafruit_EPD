@@ -249,4 +249,6 @@ uint8_t Adafruit_IL91874::writeRAMCommand(uint8_t index) {
 /**************************************************************************/
 void Adafruit_IL91874::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
+  (void)x;
+  (void)y;
 }

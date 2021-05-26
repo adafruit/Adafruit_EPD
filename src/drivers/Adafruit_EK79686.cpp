@@ -148,8 +148,6 @@ void Adafruit_EK79686::update() {
 */
 /**************************************************************************/
 void Adafruit_EK79686::powerUp() {
-  uint8_t buf[5];
-
   hardwareReset();
   delay(10);
 
@@ -208,4 +206,7 @@ uint8_t Adafruit_EK79686::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_EK79686::setRAMAddress(uint16_t x, uint16_t y) {}
+void Adafruit_EK79686::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
+}

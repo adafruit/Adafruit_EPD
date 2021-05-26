@@ -209,12 +209,13 @@ uint8_t Adafruit_IL0373::writeRAMCommand(uint8_t index) {
 /**************************************************************************/
 void Adafruit_IL0373::setRAMAddress(uint16_t x, uint16_t y) {
   // on this chip we do nothing
+  (void)x;
+  (void)y;
 }
 
 void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
                                      uint16_t y2) {
   uint8_t buf[7];
-  uint8_t c;
 
   // check rotation, move window around if necessary
   switch (getRotation()) {

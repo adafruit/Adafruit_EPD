@@ -279,6 +279,9 @@ uint8_t Adafruit_SSD1675::writeRAMCommand(uint8_t index) {
 */
 /**************************************************************************/
 void Adafruit_SSD1675::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
+
   uint8_t buf[2];
 
   // Set RAM X address counter

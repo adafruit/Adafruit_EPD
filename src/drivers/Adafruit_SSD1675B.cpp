@@ -214,7 +214,7 @@ void Adafruit_SSD1675B::powerUp() {
   buf[2] = LUT_DATA[103];
   EPD_command(SSD1675B_SOURCE_VOLTAGE, buf, 3);
 
-  // Set dummy line period
+  // Set dummy line periodAdafruit_SSD1675B.cpp
   buf[0] = LUT_DATA[105];
   EPD_command(SSD1675B_WRITE_DUMMY, buf, 1);
 
@@ -283,6 +283,8 @@ uint8_t Adafruit_SSD1675B::writeRAMCommand(uint8_t index) {
 */
 /**************************************************************************/
 void Adafruit_SSD1675B::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
   uint8_t buf[2];
 
   // Set RAM X address counter

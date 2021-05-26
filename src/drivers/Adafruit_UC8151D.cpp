@@ -124,8 +124,6 @@ void Adafruit_UC8151D::update() {
 */
 /**************************************************************************/
 void Adafruit_UC8151D::powerUp() {
-  uint8_t buf[5];
-
   // Demo code resets 3 times!
   hardwareReset();
   delay(10);
@@ -192,7 +190,10 @@ uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
+void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {
+  (void)x;
+  (void)y;
+}
 
 /**************************************************************************/
 /*!
@@ -202,7 +203,6 @@ void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {}
 void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
                                       uint16_t y2) {
   uint8_t buf[7];
-  uint8_t c;
 
   // check rotation, move window around if necessary
   switch (getRotation()) {
