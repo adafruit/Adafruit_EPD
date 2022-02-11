@@ -16,6 +16,7 @@ static const uint8_t ti_270c44_tri_init_code[] {
     0xF8, 2, 0x60, 0xA5, // boost
     0xF8, 2, 0x73, 0x23, // boost
     0xF8, 2, 0x7C, 0x00, // boost
+    IL91874_CDI, 1, 0x97,
 
     0xFE // EOM
 };
@@ -36,7 +37,7 @@ public:
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
     Adafruit_IL91874::begin(true);
     setBlackBuffer(0, true);
-    setColorBuffer(1, true);
+    setColorBuffer(1, false);
 
     _epd_init_code = ti_270c44_tri_init_code;
     _epd_lut_code = NULL;
