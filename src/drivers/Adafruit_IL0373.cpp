@@ -37,9 +37,9 @@ const uint8_t il0373_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
-                                 int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                                 int8_t MISO, int8_t BUSY)
+Adafruit_IL0373::Adafruit_IL0373(int width, int height, int16_t SID, int16_t SCLK,
+                                 int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+                                 int16_t MISO, int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
@@ -71,8 +71,8 @@ Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t SID, int8_t SCLK,
     @param spi the SPI bus to use
 */
 /**************************************************************************/
-Adafruit_IL0373::Adafruit_IL0373(int width, int height, int8_t DC, int8_t RST,
-                                 int8_t CS, int8_t SRCS, int8_t BUSY,
+Adafruit_IL0373::Adafruit_IL0373(int width, int height, int16_t DC, int16_t RST,
+                                 int16_t CS, int16_t SRCS, int16_t BUSY,
                                  SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;

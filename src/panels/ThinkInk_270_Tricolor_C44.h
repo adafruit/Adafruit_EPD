@@ -25,13 +25,13 @@ static const uint8_t ti_270c44_tri_init_code[] {
 
 class ThinkInk_270_Tricolor_C44 : public Adafruit_IL91874 {
 public:
-  ThinkInk_270_Tricolor_C44(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST,
-                            int8_t CS, int8_t SRCS, int8_t MISO,
-                            int8_t BUSY = -1)
+  ThinkInk_270_Tricolor_C44(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
+                            int16_t CS, int16_t SRCS, int16_t MISO,
+                            int16_t BUSY = -1)
       : Adafruit_IL91874(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_270_Tricolor_C44(int8_t DC, int8_t RST, int8_t CS, int8_t SRCS,
-                            int8_t BUSY = -1, SPIClass *spi = &SPI)
+  ThinkInk_270_Tricolor_C44(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+                            int16_t BUSY = -1, SPIClass *spi = &SPI)
       : Adafruit_IL91874(264, 176, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
