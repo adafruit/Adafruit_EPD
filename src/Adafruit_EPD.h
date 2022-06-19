@@ -133,9 +133,9 @@ protected:
   void hardwareReset(void);
 
   int16_t _dc_pin,                    ///< data/command pin
-       _reset_pin,                    ///< reset pin
-       _cs_pin,                       ///< chip select pin
-       _busy_pin;                     ///< busy pin
+      _reset_pin,                     ///< reset pin
+      _cs_pin,                        ///< chip select pin
+      _busy_pin;                      ///< busy pin
   Adafruit_SPIDevice *spi_dev = NULL; ///< SPI object
   static bool _isInTransaction;       ///< true if SPI bus is in trasnfer state
   bool singleByteTxns; ///< if true CS will go high after every data byte
