@@ -74,9 +74,9 @@ Adafruit_SSD1681::Adafruit_SSD1681(int width, int height, int16_t SID,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_SSD1681::Adafruit_SSD1681(int width, int height, int16_t DC, int16_t RST,
-                                   int16_t CS, int16_t SRCS, int16_t BUSY,
-                                   SPIClass *spi)
+Adafruit_SSD1681::Adafruit_SSD1681(int width, int height, int16_t DC,
+                                   int16_t RST, int16_t CS, int16_t SRCS,
+                                   int16_t BUSY, SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);

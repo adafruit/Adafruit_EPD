@@ -57,9 +57,9 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t SID,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t DC, int16_t RST,
-                                   int16_t CS, int16_t SRCS, int16_t BUSY,
-                                   SPIClass *spi)
+Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t DC,
+                                   int16_t RST, int16_t CS, int16_t SRCS,
+                                   int16_t BUSY, SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   if ((height % 8) != 0) {
