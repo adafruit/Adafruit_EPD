@@ -229,6 +229,7 @@ void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
     if (hwSPI) {
       buf[i] = _spi->transfer(0x00);
     } else {
+      buf[i] = 0;
       for (uint8_t bit = 0x80; bit; bit >>= 1) {
 #ifdef HAVE_PORTREG
         *clkport &= ~clkpinmask;
