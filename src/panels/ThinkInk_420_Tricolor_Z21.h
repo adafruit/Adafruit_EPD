@@ -16,6 +16,7 @@ public:
       : Adafruit_UC8276(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
+    (void)mode;
     Adafruit_EPD::begin(true);
     setBlackBuffer(0, true);
     setColorBuffer(1, false);
