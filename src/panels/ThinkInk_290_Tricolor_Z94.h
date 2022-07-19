@@ -16,6 +16,8 @@ public:
       : Adafruit_SSD1680(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
+    _xram_offset = 0;
+
     Adafruit_SSD1680::begin(true);
     setBlackBuffer(0, true);
     setColorBuffer(1, false);
