@@ -11,7 +11,7 @@
 const uint8_t ssd1680_default_init_code[] {
   SSD1680_SW_RESET, 0, // soft reset
     0xFF, 20,          // busy wait
-    SSD1680_DATA_MODE, 1, 0x01, // Ram data entry mode
+    SSD1680_DATA_MODE, 1, 0x03, // Ram data entry mode
     SSD1680_WRITE_BORDER, 1, 0x05, // border color
 
     SSD1680_WRITE_VCOM, 1, 0x36,   // Vcom Voltage
@@ -180,10 +180,10 @@ void Adafruit_SSD1680::powerUp() {
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
-  buf[2] = 0x00;
-  buf[3] = 0x00;
-  buf[0] = (WIDTH - 1);
-  buf[1] = (WIDTH - 1) >> 8;
+  buf[0] = 0x00;
+  buf[1] = 0x00;
+  buf[2] = (WIDTH - 1);
+  buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
   // Set LUT
@@ -256,7 +256,7 @@ void Adafruit_SSD1680::setRAMAddress(uint16_t x, uint16_t y) {
   EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
-  buf[0] = 0x27;
-  buf[1] = 0x1;
+  buf[0] = 0;
+  buf[1] = 0;
   EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
 }
