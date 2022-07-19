@@ -40,6 +40,8 @@
 ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 // 2.9" Tricolor Featherwing or Breakout with UC8151D chipset
 //ThinkInk_290_Tricolor_Z13 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 2.9" Tricolor Featherwing or Breakout with SSD1680 chipset and negative offset
+//ThinkInk_290_Tricolor_Z94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 //ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_420_Tricolor_Z21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);

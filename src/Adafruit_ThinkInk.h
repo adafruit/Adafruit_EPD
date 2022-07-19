@@ -13,6 +13,7 @@
 #include "panels/ThinkInk_290_Tricolor_RH.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
 #include "panels/ThinkInk_290_Tricolor_Z13.h"
+#include "panels/ThinkInk_290_Tricolor_Z94.h"
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
 

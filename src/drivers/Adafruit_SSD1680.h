@@ -53,6 +53,8 @@ protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
+
+  int8_t _xram_offset = 1;
 };
 
 #endif

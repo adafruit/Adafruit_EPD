@@ -175,8 +175,8 @@ void Adafruit_SSD1680::powerUp() {
   }
 
   // Set ram X start/end postion
-  buf[0] = 0x01;
-  buf[1] = height / 8;
+  buf[0] = _xram_offset;
+  buf[1] = height / 8 - 1 + _xram_offset;
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
 
   // Set ram Y start/end postion
@@ -252,7 +252,7 @@ void Adafruit_SSD1680::setRAMAddress(uint16_t x, uint16_t y) {
   uint8_t buf[2];
 
   // set RAM x address count
-  buf[0] = 1;
+  buf[0] = _xram_offset;
   EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
 
   // set RAM y address count
