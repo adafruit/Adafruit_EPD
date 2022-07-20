@@ -20,10 +20,10 @@
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t SID,
-                                   int8_t SCLK, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t MISO,
-                                   int8_t BUSY)
+Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t SID,
+                                   int16_t SCLK, int16_t DC, int16_t RST,
+                                   int16_t CS, int16_t SRCS, int16_t MISO,
+                                   int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
 
   if ((width % 8) != 0) {
@@ -57,9 +57,9 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t SID,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int8_t DC, int8_t RST,
-                                   int8_t CS, int8_t SRCS, int8_t BUSY,
-                                   SPIClass *spi)
+Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t DC,
+                                   int16_t RST, int16_t CS, int16_t SRCS,
+                                   int16_t BUSY, SPIClass *spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
 
   if ((height % 8) != 0) {

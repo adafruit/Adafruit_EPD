@@ -15,8 +15,8 @@
 /**************************************************************************/
 class Adafruit_MCPSRAM {
 public:
-  Adafruit_MCPSRAM(int8_t mosi, int8_t miso, int8_t sck, int8_t cs);
-  Adafruit_MCPSRAM(int8_t cs, SPIClass *spi = &SPI);
+  Adafruit_MCPSRAM(int16_t mosi, int16_t miso, int16_t sck, int16_t cs);
+  Adafruit_MCPSRAM(int16_t cs, SPIClass *spi = &SPI);
   ~Adafruit_MCPSRAM() {}
 
   void begin();
@@ -42,6 +42,6 @@ private:
   PortReg *mosiport, *clkport, *csport, *misoport;
   PortMask mosipinmask, clkpinmask, cspinmask, misopinmask;
 #endif
-  int8_t _cs, _mosi, _miso, _sck;
+  int16_t _cs, _mosi, _miso, _sck;
   SPIClass *_spi = NULL;
 };

@@ -53,9 +53,10 @@ bool Adafruit_EPD::_isInTransaction = false;
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
-                           int8_t spi_clock, int8_t DC, int8_t RST, int8_t CS,
-                           int8_t SRCS, int8_t spi_miso, int8_t BUSY)
+Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t spi_mosi,
+                           int16_t spi_clock, int16_t DC, int16_t RST,
+                           int16_t CS, int16_t SRCS, int16_t spi_miso,
+                           int16_t BUSY)
     : Adafruit_GFX(width, height), sram(spi_mosi, spi_miso, spi_clock, SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
@@ -94,8 +95,9 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t spi_mosi,
     @param spi the SPI bus to use
 */
 /**************************************************************************/
-Adafruit_EPD::Adafruit_EPD(int width, int height, int8_t DC, int8_t RST,
-                           int8_t CS, int8_t SRCS, int8_t BUSY, SPIClass *spi)
+Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t DC, int16_t RST,
+                           int16_t CS, int16_t SRCS, int16_t BUSY,
+                           SPIClass *spi)
     : Adafruit_GFX(width, height), sram(SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
