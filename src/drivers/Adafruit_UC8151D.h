@@ -26,7 +26,7 @@
 #define UC8151D_PBC 0x44
 #define UC8151D_CDI 0x50
 #define UC8151D_LPD 0x51
-#define UC8151D_TRES 0x65
+#define UC8151D_TRES 0x61
 #define UC8151D_GSST 0x70
 #define UC8151D_REV 0x70
 #define UC8151D_FLG 0x71
@@ -57,7 +57,6 @@ const uint8_t uc8151d_trifull_init_code[] {
   UC8151D_PON, 0,
     0xFF, 10,
     UC8151D_PSR, 2, 0x0F, 0x89,
-    0x61, 3, 0x80, 0x01, 0x28,
     UC8151D_CDI, 1, 0x77,
     0xFE};
 
@@ -69,7 +68,6 @@ const uint8_t uc8151d_partial_init_code[] {
     0xFF, 10,
     UC8151D_PSR, 1, 0xBF,  //LUT from OTP 128x296
     UC8151D_PLL, 1, 0x3C,  // 3A 100HZ   29 150Hz 39 200HZ 31 171HZ
-    0x61, 3, 0x80, 0x01, 0x28, //resolution setting  
     UC8151D_VDCS, 1, 0x12,    //vcom_DC setting
     UC8151D_CDI, 1, 0x47,
     0xFE};
@@ -145,13 +143,13 @@ public:
   void powerUp();
   void powerDown();
   void update();
-
   void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
+  void sendResolution();
 };
 
 #endif
