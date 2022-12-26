@@ -1,5 +1,5 @@
-﻿#include "Adafruit_EPD.h"
-#include "Adafruit_IL0376F.h"
+﻿#include "Adafruit_IL0376F.h"
+#include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
 
