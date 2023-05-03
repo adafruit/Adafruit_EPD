@@ -9,12 +9,21 @@
 
 #include "Adafruit_EPD.h"
 
-
-#define EPD_CS     10
-#define EPD_DC      9
-#define SRAM_CS     11
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
+#ifdef PIN_EPD_MOSI // detects if compiling for Feather RP2040 ThinkInk
+#define EPD_DC      PIN_EPD_DC // ThinkInk 24-pin connector DC
+#define EPD_CS      PIN_EPD_CS  // ThinkInk 24-pin connector CS
+#define EPD_BUSY    PIN_EPD_BUSY  // ThinkInk 24-pin connector Busy
+#define SRAM_CS     -1  // use onboard RAM
+#define EPD_RESET   PIN_EPD_RESET  // ThinkInk 24-pin connector Reset
+#define EPD_SPI     &SPI1 // secondary SPI for ThinkInk
+#else
+#define EPD_DC      10
+#define EPD_CS      9
 #define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define SRAM_CS     6
+#define EPD_RESET   8 // can set to -1 and share with microcontroller Reset!
+#define EPD_SPI     &SPI // primary SPI
+#endif
 
 // Uncomment the following line if you are using 1.54" EPD with IL0373
 //Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);

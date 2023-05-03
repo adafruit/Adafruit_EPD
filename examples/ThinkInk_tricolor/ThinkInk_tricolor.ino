@@ -9,42 +9,52 @@
 
 #include "Adafruit_ThinkInk.h"
 
-#define EPD_DC      10 // can be any pin, but required!
-#define EPD_CS      9  // can be any pin, but required!
-#define EPD_BUSY    7  // can set to -1 to not use a pin (will wait a fixed delay)
-#define SRAM_CS     6  // can set to -1 to not use a pin (uses a lot of RAM!)
-#define EPD_RESET   8  // can set to -1 and share with chip Reset (can't deep sleep)
+#ifdef PIN_EPD_MOSI // detects if compiling for Feather RP2040 ThinkInk
+#define EPD_DC      PIN_EPD_DC // ThinkInk 24-pin connector DC
+#define EPD_CS      PIN_EPD_CS  // ThinkInk 24-pin connector CS
+#define EPD_BUSY    PIN_EPD_BUSY  // ThinkInk 24-pin connector Busy
+#define SRAM_CS     -1  // use onboard RAM
+#define EPD_RESET   PIN_EPD_RESET  // ThinkInk 24-pin connector Reset
+#define EPD_SPI     &SPI1 // secondary SPI for ThinkInk
+#else
+#define EPD_DC      10
+#define EPD_CS      9
+#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define SRAM_CS     6
+#define EPD_RESET   8 // can set to -1 and share with microcontroller Reset!
+#define EPD_SPI     &SPI // primary SPI
+#endif
 
 // 1.54" 152x152 Tricolor EPD with ILI0373 chipset
-//ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 1.54" 152x152 Tricolor EPD with SSD1680 chipset
-//ThinkInk_154_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_154_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 1.54" 200x200 Tricolor EPD with SSD1681 chipset
-//ThinkInk_154_Tricolor_Z90 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_154_Tricolor_Z90 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Tricolor EPD with SSD1680 chipset
-//ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Tricolor EPD with IL0373 chipset
-//ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.7" Tricolor Featherwing or Breakout with IL91874 chipset
-//ThinkInk_270_Tricolor_C44 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_270_Tricolor_C44 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.7" Tricolor Featherwing or Breakout with EK79686 chipset
-//ThinkInk_270_Tricolor_Z70 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_270_Tricolor_Z70 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.9" Tricolor Featherwing or Breakout with IL0373 chipset
-ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 // 2.9" Tricolor Featherwing or Breakout with UC8151D chipset
-//ThinkInk_290_Tricolor_Z13 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_290_Tricolor_Z13 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 // 2.9" Tricolor Featherwing or Breakout with SSD1680 chipset and negative offset
-//ThinkInk_290_Tricolor_Z94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_290_Tricolor_Z94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-//ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-//ThinkInk_420_Tricolor_Z21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+//ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+//ThinkInk_420_Tricolor_Z21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 
 void setup() {
