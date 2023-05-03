@@ -29,7 +29,7 @@
 #endif
 
 // Uncomment the following line if you are using ACeP 7 color 5.65"
-Adafruit_ACEP display(600, 448, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_ACEP display(600, 448, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,  EPD_SPI);
 
 Adafruit_FlashTransport_QSPI flashTransport;
 Adafruit_SPIFlash flash(&flashTransport);
