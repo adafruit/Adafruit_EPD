@@ -9,10 +9,10 @@
 
 #include "Adafruit_ThinkInk.h"
 
-#ifdef(ARDUINO_ADAFRUIT_FEATHER_RP2040_THINKINK) // detects if compiling for
-                                                 // Feather RP2040 ThinkInk
-#define EPD_DC PIN_EPD_DC                        // ThinkInk 24-pin connector DC
-#define EPD_CS PIN_EPD_CS                        // ThinkInk 24-pin connector CS
+#ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040_THINKINK // detects if compiling for
+                                                // Feather RP2040 ThinkInk
+#define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
+#define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
 #define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
 #define SRAM_CS -1              // use onboard RAM
 #define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
