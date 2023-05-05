@@ -7,38 +7,55 @@
   MIT license, all text above must be included in any redistribution
  ****************************************************/
 
-#include <Adafruit_GFX.h>    // Core graphics library
 #include "Adafruit_EPD.h"
+#include <Adafruit_GFX.h> // Core graphics library
 
-#define EPD_CS     10
-#define EPD_DC      9
-#define SRAM_CS     8
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
+#ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040_THINKINK // detects if compiling for
+                                                // Feather RP2040 ThinkInk
+#define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
+#define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
+#define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
+#define SRAM_CS -1              // use onboard RAM
+#define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
+#define EPD_SPI &SPI1           // secondary SPI for ThinkInk
+#else
+#define EPD_DC 10
+#define EPD_CS 9
+#define EPD_BUSY 7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define SRAM_CS 6
+#define EPD_RESET 8  // can set to -1 and share with microcontroller Reset!
+#define EPD_SPI &SPI // primary SPI
+#endif
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
-//Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
 
 /* Uncomment the following line if you are using 1.54" monochrome EPD */
-//Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
 
 /* Uncomment the following line if you are using 2.13" tricolor EPD */
-Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+                        EPD_SPI);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
-//Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
 
-/* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD */
-//Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
+/* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD
+ */
+// Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
 
 /* Uncomment the following line if you are using 2.9" EPD */
-//Adafruit_IL0373 display(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-//#define FLEXIBLE_290
+// Adafruit_IL0373 display(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI); #define FLEXIBLE_290
 
 /* Uncomment the following line if you are using 4.2" tricolor EPD */
-//Adafruit_IL0398 display(300, 400, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-
+// Adafruit_IL0398 display(300, 400, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
 
 float p = 3.1415926;
 
@@ -47,7 +64,7 @@ void setup(void) {
   Serial.print("Hello! EPD Test");
 
   display.begin();
-  
+
 #if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
   // The flexible displays have different buffers and invert settings!
   display.setBlackBuffer(1, false);
@@ -57,8 +74,10 @@ void setup(void) {
   Serial.println("Initialized");
 
   display.clearBuffer();
-  display.fillRect(display.width()/3, 0, display.width()/3, display.height(), EPD_RED);
-  display.fillRect((display.width()*2)/3, 0, display.width()/3, display.height(), EPD_BLACK);
+  display.fillRect(display.width() / 3, 0, display.width() / 3,
+                   display.height(), EPD_RED);
+  display.fillRect((display.width() * 2) / 3, 0, display.width() / 3,
+                   display.height(), EPD_BLACK);
   display.display();
 
   delay(15 * 1000);
@@ -66,7 +85,14 @@ void setup(void) {
   // large block of text
   display.clearBuffer();
   display.fillScreen(EPD_WHITE);
-  testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", EPD_BLACK);
+  testdrawtext(
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur "
+      "adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, "
+      "fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor "
+      "neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet "
+      "ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a "
+      "tortor imperdiet posuere. ",
+      EPD_BLACK);
 
   delay(15 * 1000);
 
@@ -77,14 +103,14 @@ void setup(void) {
 
   // a single pixel
   display.clearBuffer();
-  display.drawPixel(display.width()/2, display.height()/2, EPD_BLACK);
+  display.drawPixel(display.width() / 2, display.height() / 2, EPD_BLACK);
 
   delay(15 * 1000);
 
   testtriangles();
 
   delay(15 * 1000);
-  
+
   // line draw test
   testlines(EPD_BLACK);
 
@@ -118,42 +144,40 @@ void setup(void) {
   Serial.println("done");
 }
 
-void loop() {
-  delay(500);
-}
+void loop() { delay(500); }
 
 void testlines(uint16_t color) {
   display.clearBuffer();
   display.fillScreen(EPD_WHITE);
-  for (int16_t x=0; x < display.width(); x+=6) {
-    display.drawLine(0, 0, x, display.height()-1, color);
+  for (int16_t x = 0; x < display.width(); x += 6) {
+    display.drawLine(0, 0, x, display.height() - 1, color);
   }
-  for (int16_t y=0; y < display.height(); y+=6) {
-    display.drawLine(0, 0, display.width()-1, y, color);
-  }
-
-  display.fillScreen(EPD_WHITE);
-  for (int16_t x=0; x < display.width(); x+=6) {
-    display.drawLine(display.width()-1, 0, x, display.height()-1, color);
-  }
-  for (int16_t y=0; y < display.height(); y+=6) {
-    display.drawLine(display.width()-1, 0, 0, y, color);
+  for (int16_t y = 0; y < display.height(); y += 6) {
+    display.drawLine(0, 0, display.width() - 1, y, color);
   }
 
   display.fillScreen(EPD_WHITE);
-  for (int16_t x=0; x < display.width(); x+=6) {
-    display.drawLine(0, display.height()-1, x, 0, color);
+  for (int16_t x = 0; x < display.width(); x += 6) {
+    display.drawLine(display.width() - 1, 0, x, display.height() - 1, color);
   }
-  for (int16_t y=0; y < display.height(); y+=6) {
-    display.drawLine(0, display.height()-1, display.width()-1, y, color);
+  for (int16_t y = 0; y < display.height(); y += 6) {
+    display.drawLine(display.width() - 1, 0, 0, y, color);
   }
 
   display.fillScreen(EPD_WHITE);
-  for (int16_t x=0; x < display.width(); x+=6) {
-    display.drawLine(display.width()-1, display.height()-1, x, 0, color);
+  for (int16_t x = 0; x < display.width(); x += 6) {
+    display.drawLine(0, display.height() - 1, x, 0, color);
   }
-  for (int16_t y=0; y < display.height(); y+=6) {
-    display.drawLine(display.width()-1, display.height()-1, 0, y, color);
+  for (int16_t y = 0; y < display.height(); y += 6) {
+    display.drawLine(0, display.height() - 1, display.width() - 1, y, color);
+  }
+
+  display.fillScreen(EPD_WHITE);
+  for (int16_t x = 0; x < display.width(); x += 6) {
+    display.drawLine(display.width() - 1, display.height() - 1, x, 0, color);
+  }
+  for (int16_t y = 0; y < display.height(); y += 6) {
+    display.drawLine(display.width() - 1, display.height() - 1, 0, y, color);
   }
   display.display();
 }
@@ -170,10 +194,10 @@ void testdrawtext(const char *text, uint16_t color) {
 void testfastlines(uint16_t color1, uint16_t color2) {
   display.clearBuffer();
   display.fillScreen(EPD_WHITE);
-  for (int16_t y=0; y < display.height(); y+=5) {
+  for (int16_t y = 0; y < display.height(); y += 5) {
     display.drawFastHLine(0, y, display.width(), color1);
   }
-  for (int16_t x=0; x < display.width(); x+=5) {
+  for (int16_t x = 0; x < display.width(); x += 5) {
     display.drawFastVLine(x, 0, display.height(), color2);
   }
   display.display();
@@ -182,8 +206,9 @@ void testfastlines(uint16_t color1, uint16_t color2) {
 void testdrawrects(uint16_t color) {
   display.clearBuffer();
   display.fillScreen(EPD_WHITE);
-  for (int16_t x=0; x < display.width(); x+=6) {
-    display.drawRect(display.width()/2 -x/2, display.height()/2 -x/2 , x, x, color);
+  for (int16_t x = 0; x < display.width(); x += 6) {
+    display.drawRect(display.width() / 2 - x / 2, display.height() / 2 - x / 2,
+                     x, x, color);
   }
   display.display();
 }
@@ -191,17 +216,19 @@ void testdrawrects(uint16_t color) {
 void testfillrects(uint16_t color1, uint16_t color2) {
   display.clearBuffer();
   display.fillScreen(EPD_WHITE);
-  for (int16_t x=display.width()-1; x > 6; x-=6) {
-    display.fillRect(display.width()/2 -x/2, display.height()/2 -x/2 , x, x, color1);
-    display.drawRect(display.width()/2 -x/2, display.height()/2 -x/2 , x, x, color2);
+  for (int16_t x = display.width() - 1; x > 6; x -= 6) {
+    display.fillRect(display.width() / 2 - x / 2, display.height() / 2 - x / 2,
+                     x, x, color1);
+    display.drawRect(display.width() / 2 - x / 2, display.height() / 2 - x / 2,
+                     x, x, color2);
   }
   display.display();
 }
 
 void testfillcircles(uint8_t radius, uint16_t color) {
   display.clearBuffer();
-  for (int16_t x=radius; x < display.width(); x+=radius*2) {
-    for (int16_t y=radius; y < display.height(); y+=radius*2) {
+  for (int16_t x = radius; x < display.width(); x += radius * 2) {
+    for (int16_t y = radius; y < display.height(); y += radius * 2) {
       display.fillCircle(x, y, radius, color);
     }
   }
@@ -210,8 +237,8 @@ void testfillcircles(uint8_t radius, uint16_t color) {
 
 void testdrawcircles(uint8_t radius, uint16_t color) {
   display.clearBuffer();
-  for (int16_t x=0; x < display.width()+radius; x+=radius*2) {
-    for (int16_t y=0; y < display.height()+radius; y+=radius*2) {
+  for (int16_t x = 0; x < display.width() + radius; x += radius * 2) {
+    for (int16_t y = 0; y < display.height() + radius; y += radius * 2) {
       display.drawCircle(x, y, radius, color);
     }
   }
@@ -223,16 +250,17 @@ void testtriangles() {
   display.fillScreen(EPD_WHITE);
   int color = EPD_BLACK;
   int t;
-  int w = display.width()/2;
-  int x = display.height()-1;
+  int w = display.width() / 2;
+  int x = display.height() - 1;
   int y = 0;
   int z = display.width();
-  for(t = 0 ; t <= 15; t++) {
+  for (t = 0; t <= 15; t++) {
     display.drawTriangle(w, y, y, x, z, x, color);
-    x-=4;
-    y+=4;
-    z-=4;
-    if(t == 8) color = EPD_RED;
+    x -= 4;
+    y += 4;
+    z -= 4;
+    if (t == 8)
+      color = EPD_RED;
   }
   display.display();
 }
@@ -243,18 +271,19 @@ void testroundrects() {
   int color = EPD_BLACK;
   int i;
   int t;
-  for(t = 0 ; t <= 4; t+=1) {
+  for (t = 0; t <= 4; t += 1) {
     int x = 0;
     int y = 0;
-    int w = display.width()-2;
-    int h = display.height()-2;
-    for(i = 0 ; i <= 16; i+=1) {
+    int w = display.width() - 2;
+    int h = display.height() - 2;
+    for (i = 0; i <= 16; i += 1) {
       display.drawRoundRect(x, y, w, h, 5, color);
-      x+=2;
-      y+=3;
-      w-=4;
-      h-=6;
-      if(i == 7) color = EPD_RED;
+      x += 2;
+      y += 3;
+      w -= 4;
+      h -= 6;
+      if (i == 7)
+        color = EPD_RED;
     }
     color = EPD_BLACK;
   }
