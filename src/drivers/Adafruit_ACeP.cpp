@@ -129,7 +129,7 @@ void Adafruit_ACEP::deGhost() {
   uint32_t remaining = (600UL * 448UL / 2);
   while (remaining) {
     uint8_t block[256];
-    uint32_t numbytes = min(remaining, sizeof(block));
+    uint32_t numbytes = min(remaining, (uint32_t)sizeof(block));
     memset(block, 0x77, numbytes);
     EPD_data(block, numbytes);
     remaining -= numbytes;
