@@ -305,7 +305,7 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
     uint32_t offset = 0;
     uint8_t mcp_buf[16];
     while (remaining) {
-      uint8_t to_xfer = min(sizeof(mcp_buf), remaining);
+      uint8_t to_xfer = min((uint32_t)sizeof(mcp_buf), remaining);
 
       sram.read(buffer2_addr + offset, mcp_buf, to_xfer);
       sram.write(buffer1_addr + offset, mcp_buf, to_xfer);

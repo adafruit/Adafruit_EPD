@@ -656,7 +656,7 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
 void Adafruit_EPD::csHigh() {
 
 #ifdef BUSIO_USE_FAST_PINIO
-  *csPort |= csPinMask;
+  *csPort = *csPort | csPinMask;
 #else
   digitalWrite(_cs_pin, HIGH);
 #endif
@@ -680,7 +680,7 @@ void Adafruit_EPD::csLow() {
   }
 
 #ifdef BUSIO_USE_FAST_PINIO
-  *csPort &= ~csPinMask;
+  *csPort = *csPort & ~csPinMask;
 #else
   digitalWrite(_cs_pin, LOW);
 #endif
@@ -693,7 +693,7 @@ void Adafruit_EPD::csLow() {
 /**************************************************************************/
 void Adafruit_EPD::dcHigh() {
 #ifdef BUSIO_USE_FAST_PINIO
-  *dcPort |= dcPinMask;
+  *dcPort = *dcPort | dcPinMask;
 #else
   digitalWrite(_dc_pin, HIGH);
 #endif
@@ -706,7 +706,7 @@ void Adafruit_EPD::dcHigh() {
 /**************************************************************************/
 void Adafruit_EPD::dcLow() {
 #ifdef BUSIO_USE_FAST_PINIO
-  *dcPort &= ~dcPinMask;
+  *dcPort = *dcPort & ~dcPinMask;
 #else
   digitalWrite(_dc_pin, LOW);
 #endif
