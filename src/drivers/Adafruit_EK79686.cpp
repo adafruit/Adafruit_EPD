@@ -106,7 +106,7 @@ Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t DC,
 */
 /**************************************************************************/
 void Adafruit_EK79686::busy_wait(void) {
-  if (_busy_pin >= 0) {
+  if (_busy_pin >= 0 || _customBusyFunction != NULL) {
     do {
       EPD_command(EK79686_FLG);
       delay(10);
