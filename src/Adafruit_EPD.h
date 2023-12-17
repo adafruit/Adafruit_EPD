@@ -81,6 +81,11 @@ public:
 
   thinkinkmode_t getMode(void) { return inkmode; }
 
+  typedef void (*customResetFunction)();
+  void setCustomResetFunction(customResetFunction resetFunction);
+  typedef bool (*customBusyFunction)();
+  void setCustomBusyFunction(customBusyFunction busyFunction);
+
 protected:
   void writeRAMFramebufferToEPD(uint8_t *buffer, uint32_t buffer_size,
                                 uint8_t EPDlocation, bool invertdata = false);
@@ -108,6 +113,7 @@ protected:
   /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
 
+  bool readBusyPin(void);
   virtual void busy_wait(void) = 0;
 
   /**************************************************************************/
@@ -131,6 +137,8 @@ protected:
   /**************************************************************************/
   virtual void powerDown(void) = 0;
   void hardwareReset(void);
+  customResetFunction _customResetFunction = NULL;
+  customBusyFunction _customBusyFunction = NULL;
 
   int16_t _dc_pin,                    ///< data/command pin
       _reset_pin,                     ///< reset pin

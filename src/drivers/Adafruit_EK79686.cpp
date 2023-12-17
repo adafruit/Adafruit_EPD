@@ -110,7 +110,7 @@ void Adafruit_EK79686::busy_wait(void) {
     do {
       EPD_command(EK79686_FLG);
       delay(10);
-    } while (!digitalRead(_busy_pin));
+    } while (!readBusyPin());
   } else {
     delay(BUSY_WAIT);
   }

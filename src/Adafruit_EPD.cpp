@@ -196,6 +196,10 @@ void Adafruit_EPD::begin(bool reset) {
 */
 /**************************************************************************/
 void Adafruit_EPD::hardwareReset(void) {
+  if ( _customResetFunction != NULL) {
+    _customResetFunction();
+    return;
+  }
   if (_reset_pin >= 0) {
     // Setup reset pin direction
     pinMode(_reset_pin, OUTPUT);
@@ -210,6 +214,37 @@ void Adafruit_EPD::hardwareReset(void) {
     digitalWrite(_reset_pin, HIGH);
     delay(10);
   }
+}
+
+
+/**
+ * @brief Sets a custom reset function.
+ * 
+ * @param resetFunction The function to be called for custom hardware reset.
+ */
+void Adafruit_EPD::setCustomResetFunction(customResetFunction resetFunction) {
+    _customResetFunction = resetFunction;
+}
+
+bool Adafruit_EPD::readBusyPin(void) {
+  if (_customBusyFunction) {
+    return _customBusyFunction();
+  }
+
+  if (_busy_pin >= 0) {
+    return digitalRead(_busy_pin);
+  }
+
+  return false;
+}
+
+/**
+ * @brief Sets a custom busy function.
+ * 
+ * @param resetFunction The function to be called for custom business check.
+ */
+void Adafruit_EPD::setCustomBusyFunction(customBusyFunction busyFunction) {
+    _customBusyFunction = busyFunction;
 }
 
 /**************************************************************************/
