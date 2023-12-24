@@ -11,19 +11,19 @@
 
 #ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040_THINKINK // detects if compiling for
                                                 // Feather RP2040 ThinkInk
-#define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
-#define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
-#define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
-#define SRAM_CS -1              // use onboard RAM
-#define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
-#define EPD_SPI &SPI1           // secondary SPI for ThinkInk
+  #define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
+  #define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
+  #define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
+  #define SRAM_CS -1              // use onboard RAM
+  #define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
+  #define EPD_SPI &SPI1           // secondary SPI for ThinkInk
 #else
-#define EPD_DC 10
-#define EPD_CS 9
-#define EPD_BUSY 7 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SRAM_CS 6
-#define EPD_RESET 8  // can set to -1 and share with microcontroller Reset!
-#define EPD_SPI &SPI // primary SPI
+  #define EPD_DC 10
+  #define EPD_CS 9
+  #define EPD_BUSY 7 // can set to -1 to not use a pin (will wait a fixed delay)
+  #define SRAM_CS 6
+  #define EPD_RESET 8  // can set to -1 and share with microcontroller Reset!
+  #define EPD_SPI &SPI // primary SPI
 #endif
 
 // 1.54" Monochrome displays with 200x200 pixels and SSD1681 chipset
@@ -36,7 +36,7 @@
 // ThinkInk_154_Mono_M10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Monochrome displays with 250x122 pixels and SSD1675 chipset
-ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+//ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Monochrome displays with 250x122 pixels and SSD1675B chipset
 // ThinkInk_213_Mono_B73 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
@@ -48,10 +48,11 @@ ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_
 // 2.13" Monochrome displays with 212x104 pixels and UC8151D chipset
 // ThinkInk_213_Mono_M21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373
-// chipset
-// ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
-// EPD_BUSY, EPD_SPI);
+// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373 chipset
+// ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and SSD1680 chipset
+ThinkInk_290_Grayscale4_T94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.9" Monochrome displays with 296x128 pixels and UC8151D chipset
 // ThinkInk_290_Mono_M06 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);

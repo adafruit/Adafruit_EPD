@@ -178,6 +178,7 @@ void Adafruit_SSD1680::powerUp() {
   buf[0] = _xram_offset;
   buf[1] = height / 8 - 1 + _xram_offset;
   EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
+  //Serial.printf("set XRAM 0x%x 0x%x\n\r", buf[1], buf[0]);
 
   // Set ram Y start/end postion
   buf[0] = 0x00;
@@ -185,6 +186,7 @@ void Adafruit_SSD1680::powerUp() {
   buf[2] = (WIDTH - 1);
   buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
+  //Serial.printf("set YRAM 0x00, 0x%x 0x%x\n\r", buf[3], buf[2]);
 
   // Set LUT
   /*
