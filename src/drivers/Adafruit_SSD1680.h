@@ -30,6 +30,8 @@
 #define SSD1680_SET_RAMYPOS 0x45
 #define SSD1680_SET_RAMXCOUNT 0x4E
 #define SSD1680_SET_RAMYCOUNT 0x4F
+#define SSD1680_SET_ANALOGBLOCKCTRL 0x74
+#define SSD1680_SET_DIGITBLOCKCTRL 0x74
 
 /**************************************************************************/
 /*!

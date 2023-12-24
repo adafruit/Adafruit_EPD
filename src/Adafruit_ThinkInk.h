@@ -21,6 +21,7 @@
 #include "panels/ThinkInk_213_Grayscale4_T5.h"
 #include "panels/ThinkInk_270_Grayscale4_W3.h"
 #include "panels/ThinkInk_290_Grayscale4_T5.h"
+#include "panels/ThinkInk_290_Grayscale4_T94.h"
 #include "panels/ThinkInk_420_Grayscale4_T2.h"
 
 #include "panels/ThinkInk_154_Mono_D27.h"
@@ -31,7 +32,6 @@
 #include "panels/ThinkInk_213_Mono_BN.h"
 #include "panels/ThinkInk_213_Mono_M21.h"
 #include "panels/ThinkInk_290_Mono_BN.h"
-#include "panels/ThinkInk_290_Mono_T94.h"
 #include "panels/ThinkInk_290_Mono_M06.h"
 #include "panels/ThinkInk_420_Mono_BN.h"
 #include "panels/ThinkInk_420_Mono_M06.h"
