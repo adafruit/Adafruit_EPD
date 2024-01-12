@@ -179,12 +179,12 @@ public:
       _epd_partial_init_code = ti_290t5_monopart_init_code;
       _epd_partial_lut_code = ti_290t5_monopart_lut_code;
 
-      layer_colors[EPD_WHITE] = 0b11;
-      layer_colors[EPD_BLACK] = 0b01;
-      layer_colors[EPD_RED] = 0b01;
-      layer_colors[EPD_GRAY] = 0b01;
-      layer_colors[EPD_LIGHT] = 0b10;
-      layer_colors[EPD_DARK] = 0b01;
+      layer_colors[EPD_WHITE] = 0b00;
+      layer_colors[EPD_BLACK] = 0b11;
+      layer_colors[EPD_RED] = 0b11;
+      layer_colors[EPD_GRAY] = 0b11;
+      layer_colors[EPD_LIGHT] = 0b11;
+      layer_colors[EPD_DARK] = 0b11;
     }
 
     default_refresh_delay = 800;
