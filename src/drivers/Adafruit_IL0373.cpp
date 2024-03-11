@@ -316,7 +316,7 @@ void Adafruit_IL0373::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
       // SPItransfer(0xFF);
     }
   }
-  Serial.println();
+  // Serial.println();
   csHigh();
 
 #ifdef EPD_DEBUG
