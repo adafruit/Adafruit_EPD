@@ -139,7 +139,7 @@ void Adafruit_SSD1680::update() {
   uint8_t buf[1];
 
   // display update sequence
-  buf[0] = 0xF4;
+  buf[0] = 0xC7;
   EPD_command(SSD1680_DISP_CTRL2, buf, 1);
 
   EPD_command(SSD1680_MASTER_ACTIVATE);
@@ -168,6 +168,10 @@ void Adafruit_SSD1680::powerUp() {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
+
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
 
   uint8_t height = HEIGHT;
   if ((height % 8) != 0) {

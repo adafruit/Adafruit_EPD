@@ -20,7 +20,7 @@
 #ifndef _ADAFRUIT_EPD_H_
 #define _ADAFRUIT_EPD_H_
 
-//#define EPD_DEBUG
+#define EPD_DEBUG
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 

@@ -521,9 +521,8 @@ void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
       continue;
     }
     if (num_args > sizeof(buf)) {
-      Serial.println("ERROR - buf not large enough!");
-      while (1)
-        delay(10);
+      Serial.println("ERROR - buf not large enough, trying to send manually");
+      return EPD_command(cmd, init_code, num_args);
     }
 
     for (int i = 0; i < num_args; i++) {

@@ -11,19 +11,19 @@
 
 #ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040_THINKINK // detects if compiling for
                                                 // Feather RP2040 ThinkInk
-#define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
-#define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
-#define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
-#define SRAM_CS -1              // use onboard RAM
-#define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
-#define EPD_SPI &SPI1           // secondary SPI for ThinkInk
+        #define EPD_DC PIN_EPD_DC       // ThinkInk 24-pin connector DC
+    #define EPD_CS PIN_EPD_CS       // ThinkInk 24-pin connector CS
+    #define EPD_BUSY PIN_EPD_BUSY   // ThinkInk 24-pin connector Busy
+    #define SRAM_CS -1              // use onboard RAM
+    #define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
+    #define EPD_SPI &SPI1           // secondary SPI for ThinkInk
 #else
-#define EPD_DC 10
-#define EPD_CS 9
-#define EPD_BUSY 7 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SRAM_CS 6
-#define EPD_RESET 8  // can set to -1 and share with microcontroller Reset!
-#define EPD_SPI &SPI // primary SPI
+    #define EPD_DC 10
+    #define EPD_CS 9
+    #define EPD_BUSY 7 // can set to -1 to not use a pin (will wait a fixed delay)
+    #define SRAM_CS 6
+    #define EPD_RESET 8  // can set to -1 and share with microcontroller Reset!
+    #define EPD_SPI &SPI // primary SPI
 #endif
 
 // ThinkInk_154_Grayscale4_T8 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
@@ -31,8 +31,11 @@
 // EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.9" Grayscale Featherwing or Breakout:
-ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
-                                   EPD_SPI);
+ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 2.9" Grayscale Featherwing or Breakout with SSD1680
+ThinkInk_290_Grayscale4_T94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
 // 4.2" Grayscale display
 // ThinkInk_420_Grayscale4_T2 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI);
