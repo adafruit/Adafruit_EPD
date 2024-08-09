@@ -37,7 +37,7 @@ public:
   void csLow();
 
 private:
-  boolean hwSPI; ///< true if using hardware SPI
+  bool hwSPI; ///< true if using hardware SPI
 #ifdef HAVE_PORTREG
   PortReg *mosiport, *clkport, *csport, *misoport;
   PortMask mosipinmask, clkpinmask, cspinmask, misopinmask;
