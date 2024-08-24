@@ -17,17 +17,17 @@
 #ifdef ESP32
   #define SRAM_CS     32
   #define EPD_CS      15
-  #define EPD_DC      33  
+  #define EPD_DC      33
 #endif
 #if defined (__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_FEATHER_M4) || defined (__AVR_ATmega328P__) || defined(ARDUINO_NRF52840_FEATHER)
   #define SRAM_CS     6
   #define EPD_CS      9
-  #define EPD_DC      10  
+  #define EPD_DC      10
 #endif
 #ifdef TEENSYDUINO
   #define SRAM_CS     3
   #define EPD_CS      4
-  #define EPD_DC      10  
+  #define EPD_DC      10
 #endif
 #ifdef ARDUINO_STM32_FEATHER
    #define TFT_DC   PB4
@@ -37,7 +37,12 @@
 #ifdef ARDUINO_NRF52832_FEATHER
   #define SRAM_CS     30
   #define EPD_CS      31
-  #define EPD_DC      11  
+  #define EPD_DC      11
+#endif
+#ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040
+  #define SRAM_CS     8
+  #define EPD_CS      9
+  #define EPD_DC      10
 #endif
 
 #define EPD_RESET   -1 // can set to -1 and share with microcontroller Reset!
