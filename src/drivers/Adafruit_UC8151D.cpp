@@ -2,7 +2,6 @@
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
-
 #define BUSY_WAIT 500
 
 /**************************************************************************/
@@ -138,6 +137,7 @@ void Adafruit_UC8151D::powerUp() {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
+  sendResolution();
 
   if (_epd_lut_code) {
     EPD_commandList(_epd_lut_code);
@@ -193,6 +193,22 @@ uint8_t Adafruit_UC8151D::writeRAMCommand(uint8_t index) {
 void Adafruit_UC8151D::setRAMAddress(uint16_t x, uint16_t y) {
   (void)x;
   (void)y;
+}
+
+/**************************************************************************/
+/*!
+    @brief Sends the resolution to the EPD
+*/
+/**************************************************************************/
+void Adafruit_UC8151D::sendResolution() {
+  const uint8_t uc8151d_resolution_init_code[]{
+      UC8151D_TRES,
+      3,
+      (uint8_t)height(),
+      (uint8_t)((width() & 0xFF00) >> 8),
+      (uint8_t)(width() & 0x00FF),
+      0xFE};
+  EPD_commandList(uc8151d_resolution_init_code);
 }
 
 /**************************************************************************/
