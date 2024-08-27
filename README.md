@@ -1,4 +1,4 @@
-# Adafruit EPD Library [![Build Status](https://travis-ci.com/adafruit/Adafruit_EPD.svg?branch=master)](https://travis-ci.com/adafruit/Adafruit_EPD)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/Adafruit_EPD/html/index.html)
+# Adafruit EPD Library [![Build CI](https://github.com/adafruit/Adafruit_EPD/actions/workflows/githubci.yml/badge.svg)](https://github.com/adafruit/Adafruit_EPD/actions)[![Documentation](https://github.com/adafruit/ci-arduino/blob/master/assets/doxygen_badge.svg)](http://adafruit.github.io/Adafruit_EPD/html/index.html)
 
 <img src="https://cdn-shop.adafruit.com/970x728/3625-03.jpg" height="300"/>
 
