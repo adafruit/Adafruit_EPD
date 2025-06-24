@@ -1,4 +1,5 @@
 #include "Adafruit_UC8151D.h"
+
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
@@ -25,7 +26,6 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t SID,
                                    int16_t CS, int16_t SRCS, int16_t MISO,
                                    int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
   }
@@ -38,8 +38,8 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t SID,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -59,9 +59,8 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -74,8 +73,8 @@ Adafruit_UC8151D::Adafruit_UC8151D(int width, int height, int16_t DC,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -132,7 +131,7 @@ void Adafruit_UC8151D::powerUp() {
   hardwareReset();
   delay(10);
 
-  const uint8_t *init_code = uc8151d_monofull_init_code;
+  const uint8_t* init_code = uc8151d_monofull_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
@@ -206,25 +205,25 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
 
   // check rotation, move window around if necessary
   switch (getRotation()) {
-  case 0:
-    EPD_swap(x1, y1);
-    EPD_swap(x2, y2);
-    y1 = WIDTH - y1 - 1;
-    y2 = WIDTH - y2 - 1;
-    break;
-  case 1:
-    break;
-  case 2:
-    EPD_swap(x1, y1);
-    EPD_swap(x2, y2);
-    x1 = HEIGHT - x1 - 1;
-    x2 = HEIGHT - x2 - 1;
-    break;
-  case 3:
-    y1 = WIDTH - y1 - 1;
-    y2 = WIDTH - y2 - 1;
-    x1 = HEIGHT - x1 - 1;
-    x2 = HEIGHT - x2 - 1;
+    case 0:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      y1 = WIDTH - y1 - 1;
+      y2 = WIDTH - y2 - 1;
+      break;
+    case 1:
+      break;
+    case 2:
+      EPD_swap(x1, y1);
+      EPD_swap(x2, y2);
+      x1 = HEIGHT - x1 - 1;
+      x2 = HEIGHT - x2 - 1;
+      break;
+    case 3:
+      y1 = WIDTH - y1 - 1;
+      y2 = WIDTH - y2 - 1;
+      x1 = HEIGHT - x1 - 1;
+      x2 = HEIGHT - x2 - 1;
   }
   if (x1 > x2)
     EPD_swap(x1, x2);
@@ -243,8 +242,8 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   */
 
   // backup & change init to the partial code
-  const uint8_t *init_code_backup = _epd_init_code;
-  const uint8_t *lut_code_backup = _epd_lut_code;
+  const uint8_t* init_code_backup = _epd_init_code;
+  const uint8_t* lut_code_backup = _epd_lut_code;
   _epd_init_code = _epd_partial_init_code;
   _epd_lut_code = _epd_partial_lut_code;
 
@@ -264,7 +263,7 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   buf[2] = y1 >> 8;
   buf[3] = y1 & 0xFF;
   buf[4] = (y2) >> 8;
-  buf[5] = (y2)&0xFF;
+  buf[5] = (y2) & 0xFF;
   buf[6] = 0x28;
 
   EPD_command(UC8151D_PTL, buf, 7); // resolution setting

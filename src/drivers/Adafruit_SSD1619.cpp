@@ -1,4 +1,5 @@
 #include "Adafruit_SSD1619.h"
+
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
@@ -61,8 +62,8 @@ Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int16_t SID,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -84,7 +85,7 @@ Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
@@ -99,8 +100,8 @@ Adafruit_SSD1619::Adafruit_SSD1619(int width, int height, int16_t DC,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -168,7 +169,7 @@ void Adafruit_SSD1619::powerUp() {
   delay(100);
   busy_wait();
 
-  const uint8_t *init_code = ssd1619_default_init_code;
+  const uint8_t* init_code = ssd1619_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;

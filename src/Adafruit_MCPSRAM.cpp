@@ -1,7 +1,6 @@
 ﻿#include "Adafruit_MCPSRAM.h"
 
 #include <Arduino.h>
-
 #include <SPI.h>
 
 /**************************************************************************/
@@ -29,7 +28,7 @@ Adafruit_MCPSRAM::Adafruit_MCPSRAM(int16_t mosi, int16_t miso, int16_t sck,
                 @param spi the SPI bus to use
 */
 /**************************************************************************/
-Adafruit_MCPSRAM::Adafruit_MCPSRAM(int16_t cs, SPIClass *spi) {
+Adafruit_MCPSRAM::Adafruit_MCPSRAM(int16_t cs, SPIClass* spi) {
   _cs = cs;
   _spi = spi;
   hwSPI = true;
@@ -106,7 +105,7 @@ void Adafruit_MCPSRAM::begin() {
    register, MCPSRAM_WRITE if you are writing data. Defaults to MCPSRAM_WRITE.
 */
 /**************************************************************************/
-void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
+void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t* buf, uint16_t num,
                              uint8_t reg) {
   csLow();
 
@@ -117,7 +116,6 @@ void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
   cmdbuf[2] = addr & 0xFF;
 
   for (int i = 0; i < 3; i++) {
-
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
@@ -147,7 +145,6 @@ void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
 
   // write buffer of data
   for (uint16_t i = 0; i < num; i++) {
-
     uint8_t d = buf[i];
 
     if (hwSPI) {
@@ -184,9 +181,8 @@ void Adafruit_MCPSRAM::write(uint16_t addr, uint8_t *buf, uint16_t num,
    register, MCPSRAM_READ if you are reading data. Defaults to MCPSRAM_READ.
 */
 /**************************************************************************/
-void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
+void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t* buf, uint16_t num,
                             uint8_t reg) {
-
   csLow();
 
   // write command and address
@@ -195,7 +191,6 @@ void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
   cmdbuf[1] = (addr >> 8);
   cmdbuf[2] = addr & 0xFF;
   for (int i = 0; i < 3; i++) {
-
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
@@ -225,7 +220,6 @@ void Adafruit_MCPSRAM::read(uint16_t addr, uint8_t *buf, uint16_t num,
 
   // read data into buffer
   for (uint16_t i = 0; i < num; i++) {
-
     if (hwSPI) {
       buf[i] = _spi->transfer(0x00);
     } else {
@@ -319,7 +313,6 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val) {
   cmdbuf[2] = addr & 0xFF;
 
   for (int i = 0; i < 3; i++) {
-
     uint8_t d = cmdbuf[i];
 
     if (hwSPI) {
@@ -347,7 +340,6 @@ void Adafruit_MCPSRAM::erase(uint16_t addr, uint16_t length, uint8_t val) {
 
   // write buffer of data
   for (uint16_t i = 0; i < length; i++) {
-
     uint8_t d = val;
 
     if (hwSPI) {

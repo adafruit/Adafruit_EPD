@@ -34,6 +34,7 @@
  */
 
 #include "Adafruit_EPD.h"
+
 #include <stdlib.h>
 
 bool Adafruit_EPD::_isInTransaction = false;
@@ -97,7 +98,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t spi_mosi,
 /**************************************************************************/
 Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t DC, int16_t RST,
                            int16_t CS, int16_t SRCS, int16_t BUSY,
-                           SPIClass *spi)
+                           SPIClass* spi)
     : Adafruit_GFX(width, height), sram(SRCS) {
   _cs_pin = CS;
   _reset_pin = RST;
@@ -166,9 +167,9 @@ void Adafruit_EPD::begin(bool reset) {
   pinMode(_cs_pin, OUTPUT);
 
 #if defined(BUSIO_USE_FAST_PINIO)
-  csPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(_cs_pin));
+  csPort = (BusIO_PortReg*)portOutputRegister(digitalPinToPort(_cs_pin));
   csPinMask = digitalPinToBitMask(_cs_pin);
-  dcPort = (BusIO_PortReg *)portOutputRegister(digitalPinToPort(_dc_pin));
+  dcPort = (BusIO_PortReg*)portOutputRegister(digitalPinToPort(_dc_pin));
   dcPinMask = digitalPinToBitMask(_dc_pin);
 #endif
 
@@ -228,18 +229,18 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
-  case 1:
-    EPD_swap(x, y);
-    x = WIDTH - x - 1;
-    break;
-  case 2:
-    x = WIDTH - x - 1;
-    y = HEIGHT - y - 1;
-    break;
-  case 3:
-    EPD_swap(x, y);
-    y = HEIGHT - y - 1;
-    break;
+    case 1:
+      EPD_swap(x, y);
+      x = WIDTH - x - 1;
+      break;
+    case 2:
+      x = WIDTH - x - 1;
+      y = HEIGHT - y - 1;
+      break;
+    case 3:
+      EPD_swap(x, y);
+      y = HEIGHT - y - 1;
+      break;
   }
 
   // deal with non-8-bit heights
@@ -283,7 +284,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
-void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t *framebuffer,
+void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t* framebuffer,
                                             uint32_t framebuffer_size,
                                             uint8_t EPDlocation,
                                             bool invertdata) {
@@ -507,7 +508,7 @@ void Adafruit_EPD::clearDisplay() {
 /*!
  */
 /**************************************************************************/
-void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
+void Adafruit_EPD::EPD_commandList(const uint8_t* init_code) {
   uint8_t buf[64];
 
   while (init_code[0] != 0xFE) {
@@ -542,7 +543,7 @@ void Adafruit_EPD::EPD_commandList(const uint8_t *init_code) {
     @param len the length of the data buffer
 */
 /**************************************************************************/
-void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t *buf, uint16_t len) {
+void Adafruit_EPD::EPD_command(uint8_t c, const uint8_t* buf, uint16_t len) {
   EPD_command(c, false);
   EPD_data(buf, len);
 }
@@ -582,7 +583,7 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
     @param len the length of the data buffer
 */
 /**************************************************************************/
-void Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len) {
+void Adafruit_EPD::EPD_data(const uint8_t* buf, uint16_t len) {
   // SPI
   dcHigh();
 
@@ -654,7 +655,6 @@ uint8_t Adafruit_EPD::SPItransfer(uint8_t d) {
 */
 /**************************************************************************/
 void Adafruit_EPD::csHigh() {
-
 #ifdef BUSIO_USE_FAST_PINIO
   *csPort = *csPort | csPinMask;
 #else
@@ -673,7 +673,6 @@ void Adafruit_EPD::csHigh() {
 */
 /**************************************************************************/
 void Adafruit_EPD::csLow() {
-
   if (!_isInTransaction) {
     spi_dev->beginTransaction();
     _isInTransaction = true;

@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_ACEP
 #define LIB_ADAFRUIT_ACEP
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define ACEP_PANEL_SETTING 0x00
 #define ACEP_POWER_SETTING 0x01
@@ -34,12 +35,12 @@
 */
 /**************************************************************************/
 class Adafruit_ACEP : public Adafruit_EPD {
-public:
+ public:
   Adafruit_ACEP(int width, int height, int16_t SID, int16_t SCLK, int16_t DC,
                 int16_t RST, int16_t CS, int16_t SRCS, int16_t MISO,
                 int16_t BUSY = -1);
   Adafruit_ACEP(int width, int height, int16_t DC, int16_t RST, int16_t CS,
-                int16_t SRCS, int16_t BUSY = -1, SPIClass *spi = &SPI);
+                int16_t SRCS, int16_t BUSY = -1, SPIClass* spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
@@ -52,7 +53,7 @@ public:
   void deGhost();
   void drawPixel(int16_t x, int16_t y, uint16_t color);
 
-protected:
+ protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();

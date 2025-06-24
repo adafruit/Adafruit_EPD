@@ -1,4 +1,5 @@
 #include "Adafruit_EK79686.h"
+
 #include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
@@ -46,7 +47,6 @@ Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t SID,
                                    int16_t CS, int16_t SRCS, int16_t MISO,
                                    int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
   }
@@ -59,8 +59,8 @@ Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t SID,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -80,9 +80,8 @@ Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -95,8 +94,8 @@ Adafruit_EK79686::Adafruit_EK79686(int width, int height, int16_t DC,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -151,7 +150,7 @@ void Adafruit_EK79686::powerUp() {
   hardwareReset();
   delay(10);
 
-  const uint8_t *init_code = ek79686_default_init_code;
+  const uint8_t* init_code = ek79686_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;

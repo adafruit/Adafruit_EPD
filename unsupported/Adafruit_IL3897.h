@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_IL3897
 #define LIB_ADAFRUIT_IL3897
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
 
@@ -39,7 +40,7 @@
 */
 /**************************************************************************/
 class Adafruit_IL3897 : public Adafruit_EPD {
-public:
+ public:
 #ifdef USE_EXTERNAL_SRAM
   Adafruit_IL3897(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
@@ -68,7 +69,7 @@ public:
   void clearBuffer();
   void clearDisplay();
 
-protected:
+ protected:
   void busy_wait();
 };
 

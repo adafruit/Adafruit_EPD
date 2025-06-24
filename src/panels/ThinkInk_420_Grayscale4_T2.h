@@ -72,15 +72,15 @@ static const uint8_t ti_420t2_gray4_lut_code[] = {
 // clang-format on
 
 class ThinkInk_420_Grayscale4_T2 : public Adafruit_IL0398 {
-private:
-public:
+ private:
+ public:
   ThinkInk_420_Grayscale4_T2(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                              int16_t CS, int16_t SRCS, int16_t MISO,
                              int16_t BUSY = -1)
       : Adafruit_IL0398(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_420_Grayscale4_T2(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                             int16_t BUSY = -1, SPIClass *spi = &SPI)
+                             int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_IL0398(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {

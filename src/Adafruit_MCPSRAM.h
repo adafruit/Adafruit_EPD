@@ -14,16 +14,16 @@
 */
 /**************************************************************************/
 class Adafruit_MCPSRAM {
-public:
+ public:
   Adafruit_MCPSRAM(int16_t mosi, int16_t miso, int16_t sck, int16_t cs);
-  Adafruit_MCPSRAM(int16_t cs, SPIClass *spi = &SPI);
+  Adafruit_MCPSRAM(int16_t cs, SPIClass* spi = &SPI);
   ~Adafruit_MCPSRAM() {}
 
   void begin();
 
-  void write(uint16_t addr, uint8_t *buf, uint16_t num,
+  void write(uint16_t addr, uint8_t* buf, uint16_t num,
              uint8_t reg = MCPSRAM_WRITE);
-  void read(uint16_t addr, uint8_t *buf, uint16_t num,
+  void read(uint16_t addr, uint8_t* buf, uint16_t num,
             uint8_t reg = MCPSRAM_READ);
   void erase(uint16_t addr, uint16_t length, uint8_t val = 0x00);
 
@@ -36,12 +36,12 @@ public:
   void csHigh();
   void csLow();
 
-private:
+ private:
   boolean hwSPI; ///< true if using hardware SPI
 #ifdef HAVE_PORTREG
   PortReg *mosiport, *clkport, *csport, *misoport;
   PortMask mosipinmask, clkpinmask, cspinmask, misopinmask;
 #endif
   int16_t _cs, _mosi, _miso, _sck;
-  SPIClass *_spi = NULL;
+  SPIClass* _spi = NULL;
 };

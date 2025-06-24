@@ -5,7 +5,7 @@
 // #include anything else to pick up the EPD header or ink mode enum.
 
 class ThinkInk_213_Mono_GDEY0213B74 : public Adafruit_SSD1680 {
-public:
+ public:
   ThinkInk_213_Mono_GDEY0213B74(int16_t SID, int16_t SCLK, int16_t DC,
                                 int16_t RST, int16_t CS, int16_t SRCS,
                                 int16_t MISO, int16_t BUSY = -1)
@@ -13,7 +13,7 @@ public:
 
   ThinkInk_213_Mono_GDEY0213B74(int16_t DC, int16_t RST, int16_t CS,
                                 int16_t SRCS, int16_t BUSY = -1,
-                                SPIClass *spi = &SPI)
+                                SPIClass* spi = &SPI)
       : Adafruit_SSD1680(250, 122, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {

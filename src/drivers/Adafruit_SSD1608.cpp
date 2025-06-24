@@ -1,4 +1,5 @@
 #include "Adafruit_SSD1608.h"
+
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
@@ -30,7 +31,6 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int16_t SID,
                                    int16_t CS, int16_t SRCS, int16_t MISO,
                                    int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
   }
@@ -42,7 +42,7 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int16_t SID,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = NULL;
   }
 }
@@ -63,9 +63,8 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -77,7 +76,7 @@ Adafruit_SSD1608::Adafruit_SSD1608(int width, int height, int16_t DC,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = buffer1;
   }
 }

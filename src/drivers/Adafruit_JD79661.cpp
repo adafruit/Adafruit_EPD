@@ -1,10 +1,13 @@
 #include "Adafruit_JD79661.h"
+
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
 #define EPD_RAM_RED 0x13
 
 #define BUSY_WAIT 500
+
+// clang-format off
 
 const uint8_t jd79661_default_init_code[] {
     0xFF, 10, // wait a lil bit
@@ -25,8 +28,7 @@ const uint8_t jd79661_default_init_code[] {
     JD79661_POWER_ON, 0,
     0xFE};
 
-
-
+// clang-format on
 
 /**************************************************************************/
 /*!
@@ -59,7 +61,7 @@ Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t SID,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = buffer1;
   }
 
@@ -82,9 +84,8 @@ Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
   }
@@ -96,7 +97,7 @@ Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t DC,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = buffer1;
   }
 
@@ -116,7 +117,6 @@ void Adafruit_JD79661::clearBuffer() {
   }
 }
 
-
 /**************************************************************************/
 /*!
     @brief draw a single pixel on the screen
@@ -129,7 +129,7 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 
-  uint8_t *pBuf;
+  uint8_t* pBuf;
 
   // deal with non-8-bit heights
   uint16_t _WIDTH = WIDTH;
@@ -139,20 +139,22 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
-  case 1:
-    EPD_swap(x, y);
-    x = _WIDTH - x - 1;
-    // remove the offset 
-    x -= _WIDTH - WIDTH;
-    break;
-  case 2:
-    x = _WIDTH - x - 1;
-    y = HEIGHT - y - 1;
-    break;
-  case 3:
-    EPD_swap(x, y);
-    y = HEIGHT - y - 1;
-    break;
+    case 1:
+      EPD_swap(x, y);
+      x = _WIDTH - x - 1;
+      // remove the offset
+      x -= _WIDTH - WIDTH;
+      break;
+    case 2:
+      x = _WIDTH - x - 1;
+      y = HEIGHT - y - 1;
+      // re-add the offset
+      x += _WIDTH - WIDTH;
+      break;
+    case 3:
+      EPD_swap(x, y);
+      y = HEIGHT - y - 1;
+      break;
   }
   uint32_t addr = ((uint32_t)x + (uint32_t)y * _WIDTH) / 4;
   uint8_t color_c;
@@ -164,7 +166,6 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
     pBuf = color_buffer + addr;
   }
 
-
   if (color == EPD_BLACK) {
     color = JD79661_BLACK;
   } else if (color == EPD_RED) {
@@ -175,18 +176,16 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
     color = JD79661_WHITE;
   }
 
-  uint8_t byte_offset_mask = 0x3 << (3-(x % 4))*2;
-  uint8_t byte_offset_value = (color & 0x3) << (3-(x % 4))*2;
+  uint8_t byte_offset_mask = 0x3 << (3 - (x % 4)) * 2;
+  uint8_t byte_offset_value = (color & 0x3) << (3 - (x % 4)) * 2;
 
   *pBuf &= ~byte_offset_mask; // save reverse mask
   *pBuf |= byte_offset_value; // now add in the new color
-  
 
   if (use_sram) {
     sram.write8(colorbuffer_addr + addr, *pBuf);
   }
 }
-
 
 /**************************************************************************/
 /*!
@@ -233,7 +232,6 @@ void Adafruit_JD79661::update() {
   }
 }
 
-
 void Adafruit_JD79661::hardwareReset(void) {
   if (_reset_pin >= 0) {
     // Setup reset pin direction
@@ -262,7 +260,7 @@ void Adafruit_JD79661::powerUp() {
   hardwareReset();
   busy_wait();
 
-  const uint8_t *init_code = jd79661_default_init_code;
+  const uint8_t* init_code = jd79661_default_init_code;
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
   }
@@ -288,10 +286,8 @@ void Adafruit_JD79661::powerDown() {
     buf[0] = 0xA5;
     EPD_command(JD79661_DEEP_SLEEP, buf, 1);
     delay(100);
-  } 
+  }
 }
-
-
 
 /**************************************************************************/
 /*!

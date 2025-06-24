@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_SSD1681
 #define LIB_ADAFRUIT_SSD1681
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define SSD1681_DRIVER_CONTROL 0x01
 #define SSD1681_GATE_VOLTAGE 0x03
@@ -37,12 +38,12 @@
 */
 /**************************************************************************/
 class Adafruit_SSD1681 : public Adafruit_EPD {
-public:
+ public:
   Adafruit_SSD1681(int width, int height, int16_t SID, int16_t SCLK, int16_t DC,
                    int16_t RST, int16_t CS, int16_t SRCS, int16_t MISO,
                    int16_t BUSY = -1);
   Adafruit_SSD1681(int width, int height, int16_t DC, int16_t RST, int16_t CS,
-                   int16_t SRCS, int16_t BUSY = -1, SPIClass *spi = &SPI);
+                   int16_t SRCS, int16_t BUSY = -1, SPIClass* spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
@@ -51,7 +52,7 @@ public:
   void powerDown();
   void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
-protected:
+ protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);

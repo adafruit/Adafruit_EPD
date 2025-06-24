@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_IL0376F
 #define LIB_ADAFRUIT_IL0376F
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #if defined(IL0376F_200_200)
 #define EPD_LCDWIDTH 200
@@ -44,7 +45,7 @@
 */
 /**************************************************************************/
 class Adafruit_IL0376F : public Adafruit_EPD {
-public:
+ public:
 #ifdef USE_EXTERNAL_SRAM
   Adafruit_IL0376F(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
                    int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,
@@ -69,7 +70,7 @@ public:
   void clearBuffer();
   void clearDisplay();
 
-protected:
+ protected:
   void busy_wait();
 };
 

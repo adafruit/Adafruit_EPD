@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_EK79686
 #define LIB_ADAFRUIT_EK79686
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define EK79686_PSR 0x00
 #define EK79686_PWR 0x01
@@ -57,19 +58,19 @@
 */
 /**************************************************************************/
 class Adafruit_EK79686 : public Adafruit_EPD {
-public:
+ public:
   Adafruit_EK79686(int width, int height, int16_t SID, int16_t SCLK, int16_t DC,
                    int16_t RST, int16_t CS, int16_t SRCS, int16_t MISO,
                    int16_t BUSY = -1);
   Adafruit_EK79686(int width, int height, int16_t DC, int16_t RST, int16_t CS,
-                   int16_t SRCS, int16_t BUSY = -1, SPIClass *spi = &SPI);
+                   int16_t SRCS, int16_t BUSY = -1, SPIClass* spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
   void powerDown();
   void update();
 
-protected:
+ protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();

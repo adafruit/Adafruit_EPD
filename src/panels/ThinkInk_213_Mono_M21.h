@@ -5,14 +5,14 @@
 // #include anything else to pick up the EPD header or ink mode enum.
 
 class ThinkInk_213_Mono_M21 : public Adafruit_UC8151D {
-public:
+ public:
   ThinkInk_213_Mono_M21(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                         int16_t CS, int16_t SRCS, int16_t MISO,
                         int16_t BUSY = -1)
       : Adafruit_UC8151D(212, 104, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_213_Mono_M21(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                        int16_t BUSY = -1, SPIClass *spi = &SPI)
+                        int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_UC8151D(212, 104, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {

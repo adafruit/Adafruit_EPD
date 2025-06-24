@@ -1,4 +1,5 @@
 #include "Adafruit_ACeP.h"
+
 #include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
@@ -42,7 +43,6 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int16_t SID, int16_t SCLK,
                              int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                              int16_t MISO, int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-
   if ((width % 8) != 0) {
     width += 8 - (width % 8);
   }
@@ -54,7 +54,7 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int16_t SID, int16_t SCLK,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = NULL;
   }
 
@@ -77,9 +77,8 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int16_t SID, int16_t SCLK,
 /**************************************************************************/
 Adafruit_ACEP::Adafruit_ACEP(int width, int height, int16_t DC, int16_t RST,
                              int16_t CS, int16_t SRCS, int16_t BUSY,
-                             SPIClass *spi)
+                             SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   if ((height % 8) != 0) {
     height += 8 - (height % 8);
   }
@@ -91,7 +90,7 @@ Adafruit_ACEP::Adafruit_ACEP(int width, int height, int16_t DC, int16_t RST,
     buffer1_addr = 0;
     buffer2_addr = 0;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
     buffer2 = buffer1;
   }
 
@@ -172,7 +171,7 @@ void Adafruit_ACEP::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 
-  uint8_t *pBuf;
+  uint8_t* pBuf;
 
   // deal with non-8-bit heights
   uint16_t _HEIGHT = HEIGHT;
@@ -182,18 +181,18 @@ void Adafruit_ACEP::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
-  case 1:
-    EPD_swap(x, y);
-    x = WIDTH - x - 1;
-    break;
-  case 2:
-    x = WIDTH - x - 1;
-    y = _HEIGHT - y - 1;
-    break;
-  case 3:
-    EPD_swap(x, y);
-    y = _HEIGHT - y - 1;
-    break;
+    case 1:
+      EPD_swap(x, y);
+      x = WIDTH - x - 1;
+      break;
+    case 2:
+      x = WIDTH - x - 1;
+      y = _HEIGHT - y - 1;
+      break;
+    case 3:
+      EPD_swap(x, y);
+      y = _HEIGHT - y - 1;
+      break;
   }
   uint32_t addr = ((uint32_t)x + (uint32_t)y * WIDTH) / 2;
   bool lower_nibble = x % 2;
@@ -325,7 +324,7 @@ void Adafruit_ACEP::powerUp() {
   hardwareReset();
   delay(200);
   busy_wait();
-  const uint8_t *init_code = acep_default_init_code;
+  const uint8_t* init_code = acep_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;

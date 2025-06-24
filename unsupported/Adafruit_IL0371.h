@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_IL0371
 #define LIB_ADAFRUIT_IL0371
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
 #define EPD_RAM_RED 0x13
@@ -37,7 +38,7 @@
 */
 /**************************************************************************/
 class Adafruit_IL0371 : public Adafruit_EPD {
-public:
+ public:
 #ifdef USE_EXTERNAL_SRAM
   Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK, int8_t DC,
                   int8_t RST, int8_t CS, int8_t SRCS, int8_t MISO,

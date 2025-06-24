@@ -1,4 +1,5 @@
 #include "Adafruit_IL0371.h"
+
 #include "Adafruit_EPD.h"
 
 #define BUSY_WAIT 500
@@ -40,8 +41,8 @@ Adafruit_IL0371::Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK,
 Adafruit_IL0371::Adafruit_IL0371(int width, int height, int8_t SID, int8_t SCLK,
                                  int8_t DC, int8_t RST, int8_t CS, int8_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, BUSY) {
-  bw_buf = (uint8_t *)malloc(width * height / 8);
-  red_buf = (uint8_t *)malloc(width * height / 8);
+  bw_buf = (uint8_t*)malloc(width * height / 8);
+  red_buf = (uint8_t*)malloc(width * height / 8);
 #endif
   bw_bufsize = width * height / 8;
   red_bufsize = bw_bufsize;
@@ -79,8 +80,8 @@ Adafruit_IL0371::Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST,
 Adafruit_IL0371::Adafruit_IL0371(int width, int height, int8_t DC, int8_t RST,
                                  int8_t CS, int8_t BUSY)
     : Adafruit_EPD(width, height, DC, RST, CS, BUSY) {
-  bw_buf = (uint8_t *)malloc(width * height / 8);
-  red_buf = (uint8_t *)malloc(width * height / 8);
+  bw_buf = (uint8_t*)malloc(width * height / 8);
+  red_buf = (uint8_t*)malloc(width * height / 8);
 #endif
   bw_bufsize = width * height / 8;
   red_bufsize = bw_bufsize;
@@ -269,22 +270,22 @@ void Adafruit_IL0371::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
     return;
 
-  uint8_t *pBuf;
+  uint8_t* pBuf;
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
-  case 1:
-    EPD_swap(x, y);
-    x = WIDTH - x - 1;
-    break;
-  case 2:
-    x = WIDTH - x - 1;
-    y = HEIGHT - y - 1;
-    break;
-  case 3:
-    EPD_swap(x, y);
-    y = HEIGHT - y - 1;
-    break;
+    case 1:
+      EPD_swap(x, y);
+      x = WIDTH - x - 1;
+      break;
+    case 2:
+      x = WIDTH - x - 1;
+      y = HEIGHT - y - 1;
+      break;
+    case 3:
+      EPD_swap(x, y);
+      y = HEIGHT - y - 1;
+      break;
   }
   // make our buffer happy
   x = (x == 0 ? 1 : x);
@@ -307,16 +308,16 @@ void Adafruit_IL0371::drawPixel(int16_t x, int16_t y, uint16_t color) {
 #endif
   // x is which column
   switch (color) {
-  case EPD_WHITE:
-    *pBuf |= (1 << (7 - y % 8));
-    break;
-  case EPD_RED:
-  case EPD_BLACK:
-    *pBuf &= ~(1 << (7 - y % 8));
-    break;
-  case EPD_INVERSE:
-    *pBuf ^= (1 << (7 - y % 8));
-    break;
+    case EPD_WHITE:
+      *pBuf |= (1 << (7 - y % 8));
+      break;
+    case EPD_RED:
+    case EPD_BLACK:
+      *pBuf &= ~(1 << (7 - y % 8));
+      break;
+    case EPD_INVERSE:
+      *pBuf ^= (1 << (7 - y % 8));
+      break;
   }
 #ifdef USE_EXTERNAL_SRAM
   sram.write8(addr, *pBuf);

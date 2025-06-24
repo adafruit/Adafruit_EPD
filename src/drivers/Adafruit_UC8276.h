@@ -1,8 +1,9 @@
 #ifndef LIB_ADAFRUIT_UC8276
 #define LIB_ADAFRUIT_UC8276
 
-#include "Adafruit_EPD.h"
 #include <Arduino.h>
+
+#include "Adafruit_EPD.h"
 
 #define UC8276_PANELSETTING 0x00
 #define UC8276_POWEROFF 0x02
@@ -20,19 +21,19 @@
 */
 /**************************************************************************/
 class Adafruit_UC8276 : public Adafruit_EPD {
-public:
+ public:
   Adafruit_UC8276(int width, int height, int16_t SID, int16_t SCLK, int16_t DC,
                   int16_t RST, int16_t CS, int16_t SRCS, int16_t MISO,
                   int16_t BUSY = -1);
   Adafruit_UC8276(int width, int height, int16_t DC, int16_t RST, int16_t CS,
-                  int16_t SRCS, int16_t BUSY = -1, SPIClass *spi = &SPI);
+                  int16_t SRCS, int16_t BUSY = -1, SPIClass* spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
   void update(void);
   void powerDown();
 
-protected:
+ protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);

@@ -1,4 +1,5 @@
 #include "Adafruit_IL0398.h"
+
 #include "Adafruit_EPD.h"
 
 #define EPD_RAM_BW 0x10
@@ -39,7 +40,6 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int16_t SID,
                                  int16_t CS, int16_t SRCS, int16_t MISO,
                                  int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
@@ -49,8 +49,8 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int16_t SID,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -69,9 +69,8 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_IL0398::Adafruit_IL0398(int width, int height, int16_t DC, int16_t RST,
                                  int16_t CS, int16_t SRCS, int16_t BUSY,
-                                 SPIClass *spi)
+                                 SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
@@ -81,8 +80,8 @@ Adafruit_IL0398::Adafruit_IL0398(int width, int height, int16_t DC, int16_t RST,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -143,7 +142,7 @@ void Adafruit_IL0398::powerUp() {
 
   hardwareReset();
 
-  const uint8_t *init_code = il0398_default_init_code;
+  const uint8_t* init_code = il0398_default_init_code;
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
   }
