@@ -6,14 +6,19 @@
 #include "panels/ThinkInk_154_Tricolor_RW.h"
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_154_Tricolor_Z90.h"
+
 #include "panels/ThinkInk_213_Tricolor_RW.h"
 #include "panels/ThinkInk_213_Tricolor_Z16.h"
+#include "panels/ThinkInk_213_Tricolor_MFGNR.h"
+
 #include "panels/ThinkInk_270_Tricolor_C44.h"
 #include "panels/ThinkInk_270_Tricolor_Z70.h"
+
 #include "panels/ThinkInk_290_Tricolor_RH.h"
 #include "panels/ThinkInk_290_Tricolor_Z10.h"
 #include "panels/ThinkInk_290_Tricolor_Z13.h"
 #include "panels/ThinkInk_290_Tricolor_Z94.h"
+
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
 

@@ -42,6 +42,10 @@
 ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                  EPD_SPI);
 
+// 2.13" Tricolor EPD with SSD1680Z chipset
+//ThinkInk_213_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
+//                                    EPD_BUSY, EPD_SPI);
+
 // 2.13" Tricolor EPD with IL0373 chipset
 // ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI);
