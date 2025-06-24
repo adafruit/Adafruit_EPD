@@ -40,6 +40,7 @@ enum {
   EPD_GRAY,  ///< gray color ('red' on grayscale)
   EPD_DARK,  ///< darker color
   EPD_LIGHT, ///< lighter color
+  EPD_YELLOW, ///< fourth color on some displays
   EPD_NUM_COLORS
 };
 
@@ -199,6 +200,7 @@ protected:
 #include "drivers/Adafruit_IL0373.h"
 #include "drivers/Adafruit_IL0398.h"
 #include "drivers/Adafruit_IL91874.h"
+#include "drivers/Adafruit_JD79661.h"
 #include "drivers/Adafruit_SSD1608.h"
 #include "drivers/Adafruit_SSD1619.h"
 #include "drivers/Adafruit_SSD1675.h"
