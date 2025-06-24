@@ -49,6 +49,7 @@ typedef enum {
   THINKINK_TRICOLOR,
   THINKINK_GRAYSCALE4,
   THINKINK_MONO_PARTIAL,
+  THINKINK_QUADCOLOR,
 } thinkinkmode_t;
 
 #define EPD_swap(a, b)                                                         \

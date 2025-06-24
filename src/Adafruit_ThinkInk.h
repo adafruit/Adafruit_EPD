@@ -11,6 +11,8 @@
 #include "panels/ThinkInk_213_Tricolor_Z16.h"
 #include "panels/ThinkInk_213_Tricolor_MFGNR.h"
 
+#include "panels/ThinkInk_213_Quadcolor_AJHE5.h"
+
 #include "panels/ThinkInk_270_Tricolor_C44.h"
 #include "panels/ThinkInk_270_Tricolor_Z70.h"
 

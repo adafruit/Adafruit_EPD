@@ -142,6 +142,8 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
   case 1:
     EPD_swap(x, y);
     x = _WIDTH - x - 1;
+    // remove the offset 
+    x -= _WIDTH - WIDTH;
     break;
   case 2:
     x = _WIDTH - x - 1;
@@ -160,6 +162,17 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
     pBuf = &color_c;
   } else {
     pBuf = color_buffer + addr;
+  }
+
+
+  if (color == EPD_BLACK) {
+    color = JD79661_BLACK;
+  } else if (color == EPD_RED) {
+    color = JD79661_RED;
+  } else if (color == EPD_YELLOW) {
+    color = JD79661_YELLOW;
+  } else if (color == EPD_WHITE) {
+    color = JD79661_WHITE;
   }
 
   uint8_t byte_offset_mask = 0x3 << (3-(x % 4))*2;
