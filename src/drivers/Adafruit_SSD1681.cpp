@@ -136,7 +136,7 @@ void Adafruit_SSD1681::update() {
   uint8_t buf[1];
 
   // display update sequence
-  buf[0] = 0xF7;
+  buf[0] = _display_update_val;  // varies for mono vs gray4 mode
   EPD_command(SSD1681_DISP_CTRL2, buf, 1);
 
   EPD_command(SSD1681_MASTER_ACTIVATE);
@@ -267,13 +267,20 @@ void Adafruit_SSD1681::powerUp() {
   }
   EPD_commandList(init_code);
 
+  setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
+
+  // Set LUT (if we have one)
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
+
   // Set display size and driver output control
   buf[0] = (WIDTH - 1);
   buf[1] = (WIDTH - 1) >> 8;
   buf[2] = 0x00;
   EPD_command(SSD1681_DRIVER_CONTROL, buf, 3);
 
-  setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
+
 }
 
 /**************************************************************************/

@@ -57,6 +57,7 @@ class Adafruit_SSD1681 : public Adafruit_EPD {
   void setRAMAddress(uint16_t x, uint16_t y);
   void setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
   void busy_wait();
+  uint8_t _display_update_val = 0xF7;
 };
 
 #endif

@@ -509,7 +509,7 @@ void Adafruit_EPD::clearDisplay() {
  */
 /**************************************************************************/
 void Adafruit_EPD::EPD_commandList(const uint8_t* init_code) {
-  uint8_t buf[255];
+  uint8_t buf[250];
 
   while (init_code[0] != 0xFE) {
     uint8_t cmd = init_code[0];

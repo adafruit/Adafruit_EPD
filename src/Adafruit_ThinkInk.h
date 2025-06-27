@@ -6,6 +6,7 @@
 #include "panels/ThinkInk_154_Mono_D27.h"
 #include "panels/ThinkInk_154_Mono_D67.h"
 #include "panels/ThinkInk_154_Mono_M10.h"
+#include "panels/ThinkInk_154_Grayscale4_M05.h"
 #include "panels/ThinkInk_154_Tricolor_RW.h"
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_154_Tricolor_Z90.h"

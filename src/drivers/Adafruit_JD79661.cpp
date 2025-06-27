@@ -256,7 +256,6 @@ void Adafruit_JD79661::hardwareReset(void) {
 /**************************************************************************/
 
 void Adafruit_JD79661::powerUp() {
-  uint8_t buf[5];
   hardwareReset();
   busy_wait();
 

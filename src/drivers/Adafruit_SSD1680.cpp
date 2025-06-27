@@ -49,7 +49,7 @@ Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int16_t SID,
     height += 8 - (height % 8);
   }
 
-  buffer1_size = width * height / 8;
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
@@ -87,7 +87,7 @@ Adafruit_SSD1680::Adafruit_SSD1680(int width, int height, int16_t DC,
     height += 8 - (height % 8);
   }
 
-  buffer1_size = width * height / 8;
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
