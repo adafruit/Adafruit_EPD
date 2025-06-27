@@ -56,6 +56,7 @@ class Adafruit_SSD1680 : public Adafruit_EPD {
   void busy_wait();
 
   int8_t _xram_offset = 1;
+  uint8_t _display_update_val = 0xF4;
 };
 
 #endif

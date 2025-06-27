@@ -509,7 +509,7 @@ void Adafruit_EPD::clearDisplay() {
  */
 /**************************************************************************/
 void Adafruit_EPD::EPD_commandList(const uint8_t* init_code) {
-  uint8_t buf[64];
+  uint8_t buf[255];
 
   while (init_code[0] != 0xFE) {
     uint8_t cmd = init_code[0];
@@ -522,7 +522,7 @@ void Adafruit_EPD::EPD_commandList(const uint8_t* init_code) {
       continue;
     }
     if (num_args > sizeof(buf)) {
-      Serial.println("ERROR - buf not large enough!");
+      Serial.println(F("ERROR - buf not large enough!"));
       while (1)
         delay(10);
     }
@@ -565,7 +565,7 @@ uint8_t Adafruit_EPD::EPD_command(uint8_t c, bool end) {
 
   uint8_t data = SPItransfer(c);
 #ifdef EPD_DEBUG
-  Serial.print("\tCommand: 0x");
+  Serial.print(F("\tCommand: 0x"));
   Serial.println(c, HEX);
 #endif
 

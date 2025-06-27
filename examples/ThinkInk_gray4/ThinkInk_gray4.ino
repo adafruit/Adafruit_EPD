@@ -30,9 +30,14 @@
 // EPD_BUSY, EPD_SPI); ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET,
 // EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
+// 2.13" Grayscale Featherwing or Breakout (SSD1680Z)
+ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+                                     EPD_SPI);
+
 // 2.9" Grayscale Featherwing or Breakout:
-ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
-                                   EPD_SPI);
+//ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+//                                   EPD_SPI);
+
 // 4.2" Grayscale display
 // ThinkInk_420_Grayscale4_T2 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI);
@@ -64,9 +69,16 @@ void loop() {
   display.clearBuffer();
   display.setTextSize(3);
   display.setTextColor(EPD_BLACK);
-  display.setCursor(20, 40);
+  display.setCursor((display.width() - 180) / 2, (display.height() - 24) / 2);
   if (gray) {
-    display.print("Grayscale");
+    String text = "Grayscale";
+    uint16_t colors[] = {EPD_BLACK, EPD_DARK, EPD_LIGHT};
+  
+    for (int i = 0; i < text.length(); i++) {
+      // Change color for every character (0: BLACK, 1: DARK, 2: LIGHT, 3: BLACK, etc.)
+      display.setTextColor(colors[i % 3]);
+      display.print(text.charAt(i));
+    }
   } else {
     display.print("Monochrome");
   }
@@ -74,7 +86,7 @@ void loop() {
   gray = !gray;
 
   display.display();
-  delay(1000);
+  delay(2000);
 
   display.clearBuffer();
   display.fillRect(display.width() / 4, 0, display.width() / 4,

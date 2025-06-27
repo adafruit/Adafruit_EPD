@@ -10,6 +10,7 @@
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_154_Tricolor_Z90.h"
 #include "panels/ThinkInk_213_Grayscale4_T5.h"
+#include "panels/ThinkInk_213_Grayscale4_MFGN.h"
 #include "panels/ThinkInk_213_Mono_B72.h"
 #include "panels/ThinkInk_213_Mono_B73.h"
 #include "panels/ThinkInk_213_Mono_BN.h"
