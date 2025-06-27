@@ -139,7 +139,7 @@ void Adafruit_SSD1680::begin(bool reset) {
 void Adafruit_SSD1680::update() {
   uint8_t buf[1];
 
-  buf[0] = _display_update_val;  // varies for mono vs gray4 mode
+  buf[0] = _display_update_val; // varies for mono vs gray4 mode
   EPD_command(SSD1680_DISP_CTRL2, buf, 1);
   EPD_command(SSD1680_MASTER_ACTIVATE);
   busy_wait();
@@ -189,7 +189,7 @@ void Adafruit_SSD1680::powerUp() {
   if (_epd_lut_code) {
     EPD_commandList(_epd_lut_code);
   }
-  
+
   // Set display size and driver output control
   buf[0] = (WIDTH - 1);
   buf[1] = (WIDTH - 1) >> 8;

@@ -2,16 +2,16 @@
 #define _ADAFRUIT_THINKINK_H_
 
 #include "Adafruit_EPD.h"
+#include "panels/ThinkInk_154_Grayscale4_M05.h"
 #include "panels/ThinkInk_154_Grayscale4_T8.h"
 #include "panels/ThinkInk_154_Mono_D27.h"
 #include "panels/ThinkInk_154_Mono_D67.h"
 #include "panels/ThinkInk_154_Mono_M10.h"
-#include "panels/ThinkInk_154_Grayscale4_M05.h"
 #include "panels/ThinkInk_154_Tricolor_RW.h"
 #include "panels/ThinkInk_154_Tricolor_Z17.h"
 #include "panels/ThinkInk_154_Tricolor_Z90.h"
-#include "panels/ThinkInk_213_Grayscale4_T5.h"
 #include "panels/ThinkInk_213_Grayscale4_MFGN.h"
+#include "panels/ThinkInk_213_Grayscale4_T5.h"
 #include "panels/ThinkInk_213_Mono_B72.h"
 #include "panels/ThinkInk_213_Mono_B73.h"
 #include "panels/ThinkInk_213_Mono_BN.h"

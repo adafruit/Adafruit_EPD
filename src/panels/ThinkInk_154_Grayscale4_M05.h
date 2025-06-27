@@ -86,13 +86,13 @@ static const uint8_t ti_154m05_monofull_lut_code[] = {
 
 class ThinkInk_154_Grayscale4_M05 : public Adafruit_SSD1681 {
  public:
-  ThinkInk_154_Grayscale4_M05(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
-                             int16_t CS, int16_t SRCS, int16_t MISO,
-                             int16_t BUSY = -1)
+  ThinkInk_154_Grayscale4_M05(int16_t SID, int16_t SCLK, int16_t DC,
+                              int16_t RST, int16_t CS, int16_t SRCS,
+                              int16_t MISO, int16_t BUSY = -1)
       : Adafruit_SSD1681(200, 200, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_154_Grayscale4_M05  (int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                             int16_t BUSY = -1, SPIClass* spi = &SPI)
+  ThinkInk_154_Grayscale4_M05(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+                              int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_SSD1681(200, 200, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
@@ -128,7 +128,7 @@ class ThinkInk_154_Grayscale4_M05 : public Adafruit_SSD1681 {
       layer_colors[EPD_GRAY] = 0b01;
       layer_colors[EPD_LIGHT] = 0b00;
       layer_colors[EPD_DARK] = 0b01;
-      
+
       setRotation(3);
     }
 
