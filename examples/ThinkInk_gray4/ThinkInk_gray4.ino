@@ -42,9 +42,8 @@ ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUS
 //ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                   EPD_SPI);
 
-// 4.2" Grayscale display
-// ThinkInk_420_Grayscale4_T2 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
-// EPD_BUSY, EPD_SPI);
+// 4.2" 4-Grayscale display with SSD1683 chipset
+// ThinkInk_420_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 #define COLOR1 EPD_BLACK
 #define COLOR2 EPD_LIGHT
