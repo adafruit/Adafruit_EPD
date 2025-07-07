@@ -34,6 +34,7 @@
 #include "panels/ThinkInk_420_Grayscale4_T2.h"
 #include "panels/ThinkInk_420_Mono_BN.h"
 #include "panels/ThinkInk_420_Mono_M06.h"
+#include "panels/ThinkInk_420_Mono_MFGN.h"
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
 
