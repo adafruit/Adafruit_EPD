@@ -42,6 +42,6 @@
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
 #include "panels/ThinkInk_420_Tricolor_MFGNR.h"
-#include "panels/ThinkInk_583_Mono_MFGN.h"
+#include "panels/ThinkInk_583_Mono_AAAMFGN.h"
 
 #endif // _ADAFRUIT_THINKINK_H_

@@ -20,7 +20,7 @@ const uint8_t uc8179_default_init_code[] {
 	0xFF, 100,          // busy wait
 	
 	UC8179_PANELSETTING, 1,
-	0x1F, // BW OTP LUT
+	0b010111, // BW OTP LUT
 
     UC8179_TRES, 4,
 	0x02, 0x88, 0x01, 0xE0,
@@ -136,6 +136,9 @@ void Adafruit_UC8179::busy_wait(void) {
 */
 /**************************************************************************/
 void Adafruit_UC8179::begin(bool reset) {
+  // UUUUGH, SRAM is not organized the same way for this chip?
+  _data_entry_mode = THINKING_UC8179;
+
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to un inverted
@@ -174,10 +177,10 @@ void Adafruit_UC8179::powerUp() {
   
   // Set display size
   uint8_t buf[4];
-  buf[0] = HEIGHT >> 8;
-  buf[1] = HEIGHT & 0xFF;
-  buf[2] = WIDTH >> 8;
-  buf[3] = WIDTH & 0xFF; 
+  buf[0] = WIDTH >> 8;
+  buf[1] = WIDTH & 0xFF;
+  buf[2] = HEIGHT >> 8;
+  buf[3] = HEIGHT & 0xFF; 
   Serial.printf("W %d H %d\n\r", WIDTH, HEIGHT);
   EPD_command(UC8179_TRES, buf, 4);
 }

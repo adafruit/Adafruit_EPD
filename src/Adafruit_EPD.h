@@ -46,6 +46,11 @@ enum {
 };
 
 typedef enum {
+  THINKINK_STANDARD, // 99% of panels use this setup!
+  THINKING_UC8179,   // .... except for UC8179?
+} thinkink_sramentrymode_t;
+
+typedef enum {
   THINKINK_MONO,
   THINKINK_TRICOLOR,
   THINKINK_GRAYSCALE4,
@@ -87,6 +92,8 @@ class Adafruit_EPD : public Adafruit_GFX {
   }
 
  protected:
+  thinkink_sramentrymode_t _data_entry_mode = THINKINK_STANDARD;
+
   void writeRAMFramebufferToEPD(uint8_t* buffer, uint32_t buffer_size,
                                 uint8_t EPDlocation, bool invertdata = false);
   void writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
