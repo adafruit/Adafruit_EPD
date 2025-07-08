@@ -32,7 +32,7 @@ class ThinkInk_290_Tricolor_Z13 : public Adafruit_UC8151D {
     layer_colors[EPD_LIGHT] = 0b00;
     layer_colors[EPD_DARK] = 0b01;
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 13000;
     setRotation(0);
     powerDown();
   }
