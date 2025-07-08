@@ -226,6 +226,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
     return;
 
   uint8_t *black_pBuf, *color_pBuf;
+  // Serial.printf("(%d, %d) -> ", x, y);
 
   // check rotation, move pixel around if necessary
   switch (getRotation()) {
@@ -248,8 +249,16 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if (_HEIGHT % 8 != 0) {
     _HEIGHT += 8 - (_HEIGHT % 8);
   }
-  uint16_t addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
+  // Serial.printf("(%d, %d) : ", x, y);
+
+  uint16_t addr;
+  if (_data_entry_mode == THINKING_UC8179) {
+    addr = ((uint32_t)(HEIGHT - 1 - y) * (uint32_t)WIDTH + x) / 8;
+  } else { //  THINKINK_STANDARD default!
+    addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
+  }
   uint8_t black_c, color_c;
+  // Serial.printf("0x%0x\n\r",addr);
 
   if (use_sram) {
     black_c = sram.read8(blackbuffer_addr + addr);
@@ -266,16 +275,23 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   black_bit = layer_colors[color] & 0x1;
   color_bit = layer_colors[color] & 0x2;
 
+  uint8_t bit_idx;
+  if (_data_entry_mode == THINKING_UC8179) {
+    bit_idx = x;
+  } else { //  THINKINK_STANDARD default!
+    bit_idx = y;
+  }
+
   if ((color_bit && colorInverted) || (!color_bit && !colorInverted)) {
-    *color_pBuf &= ~(1 << (7 - y % 8));
+    *color_pBuf &= ~(1 << (7 - bit_idx % 8));
   } else {
-    *color_pBuf |= (1 << (7 - y % 8));
+    *color_pBuf |= (1 << (7 - bit_idx % 8));
   }
 
   if ((black_bit && blackInverted) || (!black_bit && !blackInverted)) {
-    *black_pBuf &= ~(1 << (7 - y % 8));
+    *black_pBuf &= ~(1 << (7 - bit_idx % 8));
   } else {
-    *black_pBuf |= (1 << (7 - y % 8));
+    *black_pBuf |= (1 << (7 - bit_idx % 8));
   }
 
   if (use_sram) {

@@ -1,4 +1,4 @@
-#include "Adafruit_JD79661.h"
+#include "Adafruit_SSD1683.h"
 
 #include "Adafruit_EPD.h"
 
@@ -9,24 +9,24 @@
 
 // clang-format off
 
-const uint8_t jd79661_default_init_code[] {
-    0xFF, 10, // wait a lil bit
-    0x4D, 1, 0x78,
-    JD79661_PANEL_SETTING, 2, 0x8F, 0x29, // PSR, Display resolution is 128x250
-    JD79661_POWER_SETTING, 2, 0x07, 0x00, // PWR
-    0x03, 3, 0x10, 0x54, 0x44, // POFS
-      JD79661_BOOSTER_SOFTSTART, 7, 0x05, 0x00, 0x3F, 0x0A, 0x25, 0x12, 0x1A,
-    JD79661_CDI, 1, 0x37, // CDI
-    0x60, 2, 0x02, 0x02, // TCON
-    JD79661_RESOLUTION, 4, 0, 128, 0, 250, // TRES
-    0xE7, 1, 0x1C,
-    0xE3, 1, 0x22,
-    0xB4, 1, 0xD0,
-    0xB5, 1, 0x03,
-    0xE9, 1, 0x01,
-    JD79661_PLL_CONTROL, 1, 0x08,
-    JD79661_POWER_ON, 0,
-    0xFE};
+const uint8_t ssd1683_default_init_code[] = {
+    SSD1683_SW_RESET, 0,           // 0x12 - Software reset
+    0xFF, 50,                      // Wait for busy (20ms delay)
+    
+    SSD1683_DISP_CTRL1, 2,     // 0x21 - Display update control
+    0x40,                          // Display update control 1
+    0x00,                          // Display update control 2
+    
+    SSD1683_WRITE_BORDER, 1,       // 0x3C - Border waveform control
+    0x05,                          // Border color/waveform
+    
+    SSD1683_DATA_MODE, 1,          // 0x11 - Data entry mode
+    0x03,                          // Y decrement, X increment
+
+    SSD1683_TEMP_CONTROL, 1, 0x80, // Temp control 
+ 
+    0xFE                           // End of initialization
+};
 
 // clang-format on
 
@@ -45,24 +45,26 @@ const uint8_t jd79661_default_init_code[] {
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t SID,
+Adafruit_SSD1683::Adafruit_SSD1683(int width, int height, int16_t SID,
                                    int16_t SCLK, int16_t DC, int16_t RST,
                                    int16_t CS, int16_t SRCS, int16_t MISO,
                                    int16_t BUSY)
     : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
-  if ((width % 8) != 0) {
-    width += 8 - (width % 8);
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
   }
-  buffer1_size = width * height / 4;
-  buffer2_size = 0;
+
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
+  buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
   } else {
     buffer1 = (uint8_t*)malloc(buffer1_size);
-    buffer2 = buffer1;
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -82,23 +84,25 @@ Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t SID,
     @param BUSY the busy pin to use
 */
 /**************************************************************************/
-Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t DC,
+Adafruit_SSD1683::Adafruit_SSD1683(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
                                    int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
-  if ((width % 8) != 0) {
-    width += 8 - (width % 8);
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
   }
-  buffer1_size = width * height / 4;
-  buffer2_size = 0;
+
+  buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
+  buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
   } else {
     buffer1 = (uint8_t*)malloc(buffer1_size);
-    buffer2 = buffer1;
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -106,95 +110,12 @@ Adafruit_JD79661::Adafruit_JD79661(int width, int height, int16_t DC,
 
 /**************************************************************************/
 /*!
-    @brief clear all data buffers
-*/
-/**************************************************************************/
-void Adafruit_JD79661::clearBuffer() {
-  if (use_sram) {
-    sram.erase(colorbuffer_addr, buffer1_size, 0x55);
-  } else {
-    memset(buffer1, 0x55, buffer1_size);
-  }
-}
-
-/**************************************************************************/
-/*!
-    @brief draw a single pixel on the screen
-        @param x the x axis position
-        @param y the y axis position
-        @param color the color of the pixel
-*/
-/**************************************************************************/
-void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
-  if ((x < 0) || (x >= width()) || (y < 0) || (y >= height()))
-    return;
-
-  uint8_t* pBuf;
-
-  // deal with non-8-bit heights
-  uint16_t _WIDTH = WIDTH;
-  if (_WIDTH % 8 != 0) {
-    _WIDTH += 8 - (_WIDTH % 8);
-  }
-
-  // check rotation, move pixel around if necessary
-  switch (getRotation()) {
-    case 1:
-      EPD_swap(x, y);
-      x = _WIDTH - x - 1;
-      // remove the offset
-      x -= _WIDTH - WIDTH;
-      break;
-    case 2:
-      x = _WIDTH - x - 1;
-      y = HEIGHT - y - 1;
-      // re-add the offset
-      x += _WIDTH - WIDTH;
-      break;
-    case 3:
-      EPD_swap(x, y);
-      y = HEIGHT - y - 1;
-      break;
-  }
-  uint32_t addr = ((uint32_t)x + (uint32_t)y * _WIDTH) / 4;
-  uint8_t color_c;
-
-  if (use_sram) {
-    color_c = sram.read8(colorbuffer_addr + addr);
-    pBuf = &color_c;
-  } else {
-    pBuf = color_buffer + addr;
-  }
-
-  if (color == EPD_BLACK) {
-    color = JD79661_BLACK;
-  } else if (color == EPD_RED) {
-    color = JD79661_RED;
-  } else if (color == EPD_YELLOW) {
-    color = JD79661_YELLOW;
-  } else if (color == EPD_WHITE) {
-    color = JD79661_WHITE;
-  }
-
-  uint8_t byte_offset_mask = 0x3 << (3 - (x % 4)) * 2;
-  uint8_t byte_offset_value = (color & 0x3) << (3 - (x % 4)) * 2;
-
-  *pBuf &= ~byte_offset_mask; // save reverse mask
-  *pBuf |= byte_offset_value; // now add in the new color
-
-  if (use_sram) {
-    sram.write8(colorbuffer_addr + addr, *pBuf);
-  }
-}
-
-/**************************************************************************/
-/*!
     @brief wait for busy signal to end
 */
 /**************************************************************************/
-void Adafruit_JD79661::busy_wait(void) {
+void Adafruit_SSD1683::busy_wait(void) {
   if (_busy_pin >= 0) {
-    while (!digitalRead(_busy_pin)) { // wait for busy HIGH!
+    while (digitalRead(_busy_pin)) { // wait for busy low
       delay(10);
     }
   } else {
@@ -208,9 +129,11 @@ void Adafruit_JD79661::busy_wait(void) {
     @param reset if true the reset pin will be toggled.
 */
 /**************************************************************************/
-void Adafruit_JD79661::begin(bool reset) {
+void Adafruit_SSD1683::begin(bool reset) {
   Adafruit_EPD::begin(reset);
-  delay(100);
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, false); // red defaults to un inverted
+  powerDown();
 }
 
 /**************************************************************************/
@@ -218,34 +141,18 @@ void Adafruit_JD79661::begin(bool reset) {
     @brief signal the display to update
 */
 /**************************************************************************/
-void Adafruit_JD79661::update() {
+void Adafruit_SSD1683::update() {
   uint8_t buf[1];
 
   // display update sequence
-  buf[0] = 0x00;
-  EPD_command(JD79661_DISPLAY_REFRESH, buf, 1);
+  buf[0] = _display_update_val; // varies for mono vs gray4 mode
+  EPD_command(SSD1683_DISP_CTRL2, buf, 1);
 
+  EPD_command(SSD1683_MASTER_ACTIVATE);
   busy_wait();
 
   if (_busy_pin <= -1) {
     delay(1000);
-  }
-}
-
-void Adafruit_JD79661::hardwareReset(void) {
-  if (_reset_pin >= 0) {
-    // Setup reset pin direction
-    pinMode(_reset_pin, OUTPUT);
-    // VDD (3.3V) goes high at start, lets just chill for a ms
-    digitalWrite(_reset_pin, HIGH);
-    delay(20);
-    // bring reset low
-    digitalWrite(_reset_pin, LOW);
-    // wait 40ms
-    delay(40);
-    // bring out of reset
-    digitalWrite(_reset_pin, HIGH);
-    delay(50);
   }
 }
 
@@ -254,18 +161,32 @@ void Adafruit_JD79661::hardwareReset(void) {
     @brief start up the display
 */
 /**************************************************************************/
+void Adafruit_SSD1683::powerUp() {
+  uint8_t buf[5];
 
-void Adafruit_JD79661::powerUp() {
   hardwareReset();
+  delay(100);
   busy_wait();
 
-  const uint8_t* init_code = jd79661_default_init_code;
+  const uint8_t* init_code = ssd1683_default_init_code;
+
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
   }
   EPD_commandList(init_code);
 
-  busy_wait();
+  setRAMWindow(0, 0, (HEIGHT / 8) - 1, WIDTH - 1);
+
+  // Set LUT (if we have one)
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
+
+  // Set display size and driver output control
+  buf[0] = (WIDTH - 1);
+  buf[1] = (WIDTH - 1) >> 8;
+  buf[2] = 0x00;
+  EPD_command(SSD1683_DRIVER_CONTROL, buf, 3);
 }
 
 /**************************************************************************/
@@ -273,18 +194,17 @@ void Adafruit_JD79661::powerUp() {
     @brief wind down the display
 */
 /**************************************************************************/
-void Adafruit_JD79661::powerDown() {
+void Adafruit_SSD1683::powerDown() {
   uint8_t buf[1];
   // Only deep sleep if we can get out of it
   if (_reset_pin >= 0) {
     // deep sleep
-    buf[0] = 0x00;
-    EPD_command(JD79661_POWER_OFF, buf, 1);
-    busy_wait();
-
-    buf[0] = 0xA5;
-    EPD_command(JD79661_DEEP_SLEEP, buf, 1);
+    buf[0] = 0x01;
+    EPD_command(SSD1683_DEEP_SLEEP, buf, 1);
     delay(100);
+  } else {
+    EPD_command(SSD1683_SW_RESET);
+    busy_wait();
   }
 }
 
@@ -297,10 +217,14 @@ void Adafruit_JD79661::powerDown() {
    command
 */
 /**************************************************************************/
-uint8_t Adafruit_JD79661::writeRAMCommand(uint8_t index) {
-  (void)index;
-  EPD_command(JD79661_DATA_START_XMIT);
-  return true;
+uint8_t Adafruit_SSD1683::writeRAMCommand(uint8_t index) {
+  if (index == 0) {
+    return EPD_command(SSD1683_WRITE_RAM1, false);
+  }
+  if (index == 1) {
+    return EPD_command(SSD1683_WRITE_RAM2, false);
+  }
+  return 0;
 }
 
 /**************************************************************************/
@@ -310,7 +234,39 @@ uint8_t Adafruit_JD79661::writeRAMCommand(uint8_t index) {
     @param y Y address counter value
 */
 /**************************************************************************/
-void Adafruit_JD79661::setRAMAddress(uint16_t x, uint16_t y) {
-  (void)x;
-  (void)y;
+void Adafruit_SSD1683::setRAMAddress(uint16_t x, uint16_t y) {
+  uint8_t buf[2];
+
+  // set RAM x address count
+  buf[0] = x;
+  EPD_command(SSD1683_SET_RAMXCOUNT, buf, 1);
+
+  // set RAM y address count
+  buf[0] = y;
+  buf[1] = y >> 8;
+  EPD_command(SSD1683_SET_RAMYCOUNT, buf, 2);
+}
+
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
+void Adafruit_SSD1683::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
+                                    uint16_t y2) {
+  uint8_t buf[5];
+
+  // Set ram X start/end postion
+  buf[0] = x1;
+  buf[1] = x2;
+  EPD_command(SSD1683_SET_RAMXPOS, buf, 2);
+
+  // Set ram Y start/end postion
+  buf[0] = y1;
+  buf[1] = y1 >> 8;
+  buf[2] = y2;
+  buf[3] = y2 >> 8;
+  EPD_command(SSD1683_SET_RAMYPOS, buf, 4);
 }

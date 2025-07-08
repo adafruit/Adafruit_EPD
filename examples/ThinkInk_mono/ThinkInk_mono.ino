@@ -44,25 +44,42 @@ ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_
 // 2.13" Monochrome displays with 250x122 pixels and SSD1680 chipset
 // ThinkInk_213_Mono_BN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 // ThinkInk_213_Mono_B74 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
 // The GDEY0213B74 is like the B74 above but is not 'shifted down' by 8 pixels
 // ThinkInk_213_Mono_GDEY0213B74 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Monochrome displays with 212x104 pixels and UC8151D chipset
 // ThinkInk_213_Mono_M21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373
-// chipset
+// 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
+// ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+//                                      EPD_SPI);
+
+// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and SSD1680 chip
+// ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373 chipset
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI);
 
 // 2.9" Monochrome displays with 296x128 pixels and UC8151D chipset
 // ThinkInk_290_Mono_M06 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
+// 3.7" Monochrome Display with 420x240 pixels and UC8253 chipset
+// ThinkInk_370_Mono_BAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
+
 // 4.2" Monochrome displays with 400x300 pixels and SSD1619 chipset
 // ThinkInk_420_Mono_BN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 4.2" Monochrome displays with 400x300 pixels and UC8276 chipset
 // ThinkInk_420_Mono_M06 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 4.2 Grayscale/Monochrome displays with 400x300 pixels and SSD1683 chipset
+// ThinkInk_420_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 5.83 Monochrome displays with 648 x 480 pixels and UC8179 chipset
+// ThinkInk_583_Mono_AAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 void setup() {
   Serial.begin(115200);

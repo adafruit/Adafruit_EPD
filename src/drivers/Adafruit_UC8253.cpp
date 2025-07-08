@@ -1,0 +1,223 @@
+#include "Adafruit_UC8253.h"
+
+#include "Adafruit_EPD.h"
+
+#define EPD_RAM_BW 0x10
+#define EPD_RAM_RED 0x13
+
+#define BUSY_WAIT 500
+
+// clang-format off
+
+const uint8_t uc8253_default_init_code[] {
+    UC8253_POWERON, 0, // soft reset
+    0xFF, 50,          // busy wait
+    UC8253_PANELSETTING, 2, 0b11001111, 0x8D,
+    0xFE};
+
+// clang-format on
+
+/**************************************************************************/
+/*!
+    @brief constructor if using external SRAM chip and software SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param SID the SID pin to use
+    @param SCLK the SCLK pin to use
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param SRCS the SRAM chip select pin to use
+    @param MISO the MISO pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
+Adafruit_UC8253::Adafruit_UC8253(int width, int height, int16_t SID,
+                                 int16_t SCLK, int16_t DC, int16_t RST,
+                                 int16_t CS, int16_t SRCS, int16_t MISO,
+                                 int16_t BUSY)
+    : Adafruit_EPD(width, height, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+
+  buffer1_size = width * height / 8;
+  buffer2_size = buffer1_size;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
+  } else {
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
+  }
+
+  singleByteTxns = true;
+}
+
+// constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
+
+/**************************************************************************/
+/*!
+    @brief constructor if using on-chip RAM and hardware SPI
+    @param width the width of the display in pixels
+    @param height the height of the display in pixels
+    @param DC the data/command pin to use
+    @param RST the reset pin to use
+    @param CS the chip select pin to use
+    @param SRCS the SRAM chip select pin to use
+    @param BUSY the busy pin to use
+*/
+/**************************************************************************/
+Adafruit_UC8253::Adafruit_UC8253(int width, int height, int16_t DC, int16_t RST,
+                                 int16_t CS, int16_t SRCS, int16_t BUSY,
+                                 SPIClass* spi)
+    : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
+  if ((height % 8) != 0) {
+    height += 8 - (height % 8);
+  }
+
+  buffer1_size = width * height / 8;
+  buffer2_size = buffer1_size;
+
+  if (SRCS >= 0) {
+    use_sram = true;
+    buffer1_addr = 0;
+    buffer2_addr = buffer1_size;
+    buffer1 = buffer2 = NULL;
+  } else {
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
+  }
+
+  singleByteTxns = true;
+}
+
+/**************************************************************************/
+/*!
+    @brief wait for busy signal to end
+*/
+/**************************************************************************/
+void Adafruit_UC8253::busy_wait(void) {
+  if (_busy_pin >= 0) {
+    while (!digitalRead(_busy_pin)) { // wait for busy HIGH
+      EPD_command(UC8253_GET_STATUS);
+      delay(50);
+    }
+  } else {
+    delay(BUSY_WAIT);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief begin communication with and set up the display.
+    @param reset if true the reset pin will be toggled.
+*/
+/**************************************************************************/
+void Adafruit_UC8253::begin(bool reset) {
+  Adafruit_EPD::begin(reset);
+  setBlackBuffer(0, true);  // black defaults to inverted
+  setColorBuffer(1, false); // red defaults to inverted
+  powerUp();
+  powerDown();
+}
+
+/**************************************************************************/
+/*!
+    @brief signal the display to update
+*/
+/**************************************************************************/
+void Adafruit_UC8253::update() {
+  EPD_command(UC8253_DISPLAYREFRESH);
+  delay(100);
+  busy_wait();
+
+  if (_busy_pin <= -1) {
+    delay(default_refresh_delay);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief start up the display
+*/
+/**************************************************************************/
+void Adafruit_UC8253::powerUp() {
+  hardwareReset();
+  const uint8_t* init_code = uc8253_default_init_code;
+
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+  EPD_commandList(init_code);
+  busy_wait();
+}
+
+/**************************************************************************/
+/*!
+    @brief wind down the display
+*/
+/**************************************************************************/
+void Adafruit_UC8253::powerDown() {
+  uint8_t buf[1];
+  EPD_command(UC8253_POWEROFF);
+  busy_wait();
+
+  delay(1000); // required delay
+  // Only deep sleep if we can get out of it
+  if (_reset_pin >= 0) {
+    buf[0] = 0xA5;
+    EPD_command(UC8253_DEEPSLEEP, buf, 1);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief Send the specific command to start writing to EPD display RAM
+    @param index The index for which buffer to write (0 or 1 or tri-color
+   displays) Ignored for monochrome displays.
+    @returns The byte that is read from SPI at the same time as sending the
+   command
+*/
+/**************************************************************************/
+uint8_t Adafruit_UC8253::writeRAMCommand(uint8_t index) {
+  if (index == 0) {
+    return EPD_command(UC8253_WRITE_RAM1, false);
+  }
+  if (index == 1) {
+    return EPD_command(UC8253_WRITE_RAM2, false);
+  }
+  return 0;
+}
+
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
+void Adafruit_UC8253::setRAMAddress(uint16_t x, uint16_t y) {
+  // not used in this chip!
+  (void)x;
+  (void)y;
+}
+
+/**************************************************************************/
+/*!
+    @brief Some displays require setting the RAM address pointer
+    @param x X address counter value
+    @param y Y address counter value
+*/
+/**************************************************************************/
+void Adafruit_UC8253::setRAMWindow(uint16_t x1, uint16_t y1, uint16_t x2,
+                                   uint16_t y2) {
+  // not used in this chip!
+  (void)x1;
+  (void)y1;
+  (void)x2;
+  (void)y2;
+}
