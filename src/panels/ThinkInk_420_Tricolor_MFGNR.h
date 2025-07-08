@@ -1,27 +1,25 @@
-#ifndef _THINKINK_420_GRAY4_MFGN_H
-#define _THINKINK_420_GRAY4_MFGN_H
+#ifndef _THINKINK_420_MONO_MFGNR_H
+#define _THINKINK_420_MONO_MFGNR_H
 
 // This file is #included by Adafruit_ThinkInk.h and does not need to
 // #include anything else to pick up the EPD header or ink mode enum.
 
-static const uint8_t ti_420mfgn_monofull_init_code[] {
+static const uint8_t ti_420mfgnr_tri_init_code[] {
     SSD1683_SW_RESET, 0,           // 0x12 - Software reset
     0xFF, 50,                      // Wait for busy (20ms delay)
-    
-    SSD1683_DISP_CTRL1, 2,     // 0x21 - Display update control
-    0x40,                          // Display update control 1
-    0x00,                          // Display update control 2
-    
+
     SSD1683_WRITE_BORDER, 1,       // 0x3C - Border waveform control
     0x05,                          // Border color/waveform
-    
+
+    SSD1683_TEMP_CONTROL, 1, 0x80, // 0x18 read temp
+	
     SSD1683_DATA_MODE, 1,          // 0x11 - Data entry mode
     0x03,                          // Y decrement, X increment
-	 
+
     0xFE                           // End of initialization
 };
 
-static const uint8_t ti_420mfgn_gray4_init_code[] {
+static const uint8_t ti_420mfgnr_gray4_init_code[] {
     SSD1683_SW_RESET, 0,           // 0x12 - Software reset
     0xFF, 50,                      // Wait for busy (20ms delay)
 
@@ -45,7 +43,7 @@ static const uint8_t ti_420mfgn_gray4_init_code[] {
     0xFE                           // End of initialization
 };
 
-static const uint8_t ti_420mfgn_gray4_lut_code[] = {
+static const uint8_t ti_420mfgnr_gray4_lut_code[] = {
   0x32, 227,
 	0x01,	0x0A,	0x1B,	0x0F,	0x03,	0x01,	0x01,	
 	0x05,	0x0A,	0x01,	0x0A,	0x01,	0x01,	0x01,	
@@ -84,18 +82,18 @@ static const uint8_t ti_420mfgn_gray4_lut_code[] = {
 };
 
 
-class ThinkInk_420_Grayscale4_MFGN : public Adafruit_SSD1683 {
+class ThinkInk_420_Mono_MFGNR : public Adafruit_SSD1683 {
  public:
-  ThinkInk_420_Grayscale4_MFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
+  ThinkInk_420_Mono_MFGNR(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                        int16_t CS, int16_t SRCS, int16_t MISO,
                        int16_t BUSY = -1)
       : Adafruit_SSD1683(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_420_Grayscale4_MFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+  ThinkInk_420_Mono_MFGNR(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                        int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_SSD1683(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
-  void begin(thinkinkmode_t mode = THINKINK_MONO) {
+  void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
 	
     Adafruit_SSD1683::begin(true);
     inkmode = mode; // Preserve ink mode for ImageReader or others
@@ -104,8 +102,8 @@ class ThinkInk_420_Grayscale4_MFGN : public Adafruit_SSD1683 {
       setColorBuffer(1, true); // layer 0 iunnverted
       setBlackBuffer(0, true); // layer 1 uninverted
 
-      _epd_init_code = ti_420mfgn_gray4_init_code;
-	  _epd_lut_code = ti_420mfgn_gray4_lut_code;
+      _epd_init_code = ti_420mfgnr_gray4_init_code;
+	  _epd_lut_code = ti_420mfgnr_gray4_lut_code;
 
       layer_colors[EPD_WHITE] = 0b00;
       layer_colors[EPD_BLACK] = 0b11;
@@ -115,26 +113,27 @@ class ThinkInk_420_Grayscale4_MFGN : public Adafruit_SSD1683 {
       layer_colors[EPD_DARK] = 0b10;
 
       _display_update_val = 0xCF;
-
-    } else if (mode == THINKINK_MONO) {
-      _epd_init_code = ti_420mfgn_monofull_init_code;
-      setColorBuffer(0, true); // layer 0 uninverted
-      setBlackBuffer(0, true); // only one buffer
+      default_refresh_delay = 3000;
+    } else if (mode == THINKINK_TRICOLOR) {
+      setBlackBuffer(0, true);
+      setColorBuffer(1, false);
+	  
+	  _epd_init_code = ti_420mfgnr_tri_init_code;
 
       layer_colors[EPD_WHITE] = 0b00;
       layer_colors[EPD_BLACK] = 0b01;
-      layer_colors[EPD_RED] = 0b01;
-      layer_colors[EPD_GRAY] = 0b01;
+      layer_colors[EPD_RED] = 0b10;
+      layer_colors[EPD_GRAY] = 0b10;
       layer_colors[EPD_LIGHT] = 0b00;
       layer_colors[EPD_DARK] = 0b01;
 	  
 	  _display_update_val = 0xF7;
+      default_refresh_delay = 13000;
     }
     setRotation(1);
-    default_refresh_delay = 1000;
 
     powerDown();
   }
 };
 
-#endif // _THINKINK_420_GRAY4_MFGN_H
+#endif // _THINKINK_420_MONO_MFGNR_H
