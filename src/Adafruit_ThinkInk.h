@@ -27,6 +27,7 @@
 #include "panels/ThinkInk_270_Tricolor_C44.h"
 #include "panels/ThinkInk_270_Tricolor_Z70.h"
 #include "panels/ThinkInk_290_Grayscale4_T5.h"
+#include "panels/ThinkInk_290_Grayscale4_EAAMFGN.h"
 #include "panels/ThinkInk_290_Mono_BN.h"
 #include "panels/ThinkInk_290_Mono_M06.h"
 #include "panels/ThinkInk_290_Tricolor_RH.h"

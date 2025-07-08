@@ -55,6 +55,9 @@ ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_
 // ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                      EPD_SPI);
 
+// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and SSD1680 chip
+// ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
 // 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373
 // chipset
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
