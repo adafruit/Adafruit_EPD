@@ -92,9 +92,11 @@ ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 // ThinkInk_420_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
 //                                     EPD_BUSY, EPD_SPI);
 
-// 5.83 Tricolor displays with 648 x 480 pixels and UC8179 chipset
+// 5.83 Tricolor displays with 648x480 pixels and UC8179 chipset
 // ThinkInk_583_Tricolor_AABMFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
+// 7.5" Tricolor displays with 800x480 pixels and UC8179 chipset
+// ThinkInk_750_Tricolor_AABMFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 
 void setup() {
