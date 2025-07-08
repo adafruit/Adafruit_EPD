@@ -12,6 +12,7 @@
 #define UC8253_DISPLAYREFRESH 0x12
 #define UC8253_WRITE_RAM1 0x10
 #define UC8253_WRITE_RAM2 0x13
+#define UC8253_VCOM_CDI 0x50
 #define UC8253_GET_STATUS 0x71
 
 /**************************************************************************/
