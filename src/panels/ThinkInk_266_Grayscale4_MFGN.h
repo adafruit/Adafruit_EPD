@@ -53,12 +53,8 @@ static const uint8_t ti_266mfgn_monofull_init_code[] {
     SSD1680_SET_RAMYCOUNT, 2, 0, 0,
     SSD1680_WRITE_BORDER, 1, 0x05, // border color
 
-    //0x3F, 1, 0x22, // End of LUT normal
-    //SSD1680_GATE_VOLTAGE, 1, 0x17, // Set gate voltage 
-    //SSD1680_SOURCE_VOLTAGE, 3, 0x41, 0x00, 0x32,   // Set source voltage
-    //SSD1680_WRITE_VCOM, 1, 0x36,   // Vcom Voltage
-
-    SSD1680_DISP_CTRL2, 1, 0x20,  // Load LUT from OTP (default mono)
+    SSD1680_DISP_CTRL2, 1, 0x20, // read LUT?
+    SSD1680_TEMP_CONTROL, 1, 0x80, // read temp
 
     0xFE
 };

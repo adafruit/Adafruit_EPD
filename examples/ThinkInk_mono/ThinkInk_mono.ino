@@ -44,11 +44,16 @@ ThinkInk_213_Mono_B72 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_
 // 2.13" Monochrome displays with 250x122 pixels and SSD1680 chipset
 // ThinkInk_213_Mono_BN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 // ThinkInk_213_Mono_B74 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
 // The GDEY0213B74 is like the B74 above but is not 'shifted down' by 8 pixels
 // ThinkInk_213_Mono_GDEY0213B74 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Monochrome displays with 212x104 pixels and UC8151D chipset
 // ThinkInk_213_Mono_M21 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
+// ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+//                                      EPD_SPI);
 
 // 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and IL0373
 // chipset

@@ -38,7 +38,7 @@
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
-// 2.66" Grayscale Featherwing or Breakout (SSD1680)
+// 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
 // ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                      EPD_SPI);
 
