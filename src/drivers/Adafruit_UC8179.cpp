@@ -181,7 +181,6 @@ void Adafruit_UC8179::powerUp() {
   buf[1] = WIDTH & 0xFF;
   buf[2] = HEIGHT >> 8;
   buf[3] = HEIGHT & 0xFF;
-  Serial.printf("W %d H %d\n\r", WIDTH, HEIGHT);
   EPD_command(UC8179_TRES, buf, 4);
 }
 

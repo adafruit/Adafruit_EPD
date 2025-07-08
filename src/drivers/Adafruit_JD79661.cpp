@@ -298,6 +298,7 @@ void Adafruit_JD79661::powerDown() {
 */
 /**************************************************************************/
 uint8_t Adafruit_JD79661::writeRAMCommand(uint8_t index) {
+  (void)index;
   EPD_command(JD79661_DATA_START_XMIT);
   return true;
 }
