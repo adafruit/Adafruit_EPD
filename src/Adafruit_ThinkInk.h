@@ -21,6 +21,7 @@
 #include "panels/ThinkInk_213_Tricolor_MFGNR.h"
 #include "panels/ThinkInk_213_Tricolor_RW.h"
 #include "panels/ThinkInk_213_Tricolor_Z16.h"
+#include "panels/ThinkInk_266_Grayscale4_MFGN.h"
 #include "panels/ThinkInk_266_Tricolor_MFGNR.h"
 #include "panels/ThinkInk_270_Grayscale4_W3.h"
 #include "panels/ThinkInk_270_Tricolor_C44.h"

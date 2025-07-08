@@ -43,8 +43,8 @@ ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                  EPD_SPI);
 
 // 2.13" Tricolor EPD with SSD1680Z chipset
-//ThinkInk_213_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
-//                                    EPD_BUSY, EPD_SPI);
+// ThinkInk_213_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
+//                                     EPD_BUSY, EPD_SPI);
 
 // 2.13" Tricolor EPD with IL0373 chipset
 // ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
@@ -52,8 +52,8 @@ ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 
 
 // 2.66" Tricolor EPD with SSD1680Z chipset
-//ThinkInk_266_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
-//                                    EPD_BUSY, EPD_SPI);
+// ThinkInk_266_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
+//                                     EPD_BUSY, EPD_SPI);
 
 
 // 2.7" Tricolor Featherwing or Breakout with IL91874 chipset
@@ -84,6 +84,10 @@ ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 
 // ThinkInk_420_Tricolor_Z21 display(EPD_DC, EPD_RESET,
 // EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 4.2" Tricolor EPD with SSD1683 chipset
+// ThinkInk_420_Tricolor_MFGNR display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, 
+//                                     EPD_BUSY, EPD_SPI);
 
 void setup() {
   Serial.begin(115200);

@@ -38,6 +38,10 @@
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
+// 2.66" Grayscale Featherwing or Breakout (SSD1680)
+// ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
+//                                      EPD_SPI);
+
 // 2.9" Grayscale Featherwing or Breakout:
 //ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                   EPD_SPI);
