@@ -4,23 +4,28 @@
 // This file is #included by Adafruit_ThinkInk.h and does not need to
 // #include anything else to pick up the EPD header or ink mode enum.
 
-const uint8_t uc8253_mono_init_code[] {
-    UC8253_POWERON, 0, // soft reset
-    0xFF, 50,          // busy wait
-    UC8253_VCOM_CDI, 1, 0x97,
-    UC8253_PANELSETTING, 2, 0b11011111, 0x8D,
-    0xFE};
+const uint8_t uc8253_mono_init_code[]{UC8253_POWERON,
+                                      0, // soft reset
+                                      0xFF,
+                                      50, // busy wait
+                                      UC8253_VCOM_CDI,
+                                      1,
+                                      0x97,
+                                      UC8253_PANELSETTING,
+                                      2,
+                                      0b11011111,
+                                      0x8D,
+                                      0xFE};
 
 class ThinkInk_370_Mono_BAAMFGN : public Adafruit_UC8253 {
  public:
-  ThinkInk_370_Mono_BAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, 
-                                 int16_t RST, int16_t CS, int16_t SRCS, 
-                                 int16_t MISO, int16_t BUSY = -1)
-    : Adafruit_UC8253(416, 240, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+  ThinkInk_370_Mono_BAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
+                            int16_t CS, int16_t SRCS, int16_t MISO,
+                            int16_t BUSY = -1)
+      : Adafruit_UC8253(416, 240, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_370_Mono_BAAMFGN(int16_t DC, int16_t RST, int16_t CS, 
-                                 int16_t SRCS, int16_t BUSY = -1, 
-                                 SPIClass* spi = &SPI)
+  ThinkInk_370_Mono_BAAMFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+                            int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_UC8253(416, 240, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {

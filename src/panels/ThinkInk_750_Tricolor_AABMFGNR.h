@@ -30,17 +30,17 @@ const uint8_t uc8179_750_tricolor_init_code[] {
 
 // clang-format on
 
-
 class ThinkInk_750_Tricolor_AABMFGNR : public Adafruit_UC8179 {
  private:
  public:
-  ThinkInk_750_Tricolor_AABMFGNR(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
-                        int16_t CS, int16_t SRCS, int16_t MISO,
-                        int16_t BUSY = -1)
+  ThinkInk_750_Tricolor_AABMFGNR(int16_t SID, int16_t SCLK, int16_t DC,
+                                 int16_t RST, int16_t CS, int16_t SRCS,
+                                 int16_t MISO, int16_t BUSY = -1)
       : Adafruit_UC8179(800, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_750_Tricolor_AABMFGNR(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                        int16_t BUSY = -1, SPIClass* spi = &SPI)
+  ThinkInk_750_Tricolor_AABMFGNR(int16_t DC, int16_t RST, int16_t CS,
+                                 int16_t SRCS, int16_t BUSY = -1,
+                                 SPIClass* spi = &SPI)
       : Adafruit_UC8179(800, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {

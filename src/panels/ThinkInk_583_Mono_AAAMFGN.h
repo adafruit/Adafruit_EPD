@@ -3,40 +3,53 @@
 
 #include "Adafruit_EPD.h"
 
-const uint8_t uc8179_mono_init_code[] {
-    UC8179_POWERSETTING, 4, 
-	0x07, // VGH=20V
-	0x07, // VGL=-20V
-	0x3F, // VDH=15V
-	0x3F, // VDL=-15V
+const uint8_t uc8179_mono_init_code[]{UC8179_POWERSETTING,
+                                      4,
+                                      0x07, // VGH=20V
+                                      0x07, // VGL=-20V
+                                      0x3F, // VDH=15V
+                                      0x3F, // VDL=-15V
 
-    UC8179_POWERON, 0,
-	0xFF, 100,          // busy wait
-	
-	UC8179_PANELSETTING, 1,
-	0b010111, // BW OTP LUT
+                                      UC8179_POWERON,
+                                      0,
+                                      0xFF,
+                                      100, // busy wait
 
-    UC8179_TRES, 4,
-	0x02, 0x88, 0x01, 0xE0,
-	
-	UC8179_DUALSPI, 1, 0x00,
+                                      UC8179_PANELSETTING,
+                                      1,
+                                      0b010111, // BW OTP LUT
 
-    UC8179_WRITE_VCOM, 2, 0x10, 0x07,
-    UC8179_TCON, 1, 0x22,
+                                      UC8179_TRES,
+                                      4,
+                                      0x02,
+                                      0x88,
+                                      0x01,
+                                      0xE0,
 
-    0xFE};
+                                      UC8179_DUALSPI,
+                                      1,
+                                      0x00,
 
+                                      UC8179_WRITE_VCOM,
+                                      2,
+                                      0x10,
+                                      0x07,
+                                      UC8179_TCON,
+                                      1,
+                                      0x22,
+
+                                      0xFE};
 
 class ThinkInk_583_Mono_AAAMFGN : public Adafruit_UC8179 {
  private:
  public:
   ThinkInk_583_Mono_AAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
-                        int16_t CS, int16_t SRCS, int16_t MISO,
-                        int16_t BUSY = -1)
+                            int16_t CS, int16_t SRCS, int16_t MISO,
+                            int16_t BUSY = -1)
       : Adafruit_UC8179(648, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_583_Mono_AAAMFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                        int16_t BUSY = -1, SPIClass* spi = &SPI)
+                            int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_UC8179(648, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
