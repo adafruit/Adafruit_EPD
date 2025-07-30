@@ -1,5 +1,5 @@
-#ifndef _THINKINK_420_MONO_MFGNR_H
-#define _THINKINK_420_MONO_MFGNR_H
+#ifndef _THINKINK_420_TRICOLOR_MFGNR_H
+#define _THINKINK_420_TRICOLOR_MFGNR_H
 
 // This file is #included by Adafruit_ThinkInk.h and does not need to
 // #include anything else to pick up the EPD header or ink mode enum.
@@ -92,14 +92,14 @@ static const uint8_t ti_420mfgnr_gray4_lut_code[] = {
     0xFE // EOM
 };
 
-class ThinkInk_420_Mono_MFGNR : public Adafruit_SSD1683 {
+class ThinkInk_420_Tricolor_MFGNR : public Adafruit_SSD1683 {
  public:
-  ThinkInk_420_Mono_MFGNR(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
+  ThinkInk_420_Tricolor_MFGNR(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                           int16_t CS, int16_t SRCS, int16_t MISO,
                           int16_t BUSY = -1)
       : Adafruit_SSD1683(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_420_Mono_MFGNR(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+  ThinkInk_420_Tricolor_MFGNR(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                           int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_SSD1683(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
@@ -145,4 +145,4 @@ class ThinkInk_420_Mono_MFGNR : public Adafruit_SSD1683 {
   }
 };
 
-#endif // _THINKINK_420_MONO_MFGNR_H
+#endif // _THINKINK_420_TRICOLOR_MFGNR_H
