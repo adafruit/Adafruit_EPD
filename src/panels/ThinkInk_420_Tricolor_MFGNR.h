@@ -94,13 +94,13 @@ static const uint8_t ti_420mfgnr_gray4_lut_code[] = {
 
 class ThinkInk_420_Tricolor_MFGNR : public Adafruit_SSD1683 {
  public:
-  ThinkInk_420_Tricolor_MFGNR(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
-                          int16_t CS, int16_t SRCS, int16_t MISO,
-                          int16_t BUSY = -1)
+  ThinkInk_420_Tricolor_MFGNR(int16_t SID, int16_t SCLK, int16_t DC,
+                              int16_t RST, int16_t CS, int16_t SRCS,
+                              int16_t MISO, int16_t BUSY = -1)
       : Adafruit_SSD1683(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
   ThinkInk_420_Tricolor_MFGNR(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                          int16_t BUSY = -1, SPIClass* spi = &SPI)
+                              int16_t BUSY = -1, SPIClass* spi = &SPI)
       : Adafruit_SSD1683(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
