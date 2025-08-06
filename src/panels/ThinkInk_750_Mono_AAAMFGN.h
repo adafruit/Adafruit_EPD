@@ -53,7 +53,7 @@ class ThinkInk_750_Mono_AAAMFGN : public Adafruit_UC8179 {
       : Adafruit_UC8179(800, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_EPD::begin(true);
+    Adafruit_UC8179::begin(true);
     setColorBuffer(1, false); // layer 1 uninverted
     setBlackBuffer(1, false); // only one buffer
 
