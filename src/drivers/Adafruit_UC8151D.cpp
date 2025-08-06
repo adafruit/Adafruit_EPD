@@ -262,8 +262,8 @@ void Adafruit_UC8151D::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
   buf[1] = x2;
   buf[2] = y1 >> 8;
   buf[3] = y1 & 0xFF;
-  buf[4] = (y2) >> 8;
-  buf[5] = (y2)&0xFF;
+  buf[4] = y2 >> 8;
+  buf[5] = y2 & 0xFF;
   buf[6] = 0x28;
 
   EPD_command(UC8151D_PTL, buf, 7); // resolution setting
