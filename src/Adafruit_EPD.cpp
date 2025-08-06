@@ -252,7 +252,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // Serial.printf("(%d, %d) : ", x, y);
 
   uint16_t addr;
-  if (_data_entry_mode == THINKING_UC8179) {
+  if (_data_entry_mode == THINKINK_UC8179) {
     addr = ((uint32_t)(HEIGHT - 1 - y) * (uint32_t)WIDTH + x) / 8;
   } else { //  THINKINK_STANDARD default!
     addr = ((uint32_t)(WIDTH - 1 - x) * (uint32_t)_HEIGHT + y) / 8;
@@ -276,7 +276,7 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   color_bit = layer_colors[color] & 0x2;
 
   uint8_t bit_idx;
-  if (_data_entry_mode == THINKING_UC8179) {
+  if (_data_entry_mode == THINKINK_UC8179) {
     bit_idx = x;
   } else { //  THINKINK_STANDARD default!
     bit_idx = y;

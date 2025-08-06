@@ -46,8 +46,8 @@ enum {
 };
 
 typedef enum {
-  THINKINK_STANDARD, // 99% of panels use this setup!
-  THINKING_UC8179,   // .... except for UC8179?
+  THINKINK_STANDARD = 0, // 99% of panels use this setup!
+  THINKINK_UC8179 = 1,   // .... except for UC8179?
 } thinkink_sramentrymode_t;
 
 typedef enum {

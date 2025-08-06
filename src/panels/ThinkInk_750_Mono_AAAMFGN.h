@@ -1,9 +1,9 @@
-#ifndef _THINKINK_583_MONO_AAAMFGN_H
-#define _THINKINK_583_MONO_AAAMFGN_H
+#ifndef _THINKINK_750_MONO_AAAMFGN_H
+#define _THINKINK_750_MONO_AAAMFGN_H
 
 #include "Adafruit_EPD.h"
 
-const uint8_t uc8179_mono_init_code[]{UC8179_POWERSETTING,
+const uint8_t uc8179_750_mono_init_code[]{UC8179_POWERSETTING,
                                       4,
                                       0x07, // VGH=20V
                                       0x07, // VGL=-20V
@@ -21,8 +21,8 @@ const uint8_t uc8179_mono_init_code[]{UC8179_POWERSETTING,
 
                                       UC8179_TRES,
                                       4,
-                                      0x02,
-                                      0x88,
+                                      0x03,
+                                      0x20,
                                       0x01,
                                       0xE0,
 
@@ -40,24 +40,24 @@ const uint8_t uc8179_mono_init_code[]{UC8179_POWERSETTING,
 
                                       0xFE};
 
-class ThinkInk_583_Mono_AAAMFGN : public Adafruit_UC8179 {
+class ThinkInk_750_Mono_AAAMFGN : public Adafruit_UC8179 {
  private:
  public:
-  ThinkInk_583_Mono_AAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
+  ThinkInk_750_Mono_AAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                             int16_t CS, int16_t SRCS, int16_t MISO,
                             int16_t BUSY = -1)
-      : Adafruit_UC8179(648, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_UC8179(800, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_583_Mono_AAAMFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
+  ThinkInk_750_Mono_AAAMFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                             int16_t BUSY = -1, SPIClass* spi = &SPI)
-      : Adafruit_UC8179(648, 480, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_UC8179(800, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
-    Adafruit_UC8179::begin(true);
+    Adafruit_EPD::begin(true);
     setColorBuffer(1, false); // layer 1 uninverted
     setBlackBuffer(1, false); // only one buffer
 
-    _epd_init_code = uc8179_mono_init_code;
+    _epd_init_code = uc8179_750_mono_init_code;
 
     layer_colors[EPD_WHITE] = 0b00;
     layer_colors[EPD_BLACK] = 0b01;
@@ -68,8 +68,8 @@ class ThinkInk_583_Mono_AAAMFGN : public Adafruit_UC8179 {
 
     default_refresh_delay = 3000;
     setRotation(0);
-    powerDown();
+    // DO NOT power down again!
   };
 };
 
-#endif // _THINKINK_583_MONO_AAAMFGN
+#endif // _THINKINK_750_MONO_AAAMFGN

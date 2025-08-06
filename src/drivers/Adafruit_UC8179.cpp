@@ -137,7 +137,7 @@ void Adafruit_UC8179::busy_wait(void) {
 /**************************************************************************/
 void Adafruit_UC8179::begin(bool reset) {
   // UUUUGH, SRAM is not organized the same way for this chip?
-  _data_entry_mode = THINKING_UC8179;
+  _data_entry_mode = THINKINK_UC8179;
 
   Adafruit_EPD::begin(reset);
   setBlackBuffer(0, true);  // black defaults to inverted
