@@ -27,8 +27,10 @@
 #endif
 
 // 2.13" Quadcolor EPD with JD79661 chipset
-ThinkInk_213_Quadcolor_AJHE5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
-                                     EPD_SPI);
+ThinkInk_213_Quadcolor_AJHE5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 3.52" Quadcolor EPD with JD79667 chipset
+//ThinkInk_352_Quadcolor_AJHE5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 void setup() {
   Serial.begin(115200);
