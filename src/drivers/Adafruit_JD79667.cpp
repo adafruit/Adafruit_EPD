@@ -100,7 +100,6 @@ Adafruit_JD79667::Adafruit_JD79667(int width, int height, int16_t DC,
     buffer2 = buffer1;
   }
 
-
   singleByteTxns = true;
 }
 
