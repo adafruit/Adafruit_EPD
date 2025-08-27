@@ -27,12 +27,15 @@
 #endif
 
 // ThinkInk_154_Grayscale4_T8 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
-// EPD_BUSY, EPD_SPI); ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET,
-// EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+// EPD_BUSY, EPD_SPI); 
+
 
 // 1.54" Grayscale Breakout (SSD1681)
-//ThinkInk_154_Grayscale4_M05 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
-//                                    EPD_SPI);
+//ThinkInk_154_Grayscale4_M05 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+
+// 2.13" 212x104 Grayscale display with IL0373 chipset
+// ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 2.13" Grayscale Featherwing or Breakout (SSD1680Z)
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,

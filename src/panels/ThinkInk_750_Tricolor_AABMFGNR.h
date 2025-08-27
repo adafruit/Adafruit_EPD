@@ -44,7 +44,7 @@ class ThinkInk_750_Tricolor_AABMFGNR : public Adafruit_UC8179 {
       : Adafruit_UC8179(800, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_TRICOLOR) {
-    Adafruit_EPD::begin(true);
+    Adafruit_UC8179::begin(true);
 
     setBlackBuffer(0, false);
     setColorBuffer(1, false);
