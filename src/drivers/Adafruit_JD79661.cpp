@@ -131,10 +131,10 @@ void Adafruit_JD79661::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
   uint8_t* pBuf;
 
-  // deal with non-4-bit heights
+  // deal with non-8-bit heights
   uint16_t _WIDTH = WIDTH;
-  if (_WIDTH % 4 != 0) {
-    _WIDTH += 4 - (_WIDTH % 4);
+  if (_WIDTH % 8 != 0) {
+    _WIDTH += 8 - (_WIDTH % 8);
   }
 
   // check rotation, move pixel around if necessary
