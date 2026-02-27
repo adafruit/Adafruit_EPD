@@ -45,11 +45,11 @@
 /**************************************************************************/
 class Adafruit_SSD1677 : public Adafruit_EPD {
  public:
-  Adafruit_SSD1677(int width, int height, int16_t SID, int16_t SCLK,
-                   int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
-                   int16_t MISO, int16_t BUSY = -1);
+  Adafruit_SSD1677(int width, int height, int16_t SID, int16_t SCLK, int16_t DC,
+                   int16_t RST, int16_t CS, int16_t SRCS, int16_t MISO,
+                   int16_t BUSY = -1);
   Adafruit_SSD1677(int width, int height, int16_t DC, int16_t RST, int16_t CS,
-                   int16_t SRCS, int16_t BUSY = -1, SPIClass *spi = &SPI);
+                   int16_t SRCS, int16_t BUSY = -1, SPIClass* spi = &SPI);
 
   void begin(bool reset = true);
   void powerUp();
@@ -66,11 +66,11 @@ class Adafruit_SSD1677 : public Adafruit_EPD {
 
   void softReset();
 
-  uint8_t _display_ctrl1_val = 0x40; // default: bypass RED
+  uint8_t _display_ctrl1_val = 0x40;  // default: bypass RED
   uint8_t _display_update_val = 0xF7; // default: full refresh
-  bool _grayscale_preclear = false; // if true, do BW clear before grayscale
+  bool _grayscale_preclear = false;   // if true, do BW clear before grayscale
 
-  void setCustomLUT(const uint8_t *lutData);
+  void setCustomLUT(const uint8_t* lutData);
   void clearCustomLUT();
   bool _customLutActive = false;
 };

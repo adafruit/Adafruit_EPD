@@ -1,5 +1,5 @@
-#ifndef _THINKINK_426_GRAYSCALE4_GDEQ0426T82_H
-#define _THINKINK_426_GRAYSCALE4_GDEQ0426T82_H
+#ifndef _THINKINK_426_GRAYSCALE4_GDEQ_H
+#define _THINKINK_426_GRAYSCALE4_GDEQ_H
 
 // This file is #included by Adafruit_ThinkInk.h and does not need to
 // #include anything else to pick up the EPD header or ink mode enum.
@@ -69,18 +69,17 @@ static const uint8_t ti_426_monofull_init_code[] {
 
 // clang-format on
 
-class ThinkInk_426_Grayscale4_GDEQ0426T82 : public Adafruit_SSD1677 {
+class ThinkInk_426_Grayscale4_GDEQ : public Adafruit_SSD1677 {
  public:
-  ThinkInk_426_Grayscale4_GDEQ0426T82(int16_t SID, int16_t SCLK, int16_t DC,
-                                 int16_t RST, int16_t CS, int16_t SRCS,
-                                 int16_t MISO, int16_t BUSY = -1)
-      : Adafruit_SSD1677(800, 480, SID, SCLK, DC, RST, CS, SRCS, MISO,
-                         BUSY) {};
+  ThinkInk_426_Grayscale4_GDEQ(int16_t SID, int16_t SCLK, int16_t DC,
+                                      int16_t RST, int16_t CS, int16_t SRCS,
+                                      int16_t MISO, int16_t BUSY = -1)
+      : Adafruit_SSD1677(800, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
 
-  ThinkInk_426_Grayscale4_GDEQ0426T82(int16_t DC, int16_t RST, int16_t CS,
-                                 int16_t SRCS, int16_t BUSY = -1,
-                                 SPIClass *spi = &SPI)
-      : Adafruit_SSD1677(800, 480, DC, RST, CS, SRCS, BUSY, spi) {};
+  ThinkInk_426_Grayscale4_GDEQ(int16_t DC, int16_t RST, int16_t CS,
+                                      int16_t SRCS, int16_t BUSY = -1,
+                                      SPIClass* spi = &SPI)
+      : Adafruit_SSD1677(800, 480, DC, RST, CS, SRCS, BUSY, spi){};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_SSD1677::begin(true);
@@ -88,8 +87,8 @@ class ThinkInk_426_Grayscale4_GDEQ0426T82 : public Adafruit_SSD1677 {
     inkmode = mode;
 
     if (mode == THINKINK_GRAYSCALE4) {
-      setBlackBuffer(0, true);   // LSB inverted
-      setColorBuffer(1, true);   // MSB inverted
+      setBlackBuffer(0, true); // LSB inverted
+      setColorBuffer(1, true); // MSB inverted
 
       _epd_init_code = ti_426_gray4_init_code;
       _epd_lut_code = ti_426_gray4_lut_code;
@@ -102,11 +101,11 @@ class ThinkInk_426_Grayscale4_GDEQ0426T82 : public Adafruit_SSD1677 {
       layer_colors[EPD_WHITE] = 0b00; // RAM {1,1} = white
       layer_colors[EPD_BLACK] = 0b11; // RAM {0,0} = black
       layer_colors[EPD_LIGHT] = 0b10; // RAM {0,1} = light gray
-      layer_colors[EPD_DARK]  = 0b01; // RAM {1,0} = dark gray
-      layer_colors[EPD_RED]   = 0b11;
-      layer_colors[EPD_GRAY]  = 0b10;
+      layer_colors[EPD_DARK] = 0b01;  // RAM {1,0} = dark gray
+      layer_colors[EPD_RED] = 0b11;
+      layer_colors[EPD_GRAY] = 0b10;
 
-      _display_ctrl1_val = 0x00; // NORMAL: use both BW and RED
+      _display_ctrl1_val = 0x00;  // NORMAL: use both BW and RED
       _display_update_val = 0xCF; // custom LUT, full power cycle
       _grayscale_preclear = true;
 
@@ -125,7 +124,7 @@ class ThinkInk_426_Grayscale4_GDEQ0426T82 : public Adafruit_SSD1677 {
       layer_colors[EPD_LIGHT] = 0b00;
       layer_colors[EPD_DARK] = 0b01;
 
-      _display_ctrl1_val = 0x40; // bypass RED
+      _display_ctrl1_val = 0x40;  // bypass RED
       _display_update_val = 0xF7; // full refresh with OTP LUT
       _grayscale_preclear = false;
     }
@@ -136,4 +135,4 @@ class ThinkInk_426_Grayscale4_GDEQ0426T82 : public Adafruit_SSD1677 {
   }
 };
 
-#endif // _THINKINK_426_GRAYSCALE4_GDEQ0426T82_H
+#endif // _THINKINK_426_GRAYSCALE4_GDEQ_H

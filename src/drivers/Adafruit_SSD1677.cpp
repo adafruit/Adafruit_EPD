@@ -42,8 +42,8 @@ Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t SID,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -54,7 +54,7 @@ Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t SID,
 /**************************************************************************/
 Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t DC,
                                    int16_t RST, int16_t CS, int16_t SRCS,
-                                   int16_t BUSY, SPIClass *spi)
+                                   int16_t BUSY, SPIClass* spi)
     : Adafruit_EPD(width, height, DC, RST, CS, SRCS, BUSY, spi) {
   buffer1_size = ((uint32_t)width * (uint32_t)height) / 8;
   buffer2_size = buffer1_size;
@@ -65,8 +65,8 @@ Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t DC,
     buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
-    buffer1 = (uint8_t *)malloc(buffer1_size);
-    buffer2 = (uint8_t *)malloc(buffer2_size);
+    buffer1 = (uint8_t*)malloc(buffer1_size);
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 }
 
@@ -208,8 +208,8 @@ void Adafruit_SSD1677::update() {
     @brief Perform a partial (fast differential) display update.
 */
 /**************************************************************************/
-void Adafruit_SSD1677::displayPartial(uint16_t x1, uint16_t y1,
-                                      uint16_t x2, uint16_t y2) {
+void Adafruit_SSD1677::displayPartial(uint16_t x1, uint16_t y1, uint16_t x2,
+                                      uint16_t y2) {
   (void)x1;
   (void)y1;
   (void)x2;
@@ -321,7 +321,7 @@ void Adafruit_SSD1677::displayHalf() {
 */
 /**************************************************************************/
 void Adafruit_SSD1677::softReset() {
-  const uint8_t *init_code = ssd1677_default_init_code;
+  const uint8_t* init_code = ssd1677_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
@@ -342,7 +342,7 @@ void Adafruit_SSD1677::softReset() {
 void Adafruit_SSD1677::powerUp() {
   hardwareReset();
 
-  const uint8_t *init_code = ssd1677_default_init_code;
+  const uint8_t* init_code = ssd1677_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;

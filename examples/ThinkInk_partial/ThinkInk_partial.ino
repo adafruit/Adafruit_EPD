@@ -34,7 +34,7 @@
    #define SRAM_CS -1
    #define EPD_RESET 5
    #define EPD_SPI &SPI */
-// ThinkInk_426_Grayscale4_GDEQ0426T82 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS
+// ThinkInk_426_Grayscale4_GDEQ display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS
 // EPD_BUSY, EPD_SPI);
 
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
