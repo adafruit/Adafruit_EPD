@@ -26,6 +26,17 @@
 #define EPD_SPI &SPI // primary SPI
 #endif
 
+/* 4.26" Xteink X4 eReader (SSD1677)
+   use these pins:
+   #define EPD_DC 4
+   #define EPD_CS 21
+   #define EPD_BUSY 6
+   #define SRAM_CS -1
+   #define EPD_RESET 5
+   #define EPD_SPI &SPI */
+// ThinkInk_426_Grayscale4_GDEQ0426T82 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS
+// EPD_BUSY, EPD_SPI);
+
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI);
 ThinkInk_154_Mono_D67 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
