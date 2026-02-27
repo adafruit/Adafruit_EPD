@@ -5,7 +5,7 @@
 #define EPD_RAM_BW SSD1677_WRITE_RAM_BW
 #define EPD_RAM_RED SSD1677_WRITE_RAM_RED
 
-#define BUSY_WAIT 500
+#define BUSY_WAIT 3000
 
 // clang-format off
 
@@ -26,16 +26,6 @@ const uint8_t ssd1677_default_init_code[] {
 /**************************************************************************/
 /*!
     @brief constructor if using external SRAM chip and software SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param SID the SID pin to use
-    @param SCLK the SCLK pin to use
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param SRCS the SRAM chip select pin to use
-    @param MISO the MISO pin to use
-    @param BUSY the busy pin to use
 */
 /**************************************************************************/
 Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t SID,
@@ -60,14 +50,6 @@ Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t SID,
 /**************************************************************************/
 /*!
     @brief constructor if using on-chip RAM and hardware SPI
-    @param width the width of the display in pixels
-    @param height the height of the display in pixels
-    @param DC the data/command pin to use
-    @param RST the reset pin to use
-    @param CS the chip select pin to use
-    @param SRCS the SRAM chip select pin to use
-    @param BUSY the busy pin to use
-    @param spi the SPI bus to use
 */
 /**************************************************************************/
 Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t DC,
@@ -95,12 +77,11 @@ Adafruit_SSD1677::Adafruit_SSD1677(int width, int height, int16_t DC,
 /**************************************************************************/
 void Adafruit_SSD1677::busy_wait(void) {
   if (_busy_pin >= 0) {
-    // SSD1677 busy is active HIGH — wait while pin is HIGH
     unsigned long start = millis();
     while (digitalRead(_busy_pin)) {
       delay(10);
       if (millis() - start > 15000) {
-        return; // timeout
+        return;
       }
     }
   } else {
@@ -117,35 +98,103 @@ void Adafruit_SSD1677::busy_wait(void) {
 void Adafruit_SSD1677::begin(bool reset) {
   Adafruit_EPD::begin(reset);
 
-  // SSD1677 uses horizontal scan layout like UC8179
   _data_entry_mode = THINKINK_UC8179;
 
-  setBlackBuffer(0, true);  // black defaults to inverted
-  setColorBuffer(1, true);  // second buffer inverted
+  setBlackBuffer(0, true);
+  setColorBuffer(1, true);
 
   powerDown();
 }
 
 /**************************************************************************/
 /*!
-    @brief signal the display to update
+    @brief signal the display to update.
+    For mono: standard full refresh with bypass RED.
+    For grayscale: two-pass process.
+      Pass 1 - Preclear: overwrite RED RAM with buffer1 (same as BW),
+               then full BW refresh with OTP LUT to drive all pixels
+               to a known black/white baseline.
+      Pass 2 - Grayscale: reload custom LUT, write buffer1 (LSB) to
+               BW and buffer2 (MSB) to RED, then refresh. The LUT
+               interprets the transition from the BW baseline to the
+               new LSB/MSB combination to produce 4 gray levels.
+
+    Called by base class display() after it has written buffer1 to
+    BW RAM (0x24) and buffer2 to RED RAM (0x26).
 */
 /**************************************************************************/
 void Adafruit_SSD1677::update() {
   uint8_t buf[2];
 
-  // Display Update Control 1: bypass RED RAM for full refresh
-  buf[0] = 0x40; // CTRL1_BYPASS_RED
-  buf[1] = 0x00; // single chip
+  if (_grayscale_preclear) {
+    setRAMAddress(0, 0);
+    if (use_sram) {
+      writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 1);
+    } else {
+      writeRAMFramebufferToEPD(buffer1, buffer1_size, 1);
+    }
+
+    // Bypass RED, full refresh with OTP LUT
+    buf[0] = 0x40;
+    buf[1] = 0x00;
+    EPD_command(SSD1677_DISPLAY_UPDATE_CTRL1, buf, 2);
+
+    buf[0] = 0xF7;
+    EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+    EPD_command(SSD1677_MASTER_ACTIVATION);
+
+    busy_wait();
+    if (_busy_pin <= -1) {
+      delay(default_refresh_delay);
+    }
+
+    if (_epd_lut_code) {
+      EPD_commandList(_epd_lut_code);
+    }
+
+    // Write buffer1 (LSB) to BW RAM
+    setRAMAddress(0, 0);
+    if (use_sram) {
+      writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0);
+    } else {
+      writeRAMFramebufferToEPD(buffer1, buffer1_size, 0);
+    }
+
+    // Write buffer2 (MSB) to RED RAM
+    setRAMAddress(0, 0);
+    if (use_sram) {
+      writeSRAMFramebufferToEPD(buffer2_addr, buffer2_size, 1);
+    } else {
+      writeRAMFramebufferToEPD(buffer2, buffer2_size, 1);
+    }
+
+    // NORMAL mode: use both BW and RED for grayscale
+    buf[0] = _display_ctrl1_val; // 0x00
+    buf[1] = 0x00;
+    EPD_command(SSD1677_DISPLAY_UPDATE_CTRL1, buf, 2);
+
+    // Custom LUT refresh
+    buf[0] = _display_update_val; // 0xCF
+    EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+
+    EPD_command(SSD1677_MASTER_ACTIVATION);
+
+    busy_wait();
+    if (_busy_pin <= -1) {
+      delay(default_refresh_delay);
+    }
+
+    return;
+  }
+
+  // --- Mono mode: standard full refresh ---
+  buf[0] = _display_ctrl1_val; // 0x40 bypass RED
+  buf[1] = 0x00;
   EPD_command(SSD1677_DISPLAY_UPDATE_CTRL1, buf, 2);
 
-  // Display Update Control 2: full power cycle
-  // 0xF7 = CLOCK_ON | ANALOG_ON | TEMP_LOAD | LUT_LOAD |
-  //        DISPLAY_START | ANALOG_OFF | CLOCK_OFF
-  buf[0] = 0xF7;
+  buf[0] = _display_update_val; // 0xF7 full refresh OTP
   EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
 
-  // Master activation — triggers the refresh
   EPD_command(SSD1677_MASTER_ACTIVATION);
 
   busy_wait();
@@ -156,7 +205,138 @@ void Adafruit_SSD1677::update() {
 
 /**************************************************************************/
 /*!
-    @brief start up the display
+    @brief Perform a partial (fast differential) display update.
+*/
+/**************************************************************************/
+void Adafruit_SSD1677::displayPartial(uint16_t x1, uint16_t y1,
+                                      uint16_t x2, uint16_t y2) {
+  (void)x1;
+  (void)y1;
+  (void)x2;
+  (void)y2;
+
+  softReset();
+  setRAMAddress(0, 0);
+
+  // Write NEW frame to BW RAM
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0);
+  } else {
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 0);
+  }
+
+  uint8_t buf[2];
+
+  // NORMAL mode: compare BW vs RED for differential
+  buf[0] = 0x00;
+  buf[1] = 0x00;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL1, buf, 2);
+
+  // Partial refresh using built-in LUT:
+  // 0xFC = CLOCK_ON | ANALOG_ON | TEMP_LOAD | LUT_LOAD |
+  //        MODE_SELECT | DISPLAY_START
+  buf[0] = 0xFC;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+
+  EPD_command(SSD1677_MASTER_ACTIVATION);
+
+  busy_wait();
+  if (_busy_pin <= -1) {
+    delay(2000);
+  }
+
+  // Sync RED RAM with new frame for next differential update
+  setRAMAddress(0, 0);
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 1);
+  } else {
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 1);
+  }
+
+  // Power off analog + clock (not deep sleep)
+  buf[0] = 0x03;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+  EPD_command(SSD1677_MASTER_ACTIVATION);
+  busy_wait();
+}
+
+/**************************************************************************/
+/*!
+    @brief Perform a "half" refresh — faster than full, cleaner than partial.
+*/
+/**************************************************************************/
+void Adafruit_SSD1677::displayHalf() {
+  softReset();
+  setRAMAddress(0, 0);
+
+  // Write to BW RAM
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 0);
+  } else {
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 0);
+  }
+
+  // Also write to RED RAM
+  setRAMAddress(0, 0);
+  if (use_sram) {
+    writeSRAMFramebufferToEPD(buffer1_addr, buffer1_size, 1);
+  } else {
+    writeRAMFramebufferToEPD(buffer1, buffer1_size, 1);
+  }
+
+  uint8_t buf[2];
+
+  // Bypass RED
+  buf[0] = 0x40;
+  buf[1] = 0x00;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL1, buf, 2);
+
+  // Write high temp for faster refresh
+  buf[0] = 0x5A;
+  EPD_command(SSD1677_WRITE_TEMP, buf, 1);
+
+  // Half refresh: 0xD4 = CLOCK_ON | ANALOG_ON | LUT_LOAD |
+  //               MODE_SELECT | DISPLAY_START
+  buf[0] = 0xD4;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+
+  EPD_command(SSD1677_MASTER_ACTIVATION);
+
+  busy_wait();
+  if (_busy_pin <= -1) {
+    delay(5000);
+  }
+
+  // Power off (not deep sleep)
+  buf[0] = 0x03;
+  EPD_command(SSD1677_DISPLAY_UPDATE_CTRL2, buf, 1);
+  EPD_command(SSD1677_MASTER_ACTIVATION);
+  busy_wait();
+}
+
+/**************************************************************************/
+/*!
+    @brief Perform a soft reset and re-send init commands without
+    toggling the hardware reset pin.
+*/
+/**************************************************************************/
+void Adafruit_SSD1677::softReset() {
+  const uint8_t *init_code = ssd1677_default_init_code;
+
+  if (_epd_init_code != NULL) {
+    init_code = _epd_init_code;
+  }
+
+  EPD_commandList(init_code);
+
+  if (_epd_lut_code) {
+    EPD_commandList(_epd_lut_code);
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief start up the display (full init with hardware reset)
 */
 /**************************************************************************/
 void Adafruit_SSD1677::powerUp() {
@@ -173,19 +353,18 @@ void Adafruit_SSD1677::powerUp() {
     EPD_commandList(_epd_lut_code);
   }
 
-  // Set full-screen RAM window
   setRAMAddress(0, 0);
 }
 
 /**************************************************************************/
 /*!
-    @brief wind down the display
+    @brief wind down the display into deep sleep
 */
 /**************************************************************************/
 void Adafruit_SSD1677::powerDown() {
   uint8_t buf[1];
 
-  buf[0] = 0x01; // enter deep sleep
+  buf[0] = 0x01;
   EPD_command(SSD1677_DEEP_SLEEP, buf, 1);
   delay(100);
 }
@@ -193,10 +372,8 @@ void Adafruit_SSD1677::powerDown() {
 /**************************************************************************/
 /*!
     @brief Send the specific command to start writing to EPD display RAM
-    @param index The index for which buffer to write (0 or 1 for tri-color
-   displays) Ignored for monochrome displays.
-    @returns The byte that is read from SPI at the same time as sending the
-   command
+    @param index 0 for BW RAM, 1 for RED RAM
+    @returns The byte read from SPI
 */
 /**************************************************************************/
 uint8_t Adafruit_SSD1677::writeRAMCommand(uint8_t index) {
@@ -220,24 +397,20 @@ void Adafruit_SSD1677::setRAMAddress(uint16_t x, uint16_t y) {
   (void)x;
   (void)y;
 
-  // SSD1677 uses pixel-based X addresses with 2-byte values.
-  // Gate direction is reversed on GDEQ0426T82, so Y starts high
-  // and decrements (data entry mode 0x01 = X inc, Y dec).
-
   uint8_t buf[4];
 
   // RAM X range: 0 to WIDTH-1 (in pixels)
-  buf[0] = 0x00;                       // X start low
-  buf[1] = 0x00;                       // X start high
-  buf[2] = (WIDTH - 1) & 0xFF;         // X end low
-  buf[3] = ((WIDTH - 1) >> 8) & 0xFF;  // X end high
+  buf[0] = 0x00;
+  buf[1] = 0x00;
+  buf[2] = (WIDTH - 1) & 0xFF;
+  buf[3] = ((WIDTH - 1) >> 8) & 0xFF;
   EPD_command(SSD1677_SET_RAM_X_RANGE, buf, 4);
 
-  // RAM Y range: 0 to HEIGHT-1 (Y increment mode)
-  buf[0] = 0x00;                         // Y start low
-  buf[1] = 0x00;                         // Y start high
-  buf[2] = (HEIGHT - 1) & 0xFF;          // Y end low
-  buf[3] = ((HEIGHT - 1) >> 8) & 0xFF;   // Y end high
+  // RAM Y range: 0 to HEIGHT-1
+  buf[0] = 0x00;
+  buf[1] = 0x00;
+  buf[2] = (HEIGHT - 1) & 0xFF;
+  buf[3] = ((HEIGHT - 1) >> 8) & 0xFF;
   EPD_command(SSD1677_SET_RAM_Y_RANGE, buf, 4);
 
   // RAM X counter: start at 0

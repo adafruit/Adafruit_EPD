@@ -28,6 +28,13 @@
 #define SSD1677_DISPLAY_UPDATE_CTRL2 0x22
 #define SSD1677_MASTER_ACTIVATION 0x20
 
+// LUT and voltage settings
+#define SSD1677_WRITE_LUT 0x32
+#define SSD1677_GATE_VOLTAGE 0x03
+#define SSD1677_SOURCE_VOLTAGE 0x04
+#define SSD1677_WRITE_VCOM 0x2C
+#define SSD1677_WRITE_TEMP 0x1A
+
 // Power management
 #define SSD1677_DEEP_SLEEP 0x10
 
@@ -49,10 +56,23 @@ class Adafruit_SSD1677 : public Adafruit_EPD {
   void powerDown();
   void update();
 
+  void displayPartial(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+  void displayHalf();
+
  protected:
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
+
+  void softReset();
+
+  uint8_t _display_ctrl1_val = 0x40; // default: bypass RED
+  uint8_t _display_update_val = 0xF7; // default: full refresh
+  bool _grayscale_preclear = false; // if true, do BW clear before grayscale
+
+  void setCustomLUT(const uint8_t *lutData);
+  void clearCustomLUT();
+  bool _customLutActive = false;
 };
 
 #endif

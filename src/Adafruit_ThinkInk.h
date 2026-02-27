@@ -44,7 +44,7 @@
 #include "panels/ThinkInk_420_Tricolor_MFGNR.h"
 #include "panels/ThinkInk_420_Tricolor_RW.h"
 #include "panels/ThinkInk_420_Tricolor_Z21.h"
-#include "panels/ThinkInk_426_Mono_GDEQ0426T82.h"
+#include "panels/ThinkInk_426_Grayscale4_GDEQ0426T82.h"
 #include "panels/ThinkInk_583_Mono_AAAMFGN.h"
 #include "panels/ThinkInk_583_Tricolor_AABMFGNR.h"
 #include "panels/ThinkInk_750_Mono_AAAMFGN.h"
