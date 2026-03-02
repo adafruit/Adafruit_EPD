@@ -217,6 +217,7 @@ class Adafruit_EPD : public Adafruit_GFX {
 #include "drivers/Adafruit_SSD1619.h"
 #include "drivers/Adafruit_SSD1675.h"
 #include "drivers/Adafruit_SSD1675B.h"
+#include "drivers/Adafruit_SSD1677.h"
 #include "drivers/Adafruit_SSD1680.h"
 #include "drivers/Adafruit_SSD1681.h"
 #include "drivers/Adafruit_SSD1683.h"
