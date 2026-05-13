@@ -17,13 +17,6 @@
 #define SRAM_CS -1              // use onboard RAM
 #define EPD_RESET PIN_EPD_RESET // ThinkInk 24-pin connector Reset
 #define EPD_SPI &SPI1           // secondary SPI for ThinkInk
-#elif defined(ARDUINO_ADAFRUIT_MAGTAG_ESP32S2)  // MagTag
-#define EPD_DC 7
-#define EPD_CS 8
-#define EPD_BUSY -1
-#define SRAM_CS -1
-#define EPD_RESET 6
-#define EPD_SPI &SPI
 #else
 #define EPD_DC 10
 #define EPD_CS 9
