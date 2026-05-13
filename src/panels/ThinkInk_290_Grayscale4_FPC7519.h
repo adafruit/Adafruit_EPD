@@ -2,8 +2,9 @@
 #define _THINKINK_290_GRAYSCALE4_FPC7519_H
 
 // MagTag 2.9" grayscale panel — FPC-7519rev.b (User ID first byte 0x44 or 0xca)
-// Uses the GxEPD2_4G (GDEM029T94) waveform LUT embedded in ssd1680_fpc7519_init_code.
-// For the original FPC-A005 panel use ThinkInk_290_Grayscale4_EAAMFGN instead.
+// Uses the GxEPD2_4G (GDEM029T94) waveform LUT embedded in
+// ssd1680_fpc7519_init_code. For the original FPC-A005 panel use
+// ThinkInk_290_Grayscale4_EAAMFGN instead.
 
 class ThinkInk_290_Grayscale4_FPC7519 : public Adafruit_SSD1680 {
  public:

@@ -258,7 +258,8 @@ void Adafruit_SSD1680::powerUp() {
   buf[3] = (WIDTH - 1) >> 8;
   EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
 
-  // Apply caller-supplied LUT override if set (takes precedence over embedded LUT)
+  // Apply caller-supplied LUT override if set (takes precedence over embedded
+  // LUT)
   if (_epd_lut_code) {
     EPD_commandList(_epd_lut_code);
   }
