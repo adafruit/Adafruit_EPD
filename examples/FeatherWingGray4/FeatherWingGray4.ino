@@ -11,23 +11,21 @@
 #include "Adafruit_ThinkInk.h"
 
 // --- FeatherWing pins (same convention as FeatherWingTest.ino) ---
-#ifdef ESP8266
+#if defined(ESP8266)
   #define SRAM_CS 16
   #define EPD_CS   0
   #define EPD_DC  15
-#endif
-#ifdef ESP32
+#elif defined(ESP32)
   #define SRAM_CS 32
   #define EPD_CS  15
   #define EPD_DC  33
-#endif
-#if defined(__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_FEATHER_M4) || defined(__AVR_ATmega328P__) || defined(ARDUINO_NRF52840_FEATHER)
-  #define SRAM_CS 6
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+  #define SRAM_CS 8
   #define EPD_CS  9
   #define EPD_DC  10
-#endif
-#ifdef ARDUINO_ADAFRUIT_FEATHER_RP2040
-  #define SRAM_CS 8
+#else
+  // Other Feathers (M0/M4/32u4/328P/nRF52840) and the CI fallback. Adjust for your wiring.
+  #define SRAM_CS 6
   #define EPD_CS  9
   #define EPD_DC  10
 #endif
