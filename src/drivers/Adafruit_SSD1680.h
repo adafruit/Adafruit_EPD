@@ -33,6 +33,10 @@
 #define SSD1680_SET_RAMXCOUNT 0x4E
 #define SSD1680_SET_RAMYCOUNT 0x4F
 
+// Init sequences available for direct use or override via setInitCode()
+extern const uint8_t ssd1680_default_init_code[];
+extern const uint8_t ssd1680_fpc7519_init_code[];
+
 /**************************************************************************/
 /*!
     @brief  Class for interfacing with SSD1680 EPD drivers

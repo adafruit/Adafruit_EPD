@@ -61,8 +61,11 @@ ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUS
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                    EPD_SPI);
 
-// 2.9" 4-Grayscale display with 296x128 pixels and SSD1680 chipset
+// 2.9" 4-Grayscale display with 296x128 pixels and SSD1680 chipset (original MagTag FPC-A005 panel)
 // ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+
+// 2.9" 4-Grayscale display with 296x128 pixels and SSD1680 chipset (newer MagTag FPC-7519rev.b panel)
+// ThinkInk_290_Grayscale4_FPC7519 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 // 4.2" 4-Grayscale display with SSD1683 chipset
 // ThinkInk_420_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
