@@ -53,6 +53,11 @@
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
+// Same panel but with colstart=8: uncomment this version (and comment the one
+// above) if you see an ~8px strip on the display (e.g. the FPC-7528B revision).
+// ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI, /*colstart=*/8);
+
 // 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
 // ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                      EPD_SPI);
