@@ -53,7 +53,7 @@
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
-// 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
+// 2.66" Grayscale display with 296x152 pixels and SSD1680 chipset (#6392)
 // ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                      EPD_SPI);
 
