@@ -49,7 +49,7 @@
 // 2.13" 212x104 Grayscale display with IL0373 chipset
 // ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 2.13" Grayscale Featherwing, Breakout, or bare eInk #6383 (SSD1680Z)
+// 2.13" Grayscale Featherwing #4195, Breakout #4197, or bare eInk #6383 (SSD1680Z)
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
