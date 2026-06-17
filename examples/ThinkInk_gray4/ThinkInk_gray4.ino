@@ -49,11 +49,13 @@
 // 2.13" 212x104 Grayscale display with IL0373 chipset
 // ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 2.13" Grayscale Featherwing or Breakout (SSD1680Z)
+// 2.13" 250x122 4-gray, SSD1680(Z), panel GDEY0213B74
+//   FPC-A002: FeatherWing #4195 (post-2020 rev) / Pi bonnet #4687
+//   FPC-7528B: breakout #4197 / bare #6383 (SSD1680Z)
 ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
                                      EPD_SPI);
 
-// 2.66" Monochrome display with 296x152 pixels and SSD1680 chipset
+// 2.66" 296x152 4-gray, SSD1680 - bare display #6392 (ribbon FPC-A003)
 // ThinkInk_266_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                      EPD_SPI);
 
@@ -61,13 +63,16 @@ ThinkInk_213_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUS
 // ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY,
 //                                    EPD_SPI);
 
-// 2.9" 4-Grayscale display with 296x128 pixels and SSD1680 chipset (original MagTag FPC-A005 panel)
+// 2.9" 296x128 4-gray, SSD1680 - original MagTag #4800 early batch
+//   (ribbon FPC-A005, panel GDEM029T94, colstart=8)
 // ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 2.9" 4-Grayscale display with 296x128 pixels and SSD1680 chipset (newer MagTag FPC-7519rev.b panel)
+// 2.9" 296x128 4-gray, SSD1680 - MagTag #4800 / FeatherWing #4777
+//   (ribbon FPC-7519rev.b, panel GDEM029T94; colstart=8 on MagTag, 0 on Wing)
 // ThinkInk_290_Grayscale4_FPC7519 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
-// 4.2" 4-Grayscale display with SSD1683 chipset
+// 4.2" 400x300 4-gray, SSD1683 - bare display #6381
+//   (panel GDEY042T81, ribbon FPC-190)
 // ThinkInk_420_Grayscale4_MFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 #define COLOR1 EPD_BLACK
