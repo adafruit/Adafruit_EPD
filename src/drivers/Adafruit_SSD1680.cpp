@@ -229,14 +229,10 @@ void Adafruit_SSD1680::powerUp() {
   delay(100);
   busy_wait();
 
-  const uint8_t* init_code;
+  const uint8_t* init_code = ssd1680_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
-  } else {
-    init_code = ssd1680_default_init_code;
-    // Default init embeds a full LUT; requires Display Mode 1.
-    _display_update_val = 0xc7;
   }
 
   EPD_commandList(init_code);
