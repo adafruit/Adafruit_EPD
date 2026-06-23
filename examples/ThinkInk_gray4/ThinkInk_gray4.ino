@@ -42,8 +42,8 @@
 // EPD_BUSY, EPD_SPI); 
 
 
-// 1.54" Grayscale Breakout (SSD1681)
-//ThinkInk_154_Grayscale4_M05 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+// 1.54" 200x200 4-gray, SSD1681 - breakout #4196 (panel GDEY0154D67, ribbon P154030-MF1-B)
+// ThinkInk_154_Grayscale4_M05 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
 
 
 // 2.13" 212x104 Grayscale display with IL0373 chipset
