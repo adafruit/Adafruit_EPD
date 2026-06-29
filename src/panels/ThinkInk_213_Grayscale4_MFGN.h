@@ -116,21 +116,30 @@ static const uint8_t ti_213mfgn_gray4_lut_code[] = {
 
 class ThinkInk_213_Grayscale4_MFGN : public Adafruit_SSD1680 {
  public:
+  // colstart: left RAM-X offset in pixels (multiple of 8). Default 0 keeps the
+  // shipped behavior; pass 8 for panels with an 8px left offset (e.g. the
+  // FPC-7528B revision of the 2.13" SSD1680 breakout).
   ThinkInk_213_Grayscale4_MFGN(int16_t SID, int16_t SCLK, int16_t DC,
                                int16_t RST, int16_t CS, int16_t SRCS,
-                               int16_t MISO, int16_t BUSY = -1)
-      : Adafruit_SSD1680(250, 122, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+                               int16_t MISO, int16_t BUSY = -1,
+                               int16_t colstart = 0)
+      : Adafruit_SSD1680(250, 122, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY),
+        _colstart(colstart){};
 
   ThinkInk_213_Grayscale4_MFGN(int16_t DC, int16_t RST, int16_t CS,
                                int16_t SRCS, int16_t BUSY = -1,
-                               SPIClass* spi = &SPI)
-      : Adafruit_SSD1680(250, 122, DC, RST, CS, SRCS, BUSY, spi){};
+                               SPIClass* spi = &SPI, int16_t colstart = 0)
+      : Adafruit_SSD1680(250, 122, DC, RST, CS, SRCS, BUSY, spi),
+        _colstart(colstart){};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
     Adafruit_SSD1680::begin(true);
 
     inkmode = mode; // Preserve ink mode for ImageReader or others
-    _xram_offset = 0;
+    // RAM-X byte offset derived from colstart (pixels). Default 0 keeps the
+    // shipped behavior; an 8px colstart (= 1 byte) removes the unwritten strip
+    // on the FPC-7528B revision of the 2.13" SSD1680 breakout.
+    _xram_offset = _colstart / 8;
 
     if (mode == THINKINK_GRAYSCALE4) {
       setColorBuffer(1, false); // layer 0 inverted
@@ -170,6 +179,10 @@ class ThinkInk_213_Grayscale4_MFGN : public Adafruit_SSD1680 {
 
     powerDown();
   }
+
+ private:
+  int16_t _colstart =
+      0; // left RAM-X offset in pixels (0 default; 8 for FPC-7528B)
 };
 
 #endif // _THINKINK_213_GRAYSCALE4_MFGN_H
