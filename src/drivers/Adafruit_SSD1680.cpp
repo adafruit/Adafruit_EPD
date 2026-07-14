@@ -212,8 +212,10 @@ void Adafruit_SSD1680::update() {
   EPD_command(SSD1680_MASTER_ACTIVATE);
   busy_wait();
 
+  // If no busy pin is connected, wait the maximum worse case time for the
+  // update to finish before returning
   if (_busy_pin <= -1) {
-    delay(1000);
+    delay(default_refresh_delay);
   }
 }
 
