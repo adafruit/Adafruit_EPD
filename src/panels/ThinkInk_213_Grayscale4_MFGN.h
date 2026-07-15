@@ -175,7 +175,7 @@ class ThinkInk_213_Grayscale4_MFGN : public Adafruit_SSD1680 {
       setRotation(0);
     }
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 9000;
 
     powerDown();
   }

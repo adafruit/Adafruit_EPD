@@ -120,7 +120,7 @@ class ThinkInk_270_Grayscale4_W3 : public Adafruit_IL91874 {
       layer_colors[EPD_DARK] = 0b01;
     }
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 9000;
     powerDown();
   };
 };

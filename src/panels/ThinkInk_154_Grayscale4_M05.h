@@ -132,7 +132,7 @@ class ThinkInk_154_Grayscale4_M05 : public Adafruit_SSD1681 {
       setRotation(3);
     }
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 9000;
 
     powerDown();
   }
