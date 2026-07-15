@@ -9,46 +9,23 @@
 
 // clang-format off
 
-// Default init for FPC-A005 and unrecognized SSD1680 panels.
-// VCOM, source voltage, and border corrected to match CircuitPython reference.
-// Includes full 153-byte waveform LUT for grayscale operation.
+// Default init for FPC-A005 (2.9" tri-color, e.g. Adafruit #1028) and other
+// SSD1680 mono/tri panels that supply no custom init code. Minimal bring-up
+// only: the panel loads its own waveform LUT from OTP during the update
+// sequence (Display Update Control 2 = 0xF4, the constructor default).
+// Grayscale panels supply their own init code (e.g. ssd1680_fpc7519_init_code)
+// and register setup in their own begin(); nothing grayscale-specific belongs here.
 const uint8_t ssd1680_default_init_code[] {
-    SSD1680_SW_RESET, 0,                         // soft reset
-    0xFF, 20,                                    // busy wait + 20 ms settle
-    SSD1680_DATA_MODE, 1, 0x03,                  // RAM data entry mode
-    SSD1680_WRITE_BORDER, 1, 0x03,               // border color
-    SSD1680_WRITE_VCOM, 1, 0x28,                 // VCOM voltage (-2.0 V)
-    SSD1680_GATE_VOLTAGE, 1, 0x17,               // gate voltage
-    SSD1680_SOURCE_VOLTAGE, 3, 0x41, 0xae, 0x32, // source voltage
+    SSD1680_SW_RESET, 0,                          // soft reset
+    0xFF, 20,                                     // busy wait
+    SSD1680_DATA_MODE, 1, 0x03,                   // RAM data entry mode
+    SSD1680_WRITE_BORDER, 1, 0x05,                // border color
+    SSD1680_WRITE_VCOM, 1, 0x36,                  // Vcom voltage
+    SSD1680_GATE_VOLTAGE, 1, 0x17,                // gate voltage
+    SSD1680_SOURCE_VOLTAGE, 3, 0x41, 0x00, 0x32,  // source voltage
     SSD1680_SET_RAMXCOUNT, 1, 1,
     SSD1680_SET_RAMYCOUNT, 2, 0, 0,
-
-    // Full waveform LUT — 153 bytes (5×12 VS + 12×7 timing + 9 FR/XON)
-    SSD1680_WRITE_LUT, 153,
-    // VS section: 5 rows × 12 bytes
-    0x2a, 0x60, 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // L0
-    0x20, 0x60, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // L1
-    0x28, 0x60, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // L2
-    0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // L3
-    0x00, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // L4
-    // Timing section: 12 groups × 7 bytes
-    0x00, 0x02, 0x00, 0x05, 0x14, 0x00, 0x00,   // G0
-    0x1e, 0x1e, 0x00, 0x00, 0x00, 0x00, 0x01,   // G1
-    0x00, 0x02, 0x00, 0x05, 0x14, 0x00, 0x00,   // G2
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G3
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G4
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G5
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G6
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G7
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G8
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G9
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G10
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // G11
-    // FR / XON section: 9 bytes
-    0x24, 0x22, 0x22, 0x22, 0x23, 0x32, 0x00, 0x00, 0x00,
-
-    0xFE // end
-};
+    0xFE};
 
 // Init for MagTag FPC-7519rev.b panels (User ID first byte 0x44 or 0xca).
 // Uses GxEPD2_4G (GDEM029T94) LUT: L0/L3 swapped, FS byte 0x60→0x48 for DC
@@ -231,14 +208,10 @@ void Adafruit_SSD1680::powerUp() {
   delay(100);
   busy_wait();
 
-  const uint8_t* init_code;
+  const uint8_t* init_code = ssd1680_default_init_code;
 
   if (_epd_init_code != NULL) {
     init_code = _epd_init_code;
-  } else {
-    init_code = ssd1680_default_init_code;
-    // Default init embeds a full LUT; requires Display Mode 1.
-    _display_update_val = 0xc7;
   }
 
   EPD_commandList(init_code);
