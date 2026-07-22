@@ -140,7 +140,7 @@ class ThinkInk_420_Grayscale4_MFGN : public Adafruit_SSD1683 {
       _display_update_val = 0xF7;
     }
     setRotation(1);
-    default_refresh_delay = 1000;
+    default_refresh_delay = 9000;
 
     powerDown();
   }

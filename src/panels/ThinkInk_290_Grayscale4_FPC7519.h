@@ -39,7 +39,7 @@ class ThinkInk_290_Grayscale4_FPC7519 : public Adafruit_SSD1680 {
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
 
-      default_refresh_delay = 3000;
+      default_refresh_delay = 9000;
 
     } else if (mode == THINKINK_MONO) {
       setColorBuffer(0, true);
