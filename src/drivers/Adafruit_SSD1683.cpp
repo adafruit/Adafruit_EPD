@@ -151,8 +151,10 @@ void Adafruit_SSD1683::update() {
   EPD_command(SSD1683_MASTER_ACTIVATE);
   busy_wait();
 
+  // If no busy pin is connected, wait the maximum worse case time for the
+  // update to finish before returning
   if (_busy_pin <= -1) {
-    delay(1000);
+    delay(default_refresh_delay);
   }
 }
 

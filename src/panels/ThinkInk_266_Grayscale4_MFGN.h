@@ -143,7 +143,7 @@ class ThinkInk_266_Grayscale4_MFGN : public Adafruit_SSD1680 {
       layer_colors[EPD_DARK] = 0b10;
 
       _display_update_val = 0xC7;
-      default_refresh_delay = 3000;
+      default_refresh_delay = 9000;
     } else if (mode == THINKINK_MONO) {
       _epd_init_code = ti_266mfgn_monofull_init_code;
       //_epd_lut_code = ti_266mfgn_monofull_lut_code;

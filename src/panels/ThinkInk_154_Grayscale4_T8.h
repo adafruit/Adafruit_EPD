@@ -187,7 +187,7 @@ class ThinkInk_154_Grayscale4_T8 : public Adafruit_IL0373 {
       layer_colors[EPD_DARK] = 0b01;
     }
 
-    default_refresh_delay = 1000;
+    default_refresh_delay = 9000;
     setRotation(3);
     powerDown();
   }
