@@ -284,14 +284,9 @@ uint8_t Adafruit_UC8279::writeRAMCommand(uint8_t index) {
 
   const uint8_t rv = EPD_command(UC8279_WRITE_RAM2, false);
 
-  // TODO: We might not need this - add back if acts up
-  // The visible window does not start at gate 0. Emit the leading blank gates
-  // here so the framebuffer the base class streams next lands in the right
-  // place. On the 800x480 modules the window ends exactly at the last
-  // addressed gate, so no trailing padding is needed; guard anyway for
-  // geometries where it is not.
-  // dcHigh();
-  // writeBlankGates(_gate_offset);
+  // Controller scans the entire area - guards for where gate geometry != visible geometry
+  dcHigh();
+  writeBlankGates(_gate_offset);
 
   return rv;
 }
