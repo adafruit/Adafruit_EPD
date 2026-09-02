@@ -136,13 +136,13 @@ void Adafruit_UC8279::writeBlankGates(uint16_t count) {
 void Adafruit_UC8279::begin(bool reset) {
   // Same SRAM layout quirk as UC8179 sibling.
   _data_entry_mode = THINKINK_UC8179;
-  
-  // Set Gate Geometry and Scan Direction to defaults for 800x480 displays. 
+
+  // Set Gate Geometry and Scan Direction to defaults for 800x480 displays.
   setGateGeometry(_addressed_gates, _gate_offset);
 
   Adafruit_EPD::begin(reset);
 
-  // Invert both for monochrome defaults 
+  // Invert both for monochrome defaults
   setBlackBuffer(0, true);
   setColorBuffer(0, true);
 
@@ -171,7 +171,8 @@ void Adafruit_UC8279::update() {
   EPD_command(UC8279_POWERON);
   busy_wait();
 
-  // PON refreshes the panel's defaults, so PSR only latches when written after it
+  // PON refreshes the panel's defaults, so PSR only latches when written after
+  // it
   uint8_t psr[2] = {(uint8_t)(_psr0 & 0xDF), _psr1};
   EPD_command(UC8279_PANELSETTING, psr, 2);
 
@@ -213,7 +214,8 @@ void Adafruit_UC8279::powerUp() {
   }
   EPD_commandList(init_code);
 
-  // Write the OLD plane with white pixels first, then the NEW plane with the actual framebuffer
+  // Write the OLD plane with white pixels first, then the NEW plane with the
+  // actual framebuffer
   EPD_command(UC8279_WRITE_RAM1, false);
   dcHigh();
   writeBlankGates(_addressed_gates);
@@ -242,7 +244,8 @@ void Adafruit_UC8279::powerDown() {
 /*!
     @brief Sets the controller's gate layout.
     @param addressedGates Number of gates the controller scans.
-    @param visibleGateOffset Number of blank gates before the visible window starts.
+    @param visibleGateOffset Number of blank gates before the visible window
+   starts.
 */
 /***********************************************************************************/
 void Adafruit_UC8279::setGateGeometry(uint16_t addressedGates,
@@ -284,7 +287,8 @@ uint8_t Adafruit_UC8279::writeRAMCommand(uint8_t index) {
 
   const uint8_t rv = EPD_command(UC8279_WRITE_RAM2, false);
 
-  // Controller scans the entire area - guards for where gate geometry != visible geometry
+  // Controller scans the entire area - guards for where gate geometry !=
+  // visible geometry
   dcHigh();
   writeBlankGates(_gate_offset);
 
