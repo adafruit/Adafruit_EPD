@@ -225,5 +225,6 @@ class Adafruit_EPD : public Adafruit_GFX {
 #include "drivers/Adafruit_UC8179.h"
 #include "drivers/Adafruit_UC8253.h"
 #include "drivers/Adafruit_UC8276.h"
+#include "drivers/Adafruit_UC8279.h"
 
 #endif /* _ADAFRUIT_EPD_H_ */
