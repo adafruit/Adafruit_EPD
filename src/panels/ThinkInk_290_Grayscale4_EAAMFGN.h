@@ -126,7 +126,7 @@ class ThinkInk_290_Grayscale4_EAAMFGN : public Adafruit_SSD1680 {
       layer_colors[EPD_LIGHT] = 0b01;
       layer_colors[EPD_DARK] = 0b10;
 
-      default_refresh_delay = 9000;
+      default_refresh_delay = 15000;
       _display_update_val = 0xC7;
 
     } else if (mode == THINKINK_MONO) {
@@ -143,7 +143,7 @@ class ThinkInk_290_Grayscale4_EAAMFGN : public Adafruit_SSD1680 {
       layer_colors[EPD_LIGHT] = 0b00;
       layer_colors[EPD_DARK] = 0b01;
 
-      default_refresh_delay = 800;
+      default_refresh_delay = 15000;
       _display_update_val = 0xC7;
     }
 

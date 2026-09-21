@@ -7,6 +7,9 @@
 
 #define BUSY_WAIT 500
 
+/// Max time to wait for BUSY to be asserted after MASTER_ACTIVATE, in ms
+#define SSD1680_BUSY_ASSERT_MS 50
+
 // clang-format off
 
 // Default init for FPC-A005 (2.9" tri-color, e.g. Adafruit #1028) and other
@@ -187,6 +190,15 @@ void Adafruit_SSD1680::update() {
   buf[0] = _display_update_val; // varies for mono vs gray4 mode
   EPD_command(SSD1680_DISP_CTRL2, buf, 1);
   EPD_command(SSD1680_MASTER_ACTIVATE);
+
+  // The panel needs a moment to raise BUSY after MASTER_ACTIVATE. Without
+  // waiting for that rising edge first, busy_wait() below sees BUSY still low,
+  // falls straight through, and we return mid-refresh.
+  if (_busy_pin >= 0) {
+    uint32_t t0 = millis();
+    while (!digitalRead(_busy_pin) && (millis() - t0) < SSD1680_BUSY_ASSERT_MS) {
+    }
+  }
   busy_wait();
 
   // If no busy pin is connected, wait the maximum worse case time for the
