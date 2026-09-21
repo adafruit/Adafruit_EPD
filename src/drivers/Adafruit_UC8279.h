@@ -54,10 +54,17 @@ class Adafruit_UC8279 : public Adafruit_EPD {
   void setGateGeometry(uint16_t addressedGates, uint16_t visibleGateOffset);
   void writeBlankGates(uint16_t count);
   uint16_t _addressed_gates = 600; ///< Gates the controller scans (TRES height)
-  uint16_t _gate_offset = 120;     ///< Blank gates before the visible window
+  uint16_t _gate_offset = 120; ///< Unbonded gates (addressed but not visible)
 
   void setScanDirection(bool mirrorX, bool flipY);
-  uint8_t _psr0 = 0x33;      ///< PSR byte 0 at init
+  // PSR byte 0: REG=1 (external LUT bank at init), KW/R=1 (mono), UD=1, SHL=1,
+  // SHD_N=1, RST_N=1. The vendor X4 Pro driver runs UD=0/SHL=1 (0x37) and
+  // streams rows top-first after a 120-gate white lead-in. Adafruit_EPD's
+  // UC8179 RAM layout stores rows bottom-first, so UD=1 (scan up, first row ->
+  // G1) lands the 480 framebuffer rows on the bonded gates G1..G480 with no
+  // lead-in; the 120 unbonded gates trail the image. SHL=1 matches the vendor
+  // byte order.
+  uint8_t _psr0 = 0x3F;      ///< PSR byte 0 at init
   uint8_t _psr1 = 0x4D;      ///< PSR byte 1
   uint8_t _pfs = 0x20;       ///< power-off sequence
   uint8_t _pll = 0x0E;       ///< PLL frame rate

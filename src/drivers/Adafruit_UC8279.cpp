@@ -214,9 +214,13 @@ void Adafruit_UC8279::powerUp() {
   }
   EPD_commandList(init_code);
 
-  // Write the OLD plane with white pixels first, then the NEW plane with the
-  // actual framebuffer
+  // Fill both planes white across the full addressed scan
   EPD_command(UC8279_WRITE_RAM1, false);
+  dcHigh();
+  writeBlankGates(_addressed_gates);
+  csHigh();
+
+  EPD_command(UC8279_WRITE_RAM2, false);
   dcHigh();
   writeBlankGates(_addressed_gates);
   csHigh();
@@ -254,20 +258,20 @@ void Adafruit_UC8279::setGateGeometry(uint16_t addressedGates,
   _gate_offset = visibleGateOffset;
 }
 
-/*****************************************************************************/
+/**************************************************************************************/
 /*!
     @brief Sets the controller's scan directions
-    @param mirrorX True to reverse the horizontal source order, false otherwise.
-    @param flipY True to reverse the gate scan order, false otherwise.
+    @param mirrorX True to mirror horizontally, False to keep the default orientation.
+    @param flipY True to flip vertically, False to keep the default orientation.
 */
-/*****************************************************************************/
+/**************************************************************************************/
 void Adafruit_UC8279::setScanDirection(bool mirrorX, bool flipY) {
-  _psr0 &= ~0x0C;
+  _psr0 |= 0x0C;
   if (mirrorX) {
-    _psr0 |= 0x04; // SHL
+    _psr0 &= ~0x04; // SHL
   }
   if (flipY) {
-    _psr0 |= 0x08; // UD
+    _psr0 &= ~0x08; // UD
   }
 }
 
@@ -285,14 +289,7 @@ uint8_t Adafruit_UC8279::writeRAMCommand(uint8_t index) {
     return 0;
   }
 
-  const uint8_t rv = EPD_command(UC8279_WRITE_RAM2, false);
-
-  // Controller scans the entire area - guards for where gate geometry !=
-  // visible geometry
-  dcHigh();
-  writeBlankGates(_gate_offset);
-
-  return rv;
+  return EPD_command(UC8279_WRITE_RAM2, false);
 }
 
 /**************************************************************************/
