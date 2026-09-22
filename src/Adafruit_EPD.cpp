@@ -300,6 +300,15 @@ void Adafruit_EPD::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
+/**************************************************************************/
+/*!
+    @brief Write a framebuffer held in MCU RAM to the EPD display RAM
+    @param framebuffer Pointer to the framebuffer data
+    @param framebuffer_size Size of the framebuffer in bytes
+    @param EPDlocation Which EPD RAM buffer to write (0 or 1)
+    @param invertdata If true, each byte is inverted before sending
+*/
+/**************************************************************************/
 void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t* framebuffer,
                                             uint32_t framebuffer_size,
                                             uint8_t EPDlocation,
@@ -327,6 +336,15 @@ void Adafruit_EPD::writeRAMFramebufferToEPD(uint8_t* framebuffer,
   return;
 }
 
+/**************************************************************************/
+/*!
+    @brief Stream a framebuffer held in external SRAM to the EPD display RAM
+    @param SRAM_buffer_addr Start address of the framebuffer in SRAM
+    @param buffer_size Size of the framebuffer in bytes
+    @param EPDlocation Which EPD RAM buffer to write (0 or 1)
+    @param invertdata Unused, data is sent as stored
+*/
+/**************************************************************************/
 void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
                                              uint32_t buffer_size,
                                              uint8_t EPDlocation,
@@ -367,6 +385,7 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
 /**************************************************************************/
 /*!
     @brief Transfer the data stored in the buffer(s) to the display
+    @param sleep If true, power down the display after updating
 */
 /**************************************************************************/
 void Adafruit_EPD::display(bool sleep) {
@@ -522,7 +541,11 @@ void Adafruit_EPD::clearDisplay() {
 
 /**************************************************************************/
 /*!
- */
+    @brief Send a list of commands and data to the display. The list is
+    command, argument count, arguments... A command of 0xFF waits for busy
+    then delays for the count in ms; 0xFE ends the list.
+    @param init_code Pointer to the command list
+*/
 /**************************************************************************/
 void Adafruit_EPD::EPD_commandList(const uint8_t* init_code) {
   uint8_t buf[250];

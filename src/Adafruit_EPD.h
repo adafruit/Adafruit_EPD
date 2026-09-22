@@ -45,17 +45,19 @@ enum {
   EPD_NUM_COLORS
 };
 
+/// SRAM data entry mode, selects how the external SRAM is organized
 typedef enum {
-  THINKINK_STANDARD = 0, // 99% of panels use this setup!
-  THINKINK_UC8179 = 1,   // .... except for UC8179?
+  THINKINK_STANDARD = 0, ///< 99% of panels use this setup!
+  THINKINK_UC8179 = 1,   ///< .... except for UC8179?
 } thinkink_sramentrymode_t;
 
+/// Ink mode for ThinkInk displays, passed to begin()
 typedef enum {
-  THINKINK_MONO,
-  THINKINK_TRICOLOR,
-  THINKINK_GRAYSCALE4,
-  THINKINK_MONO_PARTIAL,
-  THINKINK_QUADCOLOR,
+  THINKINK_MONO,         ///< monochrome (black and white)
+  THINKINK_TRICOLOR,     ///< black, white and red/yellow
+  THINKINK_GRAYSCALE4,   ///< 4-level grayscale
+  THINKINK_MONO_PARTIAL, ///< monochrome with partial refresh
+  THINKINK_QUADCOLOR,    ///< black, white, red and yellow
 } thinkinkmode_t;
 
 #define EPD_swap(a, b) \
@@ -87,12 +89,19 @@ class Adafruit_EPD : public Adafruit_GFX {
   void setColorBuffer(int8_t index, bool inverted);
   void display(bool sleep = false);
 
+  /**************************************************************************/
+  /*!
+    @brief Get the ink mode the display was started with
+    @returns The current thinkinkmode_t ink mode
+  */
+  /**************************************************************************/
   thinkinkmode_t getMode(void) {
     return inkmode;
   }
 
  protected:
-  thinkink_sramentrymode_t _data_entry_mode = THINKINK_STANDARD;
+  thinkink_sramentrymode_t _data_entry_mode =
+      THINKINK_STANDARD; ///< how framebuffer data is laid out in SRAM
 
   void writeRAMFramebufferToEPD(uint8_t* buffer, uint32_t buffer_size,
                                 uint8_t EPDlocation, bool invertdata = false);
@@ -120,6 +129,11 @@ class Adafruit_EPD : public Adafruit_GFX {
   /**************************************************************************/
   virtual void setRAMAddress(uint16_t x, uint16_t y) = 0;
 
+  /**************************************************************************/
+  /*!
+    @brief Wait for the display to finish a busy operation
+  */
+  /**************************************************************************/
   virtual void busy_wait(void) = 0;
 
   /**************************************************************************/
@@ -153,19 +167,21 @@ class Adafruit_EPD : public Adafruit_GFX {
   bool singleByteTxns; ///< if true CS will go high after every data byte
                        ///< transferred
 
-  const uint8_t* _epd_init_code = NULL;
-  const uint8_t* _epd_lut_code = NULL;
-  const uint8_t* _epd_partial_init_code = NULL;
-  const uint8_t* _epd_partial_lut_code = NULL;
+  const uint8_t* _epd_init_code = NULL; ///< init command list
+  const uint8_t* _epd_lut_code = NULL;  ///< waveform LUT command list
+  const uint8_t* _epd_partial_init_code =
+      NULL; ///< init command list for partial refresh
+  const uint8_t* _epd_partial_lut_code =
+      NULL; ///< waveform LUT command list for partial refresh
 
-  uint16_t default_refresh_delay = 15000;
+  uint16_t default_refresh_delay = 15000; ///< refresh delay in ms (no busy pin)
 
   Adafruit_MCPSRAM sram; ///< the ram chip object if using off-chip ram
 
   bool blackInverted; ///< is black channel inverted
   bool colorInverted; ///< is red channel inverted
 
-  uint8_t layer_colors[EPD_NUM_COLORS];
+  uint8_t layer_colors[EPD_NUM_COLORS]; ///< buffer layer bits for each color
 
   uint32_t buffer1_size; ///< size of the primary buffer
   uint32_t buffer2_size; ///< size of the secondary buffer
@@ -191,9 +207,10 @@ class Adafruit_EPD : public Adafruit_GFX {
 
   bool use_sram; ///< true if we are using an SRAM chip as a framebuffer
 
-  thinkinkmode_t inkmode; // Ink mode passed to begin()
+  thinkinkmode_t inkmode; ///< Ink mode passed to begin()
 
-  uint8_t partialsSinceLastFullUpdate = 0;
+  uint8_t partialsSinceLastFullUpdate =
+      0; ///< partial refreshes since the last full refresh
 
 #if defined(BUSIO_USE_FAST_PINIO)
   BusIO_PortReg *csPort, *dcPort;
