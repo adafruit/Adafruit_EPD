@@ -24,6 +24,8 @@
 
 #define RAMBUFSIZE 64 ///< size of the ram buffer
 
+#define EPD_DEFAULT_SPI_HZ 4000000 ///< SPI clock for normal updates
+
 #include <Adafruit_GFX.h>
 #include <Adafruit_SPIDevice.h>
 
@@ -99,7 +101,112 @@ class Adafruit_EPD : public Adafruit_GFX {
     return inkmode;
   }
 
+  // Fast lag-drive updates (mono only). See Adafruit_EPD_fast.cpp.
+  bool fastBegin(uint8_t lag = 6, uint32_t spi_hz = 20000000);
+  bool displayFast(void);
+  void fastSettle(void);
+  void fastEnd(void);
+
+  /**************************************************************************/
+  /*!
+    @brief Check whether fast mode is active
+    @returns true from a successful fastBegin() until fastEnd(), display() or
+    begin()
+  */
+  /**************************************************************************/
+  bool fastActive(void) {
+    return _fast_ring != NULL;
+  }
+
+  /**************************************************************************/
+  /*!
+    @brief Time the panel spent BUSY on the last fast update
+    @returns microseconds
+  */
+  /**************************************************************************/
+  uint32_t fastBusyMicros(void) {
+    return _fast_busy_us;
+  }
+
+  /**************************************************************************/
+  /*!
+    @brief Bytes sent to the panel RAM on the last fast update (both planes)
+    @returns Byte count, or 0 if the update was skipped
+  */
+  /**************************************************************************/
+  uint32_t fastBytes(void) {
+    return _fast_bytes;
+  }
+
  protected:
+  /**************************************************************************/
+  /*!
+    @brief Load the fast waveform and prepare the controller for
+    displayFast(). The panel RAM planes hold the image shown on screen.
+    Drivers that support fast mode override this and set _fast_stride and
+    _fast_rows.
+    @returns false if this driver has no fast mode
+  */
+  /**************************************************************************/
+  virtual bool fastModeEnter(void) {
+    return false;
+  }
+
+  /**************************************************************************/
+  /*!
+    @brief Check for fast mode support without touching the panel
+    @returns true if this driver implements the fast hooks
+  */
+  /**************************************************************************/
+  virtual bool fastSupported(void) {
+    return false;
+  }
+
+  /**************************************************************************/
+  /*!
+    @brief Full OTP refresh to white. Leaves both RAM planes white.
+  */
+  /**************************************************************************/
+  virtual void fastFullClean(void) {}
+
+  /**************************************************************************/
+  /*!
+    @brief Set the RAM window and address counters for a fast update
+    @param xb0 first RAM column, in bytes
+    @param xb1 last RAM column, in bytes (inclusive)
+    @param y0 first RAM row
+    @param y1 last RAM row (inclusive)
+  */
+  /**************************************************************************/
+  virtual void fastWindow(uint16_t xb0, uint16_t xb1, uint16_t y0,
+                          uint16_t y1) {
+    (void)xb0, (void)xb1, (void)y0, (void)y1;
+  }
+
+  /**************************************************************************/
+  /*!
+    @brief Start one fast update. Must not wait for BUSY.
+  */
+  /**************************************************************************/
+  virtual void fastUpdate(void) {}
+
+  /**************************************************************************/
+  /*!
+    @brief Read the BUSY pin
+    @returns true while the controller is busy
+  */
+  /**************************************************************************/
+  bool fastIsBusy(void) {
+    return digitalRead(_busy_pin) == _fast_busy_level;
+  }
+
+  uint8_t _fast_busy_level = HIGH; ///< BUSY pin level while the panel is busy
+  uint16_t _fast_stride = 0;       ///< bytes per RAM row in fast mode
+  uint16_t _fast_rows = 0;         ///< RAM rows in fast mode
+  uint8_t _fast_frames = 2;        ///< drive frames per fast update
+  uint8_t _fast_rate = 0x08;       ///< frame rate code for the fast waveform
+  void fastFill(uint8_t ram, uint8_t value);
+
   thinkink_sramentrymode_t _data_entry_mode =
       THINKINK_STANDARD; ///< how framebuffer data is laid out in SRAM
 
@@ -221,6 +328,36 @@ class Adafruit_EPD : public Adafruit_GFX {
   void csHigh();
   void dcHigh();
   void dcLow();
+
+ private:
+  /**************************************************************************/
+  /*!
+    @brief Bytes in one full RAM plane in fast mode
+    @returns _fast_stride * _fast_rows
+  */
+  /**************************************************************************/
+  uint32_t fastFrameBytes(void) {
+    return (uint32_t)_fast_stride * _fast_rows;
+  }
+
+  bool fastStep(const uint8_t* frame);
+  void fastStart(void);
+  void fastWaitIdle(void);
+  void fastWriteBox(uint8_t ram, const uint8_t* src, const int16_t* box);
+  void fastSetSPI(uint32_t hz);
+  void fastRelease(void);
+  const uint8_t* fastHeadFrame(void);
+
+  uint8_t* _fast_ring = NULL; ///< lag + 1 frames, newest at _fast_head
+  uint8_t _fast_lag = 0;
+  uint8_t _fast_head = 0;
+  int16_t _fast_prev[4] = {0, -1, 0, -1}; ///< previous step box xb0,xb1,y0,y1
+  bool _fast_prev_valid = false;
+  bool _fast_pending = false; ///< an update may still be running
+  uint32_t _fast_busy_us = 0;
+  uint32_t _fast_bytes = 0;
+  uint32_t _fast_t0 = 0;
+  SPIClass* _spi_bus = NULL; ///< hardware SPI bus, NULL for software SPI
 };
 
 #include "drivers/Adafruit_ACeP.h"
