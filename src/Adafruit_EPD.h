@@ -105,7 +105,9 @@ class Adafruit_EPD : public Adafruit_GFX {
   bool fastBegin(uint8_t lag = 6, uint32_t spi_hz = 20000000);
   bool displayFast(void);
   void fastSettle(void);
+  void fastClean(uint8_t frames = 8, bool full = false);
   void fastEnd(void);
+  bool fastSetDrive(uint8_t frames, uint8_t rate);
 
   /**************************************************************************/
   /*!
@@ -344,6 +346,7 @@ class Adafruit_EPD : public Adafruit_GFX {
   void fastStart(void);
   void fastWaitIdle(void);
   void fastWriteBox(uint8_t ram, const uint8_t* src, const int16_t* box);
+  void fastWipe(uint8_t frames);
   void fastSetSPI(uint32_t hz);
   void fastRelease(void);
   const uint8_t* fastHeadFrame(void);

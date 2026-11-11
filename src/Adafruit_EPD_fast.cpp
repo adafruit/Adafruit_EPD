@@ -106,6 +106,34 @@ void Adafruit_EPD::fastSettle(void) {
 
 /**************************************************************************/
 /*!
+    @brief Clean the panel without breaking DC balance: drive the image back
+    to white, then run a balanced wipe (frames to black, frames to white).
+    With full = true an OTP full refresh runs before the wipe. The screen is
+    left white; call displayFast() (or fastSettle()) to show the buffer again.
+    @param frames wipe updates in each direction. Use 0 for no wipe.
+    @param full if true, also run a full OTP refresh
+*/
+/**************************************************************************/
+void Adafruit_EPD::fastClean(uint8_t frames, bool full) {
+  if (!fastActive()) {
+    return;
+  }
+  while (fastStep(NULL)) { // NULL frame = white
+  }
+  fastWaitIdle();
+  if (full) {
+    fastFullClean();
+    fastModeEnter();
+  }
+  if (frames) {
+    fastWipe(frames);
+  }
+  memset(_fast_ring, 0xFF, fastFrameBytes() * (_fast_lag + 1));
+  _fast_prev_valid = false;
+}
+
+/**************************************************************************/
+/*!
     @brief Finish all owed drive, free the lag history, restore the normal
     SPI clock and put the panel to sleep. The image stays on screen.
 */
@@ -146,6 +174,29 @@ void Adafruit_EPD::fastRelease(void) {
 /**************************************************************************/
 const uint8_t* Adafruit_EPD::fastHeadFrame(void) {
   return _fast_ring + (uint32_t)_fast_head * fastFrameBytes();
+}
+
+/**************************************************************************/
+/*!
+    @brief Change the fast waveform
+    @param frames drive frames per update (1-255). More frames give darker
+    changes but slower updates.
+    @param rate controller frame rate code (SSD16xx: 0x05 = 125 Hz,
+    0x08 = 200 Hz)
+    @returns false if fast mode is active and the waveform could not be loaded,
+    true otherwise
+*/
+/**************************************************************************/
+bool Adafruit_EPD::fastSetDrive(uint8_t frames, uint8_t rate) {
+  _fast_frames = frames ? frames : 1;
+  _fast_rate = rate;
+  if (!fastActive()) {
+    return true;
+  }
+  // Finish the owed drive first: loading the waveform runs one update, and
+  // the planes must be equal so it drives nothing.
+  fastSettle();
+  return fastModeEnter();
 }
 
 /**************************************************************************/
@@ -325,6 +376,27 @@ void Adafruit_EPD::fastFill(uint8_t ram, uint8_t value) {
     n -= m;
   }
   csHigh();
+}
+
+/**************************************************************************/
+/*!
+    @brief Balanced wipe: frames updates to black, then frames to white.
+    Leaves both planes white.
+    @param frames updates in each direction
+*/
+/**************************************************************************/
+void Adafruit_EPD::fastWipe(uint8_t frames) {
+  for (uint8_t pass = 0; pass < 2; pass++) {
+    fastWaitIdle();
+    fastFill(0, pass ? 0xFF : 0x00);
+    fastFill(1, pass ? 0x00 : 0xFF);
+    for (uint8_t i = 0; i < frames; i++) {
+      fastWaitIdle();
+      fastStart();
+    }
+  }
+  fastWaitIdle();
+  fastFill(1, 0xFF);
 }
 
 /**************************************************************************/
