@@ -357,7 +357,8 @@ class Adafruit_EPD : public Adafruit_GFX {
   uint32_t _fast_busy_us = 0;
   uint32_t _fast_bytes = 0;
   uint32_t _fast_t0 = 0;
-  SPIClass* _spi_bus = NULL; ///< hardware SPI bus, NULL for software SPI
+  SPIClass* _spi_bus = NULL;       ///< hardware SPI bus, NULL for software SPI
+  bool _fast_saved_single = false; ///< singleByteTxns before fastBegin
 };
 
 #include "drivers/Adafruit_ACeP.h"

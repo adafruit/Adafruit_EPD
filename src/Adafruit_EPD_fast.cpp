@@ -47,6 +47,9 @@ bool Adafruit_EPD::fastBegin(uint8_t lag, uint32_t spi_hz) {
     return false;
   }
 
+  // Hold CS for whole commands instead of toggling it per byte
+  _fast_saved_single = singleByteTxns;
+  singleByteTxns = false;
   fastSetSPI(spi_hz);
   fastFullClean();
   uint32_t frame = fastFrameBytes();
@@ -57,6 +60,7 @@ bool Adafruit_EPD::fastBegin(uint8_t lag, uint32_t spi_hz) {
   }
   if (!ok) {
     fastSetSPI(EPD_DEFAULT_SPI_HZ);
+    singleByteTxns = _fast_saved_single;
     powerDown();
     return false;
   }
@@ -130,6 +134,7 @@ void Adafruit_EPD::fastRelease(void) {
   free(_fast_ring);
   _fast_ring = NULL;
   fastSetSPI(EPD_DEFAULT_SPI_HZ);
+  singleByteTxns = _fast_saved_single;
 }
 
 /**************************************************************************/
