@@ -26,12 +26,15 @@
 #define SSD1680_READ_OTP 0x2D
 #define SSD1680_READ_STATUS 0x2F
 #define SSD1680_WRITE_LUT 0x32
+#define SSD1680_DISP_OPTION 0x37
 #define SSD1680_WRITE_BORDER 0x3C
 #define SSD1680_END_OPTION 0x3F
 #define SSD1680_SET_RAMXPOS 0x44
 #define SSD1680_SET_RAMYPOS 0x45
 #define SSD1680_SET_RAMXCOUNT 0x4E
 #define SSD1680_SET_RAMYCOUNT 0x4F
+#define SSD1680_NOP 0x7F
+#define SSD1680_LUT_SIZE 153
 
 // Init sequences available for direct use or override via setInitCode()
 extern const uint8_t ssd1680_default_init_code[];
@@ -59,6 +62,14 @@ class Adafruit_SSD1680 : public Adafruit_EPD {
   uint8_t writeRAMCommand(uint8_t index);
   void setRAMAddress(uint16_t x, uint16_t y);
   void busy_wait();
+
+  bool fastModeEnter(void);
+  bool fastSupported(void) {
+    return true;
+  }
+  void fastFullClean(void);
+  void fastWindow(uint16_t xb0, uint16_t xb1, uint16_t y0, uint16_t y1);
+  void fastUpdate(void);
 
   int8_t _xram_offset = 1;
   uint8_t _display_update_val = 0xF4;
