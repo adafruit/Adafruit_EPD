@@ -124,13 +124,13 @@ class ThinkInk_213_Grayscale4_MFGN : public Adafruit_SSD1680 {
                                int16_t MISO, int16_t BUSY = -1,
                                int16_t colstart = 0)
       : Adafruit_SSD1680(250, 122, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY),
-        _colstart(colstart){};
+        _colstart(colstart) {};
 
   ThinkInk_213_Grayscale4_MFGN(int16_t DC, int16_t RST, int16_t CS,
                                int16_t SRCS, int16_t BUSY = -1,
                                SPIClass* spi = &SPI, int16_t colstart = 0)
       : Adafruit_SSD1680(250, 122, DC, RST, CS, SRCS, BUSY, spi),
-        _colstart(colstart){};
+        _colstart(colstart) {};
 
   void begin(thinkinkmode_t mode = THINKINK_GRAYSCALE4) {
     Adafruit_SSD1680::begin(true);
