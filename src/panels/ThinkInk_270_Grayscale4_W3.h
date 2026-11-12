@@ -87,11 +87,11 @@ class ThinkInk_270_Grayscale4_W3 : public Adafruit_IL91874 {
   ThinkInk_270_Grayscale4_W3(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                              int16_t CS, int16_t SRCS, int16_t MISO,
                              int16_t BUSY = -1)
-      : Adafruit_IL91874(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_IL91874(264, 176, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {};
 
   ThinkInk_270_Grayscale4_W3(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                              int16_t BUSY = -1, SPIClass* spi = &SPI)
-      : Adafruit_IL91874(264, 176, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_IL91874(264, 176, DC, RST, CS, SRCS, BUSY, spi) {};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_IL91874::begin(true);

@@ -98,12 +98,12 @@ class ThinkInk_420_Grayscale4_MFGN : public Adafruit_SSD1683 {
   ThinkInk_420_Grayscale4_MFGN(int16_t SID, int16_t SCLK, int16_t DC,
                                int16_t RST, int16_t CS, int16_t SRCS,
                                int16_t MISO, int16_t BUSY = -1)
-      : Adafruit_SSD1683(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_SSD1683(300, 400, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {};
 
   ThinkInk_420_Grayscale4_MFGN(int16_t DC, int16_t RST, int16_t CS,
                                int16_t SRCS, int16_t BUSY = -1,
                                SPIClass* spi = &SPI)
-      : Adafruit_SSD1683(300, 400, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_SSD1683(300, 400, DC, RST, CS, SRCS, BUSY, spi) {};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_SSD1683::begin(true);

@@ -9,11 +9,11 @@ class ThinkInk_290_Mono_BN : public Adafruit_SSD1680 {
   ThinkInk_290_Mono_BN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                        int16_t CS, int16_t SRCS, int16_t MISO,
                        int16_t BUSY = -1)
-      : Adafruit_SSD1680(296, 128, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_SSD1680(296, 128, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {};
 
   ThinkInk_290_Mono_BN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                        int16_t BUSY = -1, SPIClass* spi = &SPI)
-      : Adafruit_SSD1680(296, 128, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_SSD1680(296, 128, DC, RST, CS, SRCS, BUSY, spi) {};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_SSD1680::begin(true);
