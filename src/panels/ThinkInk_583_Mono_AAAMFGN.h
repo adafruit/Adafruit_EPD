@@ -46,11 +46,11 @@ class ThinkInk_583_Mono_AAAMFGN : public Adafruit_UC8179 {
   ThinkInk_583_Mono_AAAMFGN(int16_t SID, int16_t SCLK, int16_t DC, int16_t RST,
                             int16_t CS, int16_t SRCS, int16_t MISO,
                             int16_t BUSY = -1)
-      : Adafruit_UC8179(648, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY){};
+      : Adafruit_UC8179(648, 480, SID, SCLK, DC, RST, CS, SRCS, MISO, BUSY) {};
 
   ThinkInk_583_Mono_AAAMFGN(int16_t DC, int16_t RST, int16_t CS, int16_t SRCS,
                             int16_t BUSY = -1, SPIClass* spi = &SPI)
-      : Adafruit_UC8179(648, 480, DC, RST, CS, SRCS, BUSY, spi){};
+      : Adafruit_UC8179(648, 480, DC, RST, CS, SRCS, BUSY, spi) {};
 
   void begin(thinkinkmode_t mode = THINKINK_MONO) {
     Adafruit_UC8179::begin(true);
