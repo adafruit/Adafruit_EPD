@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['setblackbuffer',['setBlackBuffer',['../class_adafruit___e_p_d.html#acda2375949ce963979f645e951d0e821',1,'Adafruit_EPD']]],
-  ['setcolorbuffer',['setColorBuffer',['../class_adafruit___e_p_d.html#abd306698b73bc05791272a315bf951ac',1,'Adafruit_EPD']]],
-  ['setramaddress',['setRAMAddress',['../class_adafruit___e_p_d.html#a405a7836e89ff6cfe39c58c52371a95a',1,'Adafruit_EPD']]],
-  ['singlebytetxns',['singleByteTxns',['../class_adafruit___e_p_d.html#a7b923d0159417b5049b5605ccb4feb4b',1,'Adafruit_EPD']]],
-  ['spi_5fdev',['spi_dev',['../class_adafruit___e_p_d.html#a1f2c79f2153b69a4cb319a350f484d11',1,'Adafruit_EPD']]],
-  ['spitransfer',['SPItransfer',['../class_adafruit___e_p_d.html#aa3acabd106be1f33f465df462f92d4ca',1,'Adafruit_EPD']]],
-  ['sram',['sram',['../class_adafruit___e_p_d.html#a1084bb94eef7446e7bd0e5e3d698b281',1,'Adafruit_EPD']]]
+  ['rambufsize',['RAMBUFSIZE',['../_adafruit___e_p_d_8h.html#a1804fc89cda412cbe976824dd97fcefb',1,'Adafruit_EPD.h']]],
+  ['read',['read',['../class_adafruit___m_c_p_s_r_a_m.html#a5abf663227e73c38d88eb4cd78ad5c24',1,'Adafruit_MCPSRAM']]],
+  ['read16',['read16',['../class_adafruit___m_c_p_s_r_a_m.html#a0c88020f140543e7a7719747f8c37446',1,'Adafruit_MCPSRAM']]],
+  ['read8',['read8',['../class_adafruit___m_c_p_s_r_a_m.html#af442a6e390fc1774568a6a863726a6bf',1,'Adafruit_MCPSRAM']]]
 ];

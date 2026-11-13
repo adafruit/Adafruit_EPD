@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hardwarereset',['hardwareReset',['../class_adafruit___e_p_d.html#a746e63fb0494cf978883ad6c8a42c5d2',1,'Adafruit_EPD']]]
+  ['getmode',['getMode',['../class_adafruit___e_p_d.html#a3c544b01062d54421d8a8799e93281d6',1,'Adafruit_EPD']]]
 ];

@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['update',['update',['../class_adafruit___e_p_d.html#ad6192b283a5f542138b6661bce3a54e8',1,'Adafruit_EPD']]]
+  ['setblackbuffer',['setBlackBuffer',['../class_adafruit___e_p_d.html#acda2375949ce963979f645e951d0e821',1,'Adafruit_EPD']]],
+  ['setcolorbuffer',['setColorBuffer',['../class_adafruit___e_p_d.html#abd306698b73bc05791272a315bf951ac',1,'Adafruit_EPD']]],
+  ['setramaddress',['setRAMAddress',['../class_adafruit___e_p_d.html#a405a7836e89ff6cfe39c58c52371a95a',1,'Adafruit_EPD']]],
+  ['spitransfer',['SPItransfer',['../class_adafruit___e_p_d.html#aa3acabd106be1f33f465df462f92d4ca',1,'Adafruit_EPD']]]
 ];

@@ -5,6 +5,7 @@ var searchData=
   ['epd_5fcommandlist',['EPD_commandList',['../class_adafruit___e_p_d.html#a8d730f117a9b2683a201c9dd1d01a652',1,'Adafruit_EPD']]],
   ['epd_5fdark',['EPD_DARK',['../_adafruit___e_p_d_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba26540a765ccdd1226717ebb2c39ebbda',1,'Adafruit_EPD.h']]],
   ['epd_5fdata',['EPD_data',['../class_adafruit___e_p_d.html#a625604963eee710cb4e97e67ce4aecc9',1,'Adafruit_EPD::EPD_data(const uint8_t *buf, uint16_t len)'],['../class_adafruit___e_p_d.html#a922e8fd5ff1afa295551d681406283f4',1,'Adafruit_EPD::EPD_data(uint8_t data)']]],
+  ['epd_5fdefault_5fspi_5fhz',['EPD_DEFAULT_SPI_HZ',['../_adafruit___e_p_d_8h.html#a5c3496aca67ef477d3d26c69dad29e5f',1,'Adafruit_EPD.h']]],
   ['epd_5fgray',['EPD_GRAY',['../_adafruit___e_p_d_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba6b971434969fc3998a129118ecff0a16',1,'Adafruit_EPD.h']]],
   ['epd_5flight',['EPD_LIGHT',['../_adafruit___e_p_d_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba0e7edbaf9f0aef5b4bcd87bd5381b97d',1,'Adafruit_EPD.h']]],
   ['epd_5fred',['EPD_RED',['../_adafruit___e_p_d_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba4b0b47c3d9bbaebedb1562228417de0b',1,'Adafruit_EPD.h']]],
