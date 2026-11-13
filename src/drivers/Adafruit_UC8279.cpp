@@ -43,16 +43,16 @@ Adafruit_UC8279::Adafruit_UC8279(int width, int height, int16_t SID,
   }
 
   buffer1_size = (uint32_t)width * (uint32_t)height / 8;
-  buffer2_size = 0;
+  buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = 0;
+    buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
     buffer1 = (uint8_t*)malloc(buffer1_size);
-    buffer2 = NULL;
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -80,16 +80,16 @@ Adafruit_UC8279::Adafruit_UC8279(int width, int height, int16_t DC, int16_t RST,
   }
 
   buffer1_size = (uint32_t)width * (uint32_t)height / 8;
-  buffer2_size = 0;
+  buffer2_size = buffer1_size;
 
   if (SRCS >= 0) {
     use_sram = true;
     buffer1_addr = 0;
-    buffer2_addr = 0;
+    buffer2_addr = buffer1_size;
     buffer1 = buffer2 = NULL;
   } else {
     buffer1 = (uint8_t*)malloc(buffer1_size);
-    buffer2 = NULL;
+    buffer2 = (uint8_t*)malloc(buffer2_size);
   }
 
   singleByteTxns = true;
@@ -114,7 +114,8 @@ void Adafruit_UC8279::busy_wait(void) {
 
 /**************************************************************************/
 /*!
-    @brief push blank (white) gate rows into the plane currently being written
+    @brief push blank (white) gate rows into the plane currently being written,
+           using _blank_fill as the white byte for the current ink mode
     @param count number of gate rows to emit
 */
 /**************************************************************************/
@@ -122,7 +123,7 @@ void Adafruit_UC8279::writeBlankGates(uint16_t count) {
   const uint16_t rowbytes = WIDTH / 8;
   for (uint16_t y = 0; y < count; y++) {
     for (uint16_t i = 0; i < rowbytes; i++) {
-      SPItransfer(0xFF);
+      SPItransfer(_blank_fill);
     }
   }
 }
@@ -142,9 +143,10 @@ void Adafruit_UC8279::begin(bool reset) {
 
   Adafruit_EPD::begin(reset);
 
-  // Invert both for monochrome defaults
+  // Invert both for monochrome defaults. buffer2 stays white and is written
+  // to the OLD plane.
   setBlackBuffer(0, true);
-  setColorBuffer(0, true);
+  setColorBuffer(1, true);
 
   layer_colors[EPD_WHITE] = 0b00;
   layer_colors[EPD_BLACK] = 0b01;
@@ -173,7 +175,37 @@ void Adafruit_UC8279::update() {
 
   // PON refreshes the panel's defaults, so PSR only latches when written after
   // it
-  uint8_t psr[2] = {(uint8_t)(_psr0 & 0xDF), _psr1};
+  uint8_t psr[2] = {(uint8_t)(_psr0 & 0xDF), _psr1}; // REG=0: OTP waveform
+
+  if (_epd_lut_code) {
+    // Register LUTs only take effect after an OTP refresh in the same power
+    // session. An OTP refresh of an 8 x 10 window in the unbonded gates, past
+    // the visible rows, arms them without touching the image.
+    const uint16_t y0 = _addressed_gates - 10;
+    const uint16_t y1 = _addressed_gates - 1;
+    const uint8_t ptl[9] = {0x00,
+                            0x00,
+                            0x00,
+                            0x07,
+                            (uint8_t)(y0 >> 8),
+                            (uint8_t)(y0 & 0xFF),
+                            (uint8_t)(y1 >> 8),
+                            (uint8_t)(y1 & 0xFF),
+                            0x01};
+    EPD_command(UC8279_PARTIAL_IN);
+    EPD_command(UC8279_PARTIAL_WINDOW, ptl, 9);
+    EPD_command(UC8279_PANELSETTING, psr, 2);
+    EPD_command(UC8279_DISPLAYREFRESH);
+    delay(10);
+    busy_wait();
+    EPD_command(UC8279_PARTIAL_OUT);
+
+    psr[0] = _psr0; // REG=1: register LUTs
+    EPD_command(UC8279_PANELSETTING, psr, 2);
+    EPD_commandList(_epd_lut_code);
+    EPD_command(UC8279_VCOM_DATA_INTERVAL, &_cdi, 1);
+  }
+
   EPD_command(UC8279_PANELSETTING, psr, 2);
 
   // mirrors UC8179 behavior
@@ -279,18 +311,17 @@ void Adafruit_UC8279::setScanDirection(bool mirrorX, bool flipY) {
 /**************************************************************************/
 /*!
     @brief Send the specific command to start writing to EPD display RAM
-    @param index The index for which buffer to write. Only 0 is meaningful on
-   this monochrome driver; it selects the NEW plane.
+    @param index The index for which buffer to write. 0 selects the NEW
+           plane (DTM2) and 1 the OLD plane (DTM1).
     @returns The byte that is read from SPI at the same time as sending the
    command
 */
 /**************************************************************************/
 uint8_t Adafruit_UC8279::writeRAMCommand(uint8_t index) {
-  if (index != 0) {
-    return 0;
+  if (index == 0) {
+    return EPD_command(UC8279_WRITE_RAM2, false);
   }
-
-  return EPD_command(UC8279_WRITE_RAM2, false);
+  return EPD_command(UC8279_WRITE_RAM1, false);
 }
 
 /**************************************************************************/

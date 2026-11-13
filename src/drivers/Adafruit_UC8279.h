@@ -15,6 +15,11 @@
 #define UC8279_WRITE_RAM1 0x10         ///< DTM1 — OLD plane in KW mode
 #define UC8279_DISPLAYREFRESH 0x12     ///< DRF
 #define UC8279_WRITE_RAM2 0x13         ///< DTM2 — NEW plane in KW mode
+#define UC8279_LUT_VCOM 0x20           ///< LUTC — VCOM waveform
+#define UC8279_LUT_WW 0x21             ///< LUTWW — white-to-white
+#define UC8279_LUT_BW 0x22             ///< LUTBW — black-to-white
+#define UC8279_LUT_WB 0x23             ///< LUTWB — white-to-black
+#define UC8279_LUT_BB 0x24             ///< LUTBB — black-to-black
 #define UC8279_PLL 0x30                ///< PLL frame rate
 #define UC8279_VCOM_DATA_INTERVAL 0x50 ///< CDI (1 data byte on this part)
 #define UC8279_TRES 0x61               ///< resolution
@@ -53,6 +58,7 @@ class Adafruit_UC8279 : public Adafruit_EPD {
 
   void setGateGeometry(uint16_t addressedGates, uint16_t visibleGateOffset);
   void writeBlankGates(uint16_t count);
+  uint8_t _blank_fill = 0xFF;      ///< Byte that reads as white in both planes
   uint16_t _addressed_gates = 600; ///< Gates the controller scans (TRES height)
   uint16_t _gate_offset = 120; ///< Unbonded gates (addressed but not visible)
 
