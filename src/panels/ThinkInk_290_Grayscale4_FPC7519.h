@@ -46,7 +46,9 @@ class ThinkInk_290_Grayscale4_FPC7519 : public Adafruit_SSD1680 {
       setBlackBuffer(0, true);
 
       _epd_init_code = ssd1680_fpc7519_init_code;
-      _display_update_val = 0xC7;
+      // Load the panel's OTP waveform: the embedded LUT is for 4 grays and
+      // leaves speckle when used for mono
+      _display_update_val = 0xF7;
 
       layer_colors[EPD_WHITE] = 0b00;
       layer_colors[EPD_BLACK] = 0b01;
