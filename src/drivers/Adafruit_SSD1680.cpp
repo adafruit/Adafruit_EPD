@@ -196,7 +196,8 @@ void Adafruit_SSD1680::update() {
   // falls straight through, and we return mid-refresh.
   if (_busy_pin >= 0) {
     uint32_t t0 = millis();
-    while (!digitalRead(_busy_pin) && (millis() - t0) < SSD1680_BUSY_ASSERT_MS) {
+    while (!digitalRead(_busy_pin) &&
+           (millis() - t0) < SSD1680_BUSY_ASSERT_MS) {
     }
   }
   busy_wait();

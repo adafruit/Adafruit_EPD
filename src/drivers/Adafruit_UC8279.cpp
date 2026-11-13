@@ -261,7 +261,8 @@ void Adafruit_UC8279::setGateGeometry(uint16_t addressedGates,
 /**************************************************************************************/
 /*!
     @brief Sets the controller's scan directions
-    @param mirrorX True to mirror horizontally, False to keep the default orientation.
+    @param mirrorX True to mirror horizontally, False to keep the default
+           orientation.
     @param flipY True to flip vertically, False to keep the default orientation.
 */
 /**************************************************************************************/
