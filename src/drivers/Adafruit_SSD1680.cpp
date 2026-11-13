@@ -306,3 +306,107 @@ void Adafruit_SSD1680::setRAMAddress(uint16_t x, uint16_t y) {
   buf[1] = 0;
   EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
 }
+
+/**************************************************************************/
+/*!
+    @brief Load the fast waveform. Pixels going white to black get VSH1 and
+    pixels going black to white get VSL for the same number of frames;
+    unchanged pixels get nothing. Voltages come from the OTP waveform of the
+    last full refresh. Clock and analog are left on, so each update only
+    needs display mode 2.
+    @returns true
+*/
+/**************************************************************************/
+bool Adafruit_SSD1680::fastModeEnter(void) {
+  _fast_stride = (HEIGHT + 7) / 8;
+  _fast_rows = WIDTH;
+
+  uint8_t lut[SSD1680_LUT_SIZE];
+  memset(lut, 0, sizeof(lut));
+  lut[12 * 1] = 0x80;     // LUT1 black->white, group 0 phase A: VSL
+  lut[12 * 2] = 0x40;     // LUT2 white->black, group 0 phase A: VSH1
+  lut[60] = _fast_frames; // TP[0A]; SR and RP of 0 mean "once"
+  for (int i = 144; i < 150; i++) {
+    lut[i] = (_fast_rate << 4) | (_fast_rate & 0x0F); // FR for all groups
+  }
+  EPD_command(SSD1680_WRITE_LUT, lut, sizeof(lut));
+
+  uint8_t buf[10];
+  buf[0] = 0x07; // EOPT: no discharge scan frames between updates
+  EPD_command(SSD1680_END_OPTION, buf, 1);
+  // Display option: mode 2 for every waveform setting, RAM ping-pong off
+  memset(buf, 0, sizeof(buf));
+  buf[1] = buf[2] = buf[3] = buf[4] = 0xFF;
+  buf[5] = 0x0F;
+  EPD_command(SSD1680_DISP_OPTION, buf, 10);
+  buf[0] = 0x80; // border follows VCOM
+  EPD_command(SSD1680_WRITE_BORDER, buf, 1);
+
+  // Clock and analog on, display mode 2, stay on (both planes are equal,
+  // so nothing is driven)
+  fastWindow(0, _fast_stride - 1, 0, _fast_rows - 1);
+  buf[0] = 0xCC;
+  EPD_command(SSD1680_DISP_CTRL2, buf, 1);
+  EPD_command(SSD1680_MASTER_ACTIVATE);
+  busy_wait();
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief Reset the controller and do an OTP full refresh to white
+*/
+/**************************************************************************/
+void Adafruit_SSD1680::fastFullClean(void) {
+  _fast_stride = (HEIGHT + 7) / 8;
+  _fast_rows = WIDTH;
+
+  powerUp();
+  fastFill(0, 0xFF);
+  fastFill(1, 0xFF);
+  uint8_t buf[1] = {0xF7}; // load temperature and OTP waveform, mode 1
+  EPD_command(SSD1680_DISP_CTRL2, buf, 1);
+  EPD_command(SSD1680_MASTER_ACTIVATE);
+  delay(1);
+  busy_wait();
+}
+
+/**************************************************************************/
+/*!
+    @brief Set the RAM window and counters for a fast update
+    @param xb0 first RAM column in bytes
+    @param xb1 last RAM column in bytes (inclusive)
+    @param y0 first RAM row
+    @param y1 last RAM row (inclusive)
+*/
+/**************************************************************************/
+void Adafruit_SSD1680::fastWindow(uint16_t xb0, uint16_t xb1, uint16_t y0,
+                                  uint16_t y1) {
+  uint8_t buf[4];
+  buf[0] = xb0 + _xram_offset;
+  buf[1] = xb1 + _xram_offset;
+  EPD_command(SSD1680_SET_RAMXPOS, buf, 2);
+  buf[0] = y0;
+  buf[1] = y0 >> 8;
+  buf[2] = y1;
+  buf[3] = y1 >> 8;
+  EPD_command(SSD1680_SET_RAMYPOS, buf, 4);
+  buf[0] = xb0 + _xram_offset;
+  EPD_command(SSD1680_SET_RAMXCOUNT, buf, 1);
+  buf[0] = y0;
+  buf[1] = y0 >> 8;
+  EPD_command(SSD1680_SET_RAMYCOUNT, buf, 2);
+}
+
+/**************************************************************************/
+/*!
+    @brief Start a fast update. The NOP ends the RAM write, then display
+    mode 2 runs with clock and analog already on.
+*/
+/**************************************************************************/
+void Adafruit_SSD1680::fastUpdate(void) {
+  EPD_command(SSD1680_NOP);
+  uint8_t buf[1] = {0x0C};
+  EPD_command(SSD1680_DISP_CTRL2, buf, 1);
+  EPD_command(SSD1680_MASTER_ACTIVATE);
+}

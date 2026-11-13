@@ -70,7 +70,7 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t spi_mosi,
   }
 
   spi_dev = new Adafruit_SPIDevice(CS, spi_clock, spi_miso, spi_mosi,
-                                   4000000,               // frequency
+                                   EPD_DEFAULT_SPI_HZ,    // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
                                    SPI_MODE0              // data mode
   );
@@ -111,10 +111,11 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t DC, int16_t RST,
   }
 
   spi_dev = new Adafruit_SPIDevice(CS,
-                                   4000000,               // frequency
+                                   EPD_DEFAULT_SPI_HZ,    // frequency
                                    SPI_BITORDER_MSBFIRST, // bit order
                                    SPI_MODE0,             // data mode
                                    spi);
+  _spi_bus = spi;
 
   singleByteTxns = false;
   buffer1_size = buffer2_size = 0;
@@ -129,6 +130,10 @@ Adafruit_EPD::Adafruit_EPD(int width, int height, int16_t DC, int16_t RST,
 */
 /**************************************************************************/
 Adafruit_EPD::~Adafruit_EPD() {
+  if (_fast_ring != NULL) {
+    free(_fast_ring);
+    _fast_ring = NULL;
+  }
   if (buffer1 != NULL) {
     free(buffer1);
     buffer1 = NULL;
@@ -146,6 +151,7 @@ Adafruit_EPD::~Adafruit_EPD() {
 */
 /**************************************************************************/
 void Adafruit_EPD::begin(bool reset) {
+  fastRelease();            // a normal begin ends fast mode
   setBlackBuffer(0, true);  // black defaults to inverted
   setColorBuffer(1, false); // red defaults to not inverted
 
@@ -389,6 +395,7 @@ void Adafruit_EPD::writeSRAMFramebufferToEPD(uint16_t SRAM_buffer_addr,
 */
 /**************************************************************************/
 void Adafruit_EPD::display(bool sleep) {
+  fastRelease(); // a normal refresh ends fast mode
 #ifdef EPD_DEBUG
   Serial.println("  Powering Up");
 #endif
