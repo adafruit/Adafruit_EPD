@@ -32,7 +32,7 @@ class ThinkInk_213_Tricolor_MFGNR : public Adafruit_SSD1680 {
     layer_colors[EPD_LIGHT] = 0b00;
     layer_colors[EPD_DARK] = 0b01;
 
-    default_refresh_delay = 13000;
+    default_refresh_delay = 21000;
     setRotation(0);
     powerDown();
   }

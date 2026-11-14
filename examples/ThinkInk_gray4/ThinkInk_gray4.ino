@@ -37,6 +37,20 @@
 // ThinkInk_426_Grayscale4_GDEQ display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS
 // EPD_BUSY, EPD_SPI);
 
+/* 4.26" Xteink X4 Pro eReader (UC8279)
+   use these pins:
+   #define EPD_DC 18
+   #define EPD_CS 13
+   #define EPD_BUSY 6
+   #define SRAM_CS -1
+   #define EPD_RESET 14
+   #define EPD_SPI &SPI
+   and in setup(), before display.begin():
+   pinMode(1, OUTPUT); digitalWrite(1, HIGH); // panel power
+   SPI.begin(12, -1, 11, EPD_CS); */
+// ThinkInk_426_Grayscale4_X4PRO display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
+// EPD_BUSY, EPD_SPI);
+
 
 // ThinkInk_154_Grayscale4_T8 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS,
 // EPD_BUSY, EPD_SPI); 
